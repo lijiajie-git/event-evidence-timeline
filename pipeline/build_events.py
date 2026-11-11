@@ -139,6 +139,19 @@ for path in FILES:
                          [dict(at=c["first_seen"], type="证据冲突", conflict_id=c["id"], text=c["text"]) for c in e.get("conflicts", [])] + \
                          [dict(at=ev[x["outdated_by"]]["times"]["disclosed"], type="观点过期", evidence_id=x["id"], text=f"{x['source']}的观点前提已不成立：{x['title'][:30]}") for x in e["evidence"] if x.get("outdated_by")]
     e["notifications"].sort(key=lambda n: n["at"])
+    anns = [x for x in e["evidence"] if x["src"] == "ann"]
+    first = next((x for x in anns if x["relation"]["type"] == "首次披露"), anns[0] if anns else None)
+    if first:
+        early = [x for x in e["evidence"] if x["src"] == "news" and x["relation"].get("target") == first["id"] and x["times"]["published_at"] < first["times"]["published_at"]]
+        e["first_source"] = dict(evidence_id=first["id"], title=first["title"], doc_no=first.get("doc_no"), disclosed=first["times"]["disclosed"], source=first["source"],
+            earlier_media=[dict(evidence_id=x["id"], source=x["source"], published_at=x["times"]["published_at"]) for x in early],
+            note="最早出处取本事件里最早的公司公告。媒体转述早于巨潮披露日的，单列在 earlier_media：公告通常前一晚上网，巨潮按次日记披露日。")
+    mix = {}
+    for x in e["evidence"]:
+        k = "公告" if x["src"] == "ann" else {"事实": "媒体转述", "观点": "评论和研报观点", "推测": "推测和归因", "传闻": "传闻"}[x["kind"]]
+        mix[k] = mix.get(k, 0) + 1
+    e["evidence_mix"] = dict(counts=mix, conflicts=len(e.get("conflicts", [])), outdated=sum(1 for x in e["evidence"] if x.get("outdated_by")),
+                             last_evidence_at=max(x["times"]["published_at"] for x in e["evidence"]))
     e["prices"] = prices(th, [(x["id"], x["times"]["disclosed"]) for x in e["evidence"] if x["src"] == "ann"]) if th else dict(error="未提供代码", bars=[], markers=[])
     if e["prices"].get("error"): e.setdefault("pending", []).append(f"行情不可用：{e['prices']['error']}")
     out.append(e)
@@ -165,6 +178,20 @@ ORDER = ["600187-2025A-forecast", "600499-2026-tefu-restructuring", "605081-2025
 out.sort(key=lambda e: ORDER.index(e["id"]) if e["id"] in ORDER else len(ORDER))
 json.dump(dict(generated_at=datetime.datetime.now(datetime.timezone.utc).isoformat(timespec="seconds"),
     disclaimer="只整理公开披露信息和公开报道，不预测涨跌，不构成投资建议。",
+    glossary=dict(updated="2026-11-11", sections=[
+        dict(title="事件状态", note="只按公司公告和交易所文件认定，媒体的说法不改变状态。", items=[
+            ["已预告", "公司披露了业绩预告，还没有更正，定期报告也还没出。"], ["预告更正", "公司发公告更正了之前的业绩预告。"], ["已兑现", "定期报告已披露，预告有了实际数可以对照。"],
+            ["定期报告更正", "年报或半年报披露后，公司又更正了其中的内容。"], ["筹划", "公司公告正在筹划交易，方案未定。"], ["预案", "已披露预案，审计评估通常未完成。"],
+            ["草案", "已披露报告书草案，作价等要素已确定。"], ["审核中", "交易所已受理或正在问询、等待上会。"], ["未通过", "审核机构审议未通过。交易是否终止还要看后续公告。"],
+            ["终止审核", "交易所决定终止对这次申请的审核。"], ["终止", "公司董事会决定终止交易。"], ["监管问询", "收到监管工作函、问询函，或已回复。"], ["立案", "公司公告收到证监会立案告知书。"],
+            ["风险警示", "被实施或提示可能被实施退市风险警示、其他风险警示。"], ["终止上市", "交易所作出终止上市决定，直至摘牌。"], ["澄清", "公司发公告更正或说明自己之前披露的内容。"], ["否认", "公司发公告否认外部的说法。"]]),
+        dict(title="数字版本的状态", items=[["当前有效", "截至所选日期，这个指标最新的一版。"], ["前值", "已被后面的公告取代。保留不删，并注明哪天被哪条证据取代。"], ["已作废", "交易终止等原因使这个数不再适用。"]]),
+        dict(title="证据类型", items=[["事实", "公司公告、交易所文件里陈述的事，或媒体对公告内容的如实转述。"], ["观点", "媒体评论、研报的判断。"], ["推测", "带“或”“有望”“？”的报道，或把股价变化归因于某件事的解读。"], ["传闻", "没有署名来源的说法。目前没有收录到真实样例。"],
+            ["前提已不成立", "观点以某件事会发生为前提，后来的公告推翻了这个前提。观点保留，但标出是哪条公告推翻的。"]]),
+        dict(title="来源级别和权重", note="权重由规则给定，不由模型打分。低级别来源不能推翻高级别来源；同级别以后披露的为准。", items=[[k, f"{v['label']}，权重 {v['w']}"] for k, v in WEIGHTS.items()]),
+        dict(title="四种时间", items=[["发生时间", "说法所指的日期或报告期，比如董事会开会日、业绩所属的年度。"], ["披露时间", "公告在巨潮的披露日（精确到日），或媒体的发布时间（精确到分钟）。公告通常前一晚上网，所以媒体转述可能比披露日早一晚。"],
+            ["抓取时间", "本系统取到这条数据的时间。"], ["更新时间", "来源事后修改的时间。数据源不提供，靠重抓比对正文指纹来发现；目前没有发现变化。"]]),
+        dict(title="结论里的三种句子", items=[["事实", "至少有一条公告或对公告的转述作依据。"], ["推断", "系统或媒体的判断，会写明是谁的判断。"], ["还不确定", "截至所选日期没有证据能回答的事。"]])]),
     weights=WEIGHTS, weight_rule="低级别来源不能推翻高级别来源；同级别以后披露的为准。",
     time_note="发生时间=说法所指的日期或报告期；披露时间=公告在巨潮的披露日或媒体发布时间；抓取时间=本系统取数时间（UTC）；更新时间=来源事后修改的时间，目前数据源不提供。",
     events=out), open("data/events.json", "w"), ensure_ascii=False, indent=1)

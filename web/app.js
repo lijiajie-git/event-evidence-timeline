@@ -2,7 +2,7 @@
 import {
   PATHS, load, esc, miss, val, addDays, md, cn, cnShort, bj, human, exact, rangeText, change,
   evidenceById, disclosedOf, eventDates, today, asOf, statusText, tierLabel, SRC_NAME, docName,
-  timeLine, occurredText, priceWindow, initTheme, fatal, ref, refs, dayDiff, srcType,
+  timeLine, occurredText, priceWindow, initTheme, fatal, ref, refs, dayDiff, srcType, moneyText,
 } from './core.js';
 import { verify, describe, exampleSentences } from './verify.js';
 import { loadText, locate, diffDocs, charDiff } from './source.js';
@@ -137,24 +137,13 @@ function head(e, a) {
   return `<header class="ev-head">
     <h1>${esc(e.name)} · ${esc(e.title || shortName(e))}</h1>
     <p class="meta">${bits.join('<span class="dot">·</span>')}</p>
-    ${S.mergeOpen ? `<div class="more-box"><p>${val(e.merge_reason)}</p>${early.length ? `<p>${early.map((m) => `${esc(m.source)}在 ${esc(m.published_at)} 已经转述，比巨潮记的披露日早。`).join('')}</p>` : ''}</div>` : ''}
+    ${S.mergeOpen ? `<div class="more-box"><p>${e.merge_reason ? tx(e, e.merge_reason) : val(e.merge_reason)}</p>${early.length ? `<p>${early.map((m) => `${esc(m.source)}在 ${esc(m.published_at)} 已经转述，比巨潮记的披露日早。`).join('')}</p>` : ''}</div>` : ''}
   </header>`;
 }
 
 // 叙述式结论：说清楚现在算数的是什么
 const isProfit = (k) => /利润|净利|亏|盈/.test(k);
-function money(v, unit, key) {
-  if (!v || (v.low == null && v.high == null)) return null;
-  const lo = v.low ?? v.high, hi = v.high ?? v.low;
-  if (unit === '%') return lo === hi ? `${lo}%` : `${lo}% 至 ${hi}%`;
-  const A = Math.min(Math.abs(lo), Math.abs(hi)), B = Math.max(Math.abs(lo), Math.abs(hi));
-  const f = (n) => human(n, unit) || '';
-  let body = A === B ? f(A) : `${f(A)}至 ${f(B)}`;
-  const m = body.match(/^(.*?) (亿|万)至 (.*) (亿|万)$/);
-  if (m && m[2] === m[4]) body = `${m[1]} 至 ${m[3]} ${m[4]}`;
-  if (unit === '万元') body += '元';
-  return isProfit(key) ? `${(lo + hi) / 2 < 0 ? '亏损' : '盈利'} ${body}` : body;
-}
+const money = (v, unit, key) => moneyText(v, unit, key);
 function narrative(e, a) {
   if (!a.evidence.length) return `截至 ${cn(a.D)}，还没有相关的公告或报道。`;
   const nums = a.claims.map((c) => ({ c, vs: c.seen.filter((v) => v.low != null || v.high != null) })).filter((x) => x.vs.length);
@@ -180,7 +169,7 @@ function narrative(e, a) {
 }
 function lead(e, a) {
   const c = a.conclusion;
-  const item = (x) => (typeof x === 'string' ? `<li>${esc(x)}</li>` : `<li>${esc(x.text)}${tags(e, x.evidence_ids)}</li>`);
+  const item = (x) => (typeof x === 'string' ? `<li>${tx(e, x)}</li>` : `<li>${tx(e, x.text)}${tags(e, x.evidence_ids)}</li>`);
   const block = (t, arr) => (Array.isArray(arr) && arr.length ? `<h4>${t}</h4><ul>${arr.map(item).join('')}</ul>` : '');
   // 右边栏：当前数字和事实句的原文
   const notes = [];
@@ -281,9 +270,9 @@ function drawLanes(e, a) {
 function secConflicts(e, a) {
   if (!a.conflicts.length) return '';
   return `<section class="sec" id="s-conflict"><h2>对不上的地方</h2>
-    ${a.conflicts.map((c) => `<div class="cf" id="cf-${esc(c.id)}"><p>${esc(c.text)}</p>
+    ${a.conflicts.map((c) => `<div class="cf" id="cf-${esc(c.id)}"><p>${tx(e, c.text)}</p>
       ${(c.quotes || []).slice(0, 3).map((q) => { const x = evidenceById(e, q.evidence_id); return `<blockquote><button data-src="${esc(q.evidence_id)}" data-q="${esc(q.quote)}">“${esc(q.quote)}”</button><cite>${esc(srcType(x))} · ${esc(docName(x))}</cite></blockquote>`; }).join('')}
-      ${c.resolution ? `<p class="res">${esc(c.resolution)}</p>` : ''}</div>`).join('')}</section>`;
+      ${c.resolution ? `<p class="res">${tx(e, c.resolution)}</p>` : ''}</div>`).join('')}</section>`;
 }
 
 const rawRange = (r) => (r.low === r.high || r.high == null ? exact(r.low, r.unit) : `${exact(r.low, '')} ~ ${exact(r.high, r.unit)}`);
@@ -327,11 +316,11 @@ function evRow(e, x, a) {
   const occ = occurredText(t.occurred);
   const open = S.focus === x.id;
   return `<li id="ev-${esc(x.id)}" class="${od ? 'outdated' : ''} ${open ? 'focus' : ''}"><details ${open ? 'open' : ''}>
-    <summary><span class="d">${md(disclosedOf(x))}</span><span class="k">${esc(srcType(x))}</span><span class="t">${esc(x.summary || x.title || '')}${od ? '<em>前提已不成立</em>' : ''}</span></summary>
+    <summary><span class="d">${md(disclosedOf(x))}</span><span class="k">${esc(srcType(x))}</span><span class="t">${tx(e, x.summary || x.title || '')}${od ? '<em>前提已不成立</em>' : ''}</span></summary>
     <div class="ev-more">
       <p class="src">${esc(x.src === 'ann' ? docName(x) + ' · ' : (x.source ? x.source + ' · ' : ''))}${val(x.title)}</p>
       ${x.quote || x.reason_quote ? `<blockquote>“${esc(x.quote || x.reason_quote)}”</blockquote>` : ''}
-      ${od ? `<p class="od">${esc(od.note || '')}</p>` : ''}
+      ${od ? `<p class="od">${tx(e, od.note || '')}</p>` : ''}
       <p class="acts">${x.src === 'ann' && x.ref ? `<button class="lnk" data-src="${esc(x.id)}" data-q="${esc(x.quote || x.reason_quote || '')}">在正文里看 ›</button>` : ''}${dt ? `<button class="lnk" data-diff-a="${esc(dt.id)}" data-diff-b="${esc(x.id)}">和 ${esc(docName(dt))} 对比 ›</button>` : ''}${x.url ? `<a href="${esc(x.url)}" target="_blank" rel="noopener">${x.src === 'ann' ? '巨潮 PDF' : '原文链接'} ↗</a>` : ''}</p>
       <p class="times">${esc(x.source_tier ? x.source_tier + ' 级' : '')}${x.weight != null ? ' · 权重 ' + esc(x.weight) : ''} · 发生 ${occ ? esc(occ) : miss()} · 披露 ${esc(timeLine(x) || '') || miss()} · 抓取 ${bj(t.fetched) ? esc(bj(t.fetched).replace('（北京时间）', '')) : miss('未记录')} · 更新 ${updatedText(e, x)}</p>
     </div></details></li>`;
@@ -367,7 +356,7 @@ function secPrices(e, a) {
 function secPending(e) {
   const list = Array.isArray(e.pending) ? e.pending : null;
   if (list && !list.length) return '';
-  return `<section class="sec" id="s-pending"><h2>还没做到</h2>${list ? `<ul class="pend">${list.map((p) => `<li>${esc(p)}</li>`).join('')}</ul>` : `<p class="empty">缺口清单${miss('未生成')}</p>`}</section>`;
+  return `<section class="sec" id="s-pending"><h2>还没做到</h2>${list ? `<ul class="pend">${list.map((p) => `<li>${tx(e, p)}</li>`).join('')}</ul>` : `<p class="empty">缺口清单${miss('未生成')}</p>`}</section>`;
 }
 
 // 证据编号换成来源类型文字链接；同类多条合并
@@ -377,6 +366,11 @@ function tags(e, ids) {
   ids.forEach((id) => { const x = evidenceById(e, id); const t = srcType(x); let g = groups.find((k) => k.t === t); if (!g) groups.push(g = { t, ids: [] }); g.ids.push(id); });
   return groups.map((g) => `<button class="stag" data-tag-ids="${esc(g.ids.join(','))}" data-tag-ev="${esc(e.id)}" title="${esc(g.ids.map((id) => docName(evidenceById(e, id))).join('、'))}">${esc(g.t)}${g.ids.length > 1 ? ' · ' + g.ids.length : ''} ›</button>`).join('');
 }
+
+// 数据文字里夹带的内部编号（e1、n2、k7）换成给人看的名字；对不上证据的保持原样
+const tx = (e, t) => esc(String(t == null ? '' : t)).replace(/(?<![A-Za-z0-9])([enkag]\d{1,2})(?![0-9A-Za-z])/g, (m) => (e && evidenceById(e, m) ? esc(nm(e, m)) : m));
+// 给人看的证据名：公告编号，或“来源 日期”，不露内部编号
+const nm = (e, id) => { const x = e && evidenceById(e, id); return !x ? id : x.src === 'ann' ? docName(x) : `${x.source || srcType(x)} ${md(disclosedOf(x))}`; };
 
 // ---------- 问答 ----------
 function renderQA() {
@@ -401,11 +395,11 @@ function answer(q) {
   const tr = Array.isArray(q.trace) ? q.trace : null;
   return `<div class="answer" id="answer" data-event="${esc(q.event_id || '')}"><p class="qq">${esc(q.question)}</p>
     <div class="meta">${e ? esc(e.name) + ' · ' : ''}截至 ${q.as_of ? esc(q.as_of) : miss('未记录')}</div>
-    ${ans.length ? `<ol class="sent">${ans.map((s) => `<li class="k-${esc(s.kind)}"><span class="kind k-${esc(s.kind)}">${s.kind ? esc(s.kind) : miss('未标')}</span><span>${esc(s.text)}${e ? tags(e, s.evidence_ids) : refs(s.evidence_ids)}</span></li>`).join('')}</ol>` : `<p>${miss('回答未生成')}</p>`}
+    ${ans.length ? `<ol class="sent">${ans.map((s) => `<li class="k-${esc(s.kind)}"><span class="kind k-${esc(s.kind)}">${s.kind ? esc(s.kind) : miss('未标')}</span><span>${tx(e, s.text)}${e ? tags(e, s.evidence_ids) : ''}</span></li>`).join('')}</ol>` : `<p>${miss('回答未生成')}</p>`}
     <details class="trace" ${S.openTrace ? 'open' : ''}><summary>它是怎么得出这个回答的（${tr ? tr.length + ' 步' : '未生成'}）</summary>
-      ${tr ? `<ol>${tr.map((t) => `<li><b>${esc(t.step)}</b> ${esc(t.detail || '')}
-        ${t.used && t.used.length ? `<div class="x">用了：${refs(t.used)}</div>` : ''}
-        ${t.excluded && t.excluded.length ? `<div class="x">排除：${t.excluded.map((x) => `${ref(x.id)} ${esc(x.reason)}`).join('；')}</div>` : ''}
+      ${tr ? `<ol>${tr.map((t) => `<li><b>${esc(t.step)}</b> ${tx(e, t.detail || '')}
+        ${t.used && t.used.length ? `<div class="x">用了：${t.used.map((id) => esc(nm(e, id))).join('、')}</div>` : ''}
+        ${t.excluded && t.excluded.length ? `<div class="x">排除：${t.excluded.map((x) => `${esc(nm(e, x.id))}（${tx(e, x.reason)}）`).join('；')}</div>` : ''}
         ${t.checks && t.checks.length ? `<div class="x">校验：${t.checks.map((c) => `${esc(c.name)} <span class="${c.pass ? 'ok' : 'bad'}">${c.pass ? '通过' : '未通过'}</span>`).join('；')}</div>` : ''}</li>`).join('')}</ol>` : `<p class="x">${miss('推理过程未生成')}</p>`}
     </details></div>`;
 }
@@ -431,7 +425,7 @@ function renderVerify() {
   const ex = exampleSentences(DATA);
   $('#view').innerHTML = `<div class="wrap">
     <form class="ask" id="vf"><input id="vq" placeholder="贴一句看到的消息，例如某公司预亏多少、收购作价多少" value="${esc(S.verifyText)}" autocomplete="off"><button>查验</button></form>
-    <p class="honest">从你的句子里读出数字和单位（亿、万、元、%），换算后和已收录的每一版数字比对，按你写到的小数位允许四舍五入。全部在浏览器里算，不调用模型；对不上就说对不上。</p>
+    <p class="honest">只做数字比对，不调用模型；对不上就直说。</p>
     <div class="chips">${ex.map((t) => `<button data-vex="${esc(t)}">${esc(t)}</button>`).join('')}</div>
     <div id="vres">${S.verifyText ? '' : '<p class="empty">输入一句话，或点上面的例子。</p>'}</div></div>`;
   if (S.verifyText) $('#vres').innerHTML = verifyCards(verify(S.verifyText, DATA), false);
@@ -452,14 +446,14 @@ function verifyCards(r, compact) {
     let st;
     if (v.status === 'void' || (v.void_from && v.void_from <= T)) st = `<p>这一版 ${md(v.void_from)} 起作废${v.note ? '：' + esc(v.note) : ''}</p>`;
     else if (d.isCurrent) st = `<p>这一版目前是“当前有效”。</p>`;
-    else st = `<p><b>${esc(v.valid_to)}</b> 被 ${esc(docName(by))}${by ? ref(by.id) : ''} 取代。</p>`;
+    else st = `<p><b>${esc(v.valid_to)}</b> 被 ${esc(docName(by))} 取代。</p>`;
     const cur = d.isCurrent ? '' : `<p>现在算数的是 <span class="big">${esc(rangeText(d.cur, c.unit))}</span>（第 ${d.cur.v ?? '?'} 版，${esc(docName(curX))}，${esc(d.cur.valid_from)}${d.cur.status === 'void' ? '，已作废' : ''}）。</p>`;
     const notes = [];
     if (m.how === '只对上区间的一端') notes.push('只对上了区间的一端，可能不是同一个说法。');
     if (!m.exact && m.how !== '只对上区间的一端') notes.push(`你写的“${esc(m.input)}”是四舍五入后的写法，原文是 ${esc(rangeText(v, c.unit, 'exact'))}。`);
     if (m.signNote) notes.push(esc(m.signNote) + '。');
     return `<div class="vres"><h3>这是${esc(e.name)}${esc(c.key)}的第 ${d.n} 版（共 ${d.total} 版）。</h3>
-      <p>出自 ${esc(docName(x))}${ref(v.evidence_id)}，${esc(v.valid_from)} 披露${v.basis ? '，' + esc(v.basis) : ''}。原文：“${esc(v.quote || '')}”</p>
+      <p>出自 <button class="lnk" data-src="${esc(v.evidence_id)}" data-q="${esc(v.quote || '')}" data-src-ev="${esc(e.id)}">${esc(docName(x))}</button>，${esc(v.valid_from)} 披露${v.basis ? '，' + esc(v.basis) : ''}。原文：“${esc(v.quote || '')}”</p>
       ${st}${cur}${notes.length ? `<p class="muted">${notes.join(' ')}</p>` : ''}
       <p><a href="#" data-goto="${esc(e.id)}" data-gd="${esc(v.valid_from)}">在时间线上看这一版 →</a></p>
       ${compact ? '' : steps}</div>`;
@@ -479,7 +473,7 @@ function peek(id, btn) {
   if (!x) peekEl.innerHTML = `<button class="x" aria-label="关闭">×</button><p>证据 ${esc(id)} 在数据里没有找到。</p>`;
   else {
     const tl = tierLabel(x, DATA.weights);
-    peekEl.innerHTML = `<button class="x" aria-label="关闭">×</button><div class="tags">${esc(x.id)} · ${val(x.kind)} · ${tl.tier ? esc(tl.tier) + ' 级 ' + esc(tl.label || '') : ''} · ${esc(timeLine(x) || '')}</div>
+    peekEl.innerHTML = `<button class="x" aria-label="关闭">×</button><div class="tags">${val(x.kind)} · ${tl.tier ? esc(tl.tier) + ' 级 ' + esc(tl.label || '') : ''} · ${esc(timeLine(x) || '')}</div>
       <h4>${esc(x.src === 'ann' ? docName(x) + ' ' : (x.source ? x.source + '：' : ''))}${val(x.title)}</h4><p>${x.summary ? esc(x.summary) : miss('要点未抽取')}</p>
       ${x.quote ? `<p class="muted">原文：“${esc(x.quote)}”</p>` : ''}
       <div class="act">${x.src === 'ann' && x.ref ? `<button data-src="${esc(x.id)}" data-q="${esc(x.quote || '')}" data-src-ev="${esc(e.id)}">看正文</button>` : ''}${x.url ? `<a href="${esc(x.url)}" target="_blank" rel="noopener">打开原文 ↗</a>` : ''}<a href="#" data-goto="${esc(e.id)}" data-gd="${esc(disclosedOf(x))}" data-gf="${esc(x.id)}">在时间线上看</a></div>`;

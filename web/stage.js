@@ -1,6 +1,6 @@
 // 演示页：开场一张表讲痛点；舞台左边设备里是工作台（嵌入模式，只显示当前一块），右边每一步三行：
 // 你看到什么、谁做的（规则 / 模型离线 / 浏览器）、核了什么。例子都从数据里挑，不写死事件编号。
-import { PATHS, load, esc, md, change, evidenceById, disclosedOf, today, docName, asOf, srcType, human } from './core.js';
+import { PATHS, load, esc, md, change, evidenceById, disclosedOf, today, docName, asOf, srcType, moneyText } from './core.js';
 import { verify, describe, exampleSentences } from './verify.js';
 import { loadText, locate, diffDocs, charDiff, norm } from './source.js';
 import { renderHighlights, renderEvalSection, renderProcess, renderAudit } from './sections.js';
@@ -10,17 +10,9 @@ const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
 let DATA, QA, WB, CH = [], AUDIT = null, RECHECK = null, REPORT = null;
 const P = { ci: 0, bi: 0, timer: null, mode: 'idle' };
 const cut = (s, n = 46) => { s = String(s || ''); return s.length > n ? s.slice(0, n - 1) + '…' : s; };
-const isProfit = (k) => /利润|净利/.test(k);
-function money(v, unit, key) {
-  if (!v || (v.low == null && v.high == null)) return '没给数字';
-  const lo = v.low ?? v.high, hi = v.high ?? v.low;
-  if (unit === '%') return lo === hi ? `${lo}%` : `${lo}% 至 ${hi}%`;
-  const A = Math.min(Math.abs(lo), Math.abs(hi)), Bv = Math.max(Math.abs(lo), Math.abs(hi));
-  let body = A === Bv ? human(A, unit) : `${human(A, unit)}至 ${human(Bv, unit)}`;
-  const m = body.match(/^(.*?) (亿|万)至 (.*) (亿|万)$/); if (m && m[2] === m[4]) body = `${m[1]} 至 ${m[3]} ${m[4]}`;
-  if (unit === '万元') body += '元';
-  return isProfit(key) ? `${(lo + hi) / 2 < 0 ? '亏损' : '盈利'} ${body}` : body;
-}
+const money = (v, unit, key) => moneyText(v, unit, key) || '没给数字';
+const nmS = (e, id) => { const x = evidenceById(e, id); return !x ? id : x.src === 'ann' ? docName(x) : `${x.source || srcType(x)} ${md(disclosedOf(x))}`; };
+const clean = (e, t) => String(t || '').replace(/(?<![A-Za-z0-9])([enkag]\d{1,2})(?![0-9A-Za-z])/g, (m) => (e && evidenceById(e, m) ? nmS(e, m) : m));
 const who = (t) => `<span class="who ${/模型/.test(t) ? 'model' : ''}">${esc(t)}</span>`;
 const B = (see, how, check) => ({ see, how, check });
 
@@ -91,7 +83,7 @@ async function chRetell(px) {
     const { e, c } = best;
     const at = c.first_seen || (c.evidence_ids || []).map((id) => disclosedOf(evidenceById(e, id))).sort().pop();
     beats.push({ ms: 6200, go: { view: 'event', event: e.id, date: at, only: 'conflict' },
-      ...B(esc(cut(c.text, 60)), `${who('规则')}：低级别来源不能推翻高级别来源`, esc(cut(c.resolution || '', 54))) });
+      ...B(esc(cut(clean(e, c.text), 60)), `${who('规则')}：低级别来源不能推翻高级别来源`, esc(cut(clean(e, c.resolution || ''), 54))) });
   }
   if (px) {
     const { e, vs } = px; const v = vs[vs.length - 1]; const x = evidenceById(e, v.evidence_id);
@@ -129,7 +121,7 @@ function chPremise() {
     { ms: 5000, go: { view: 'event', event: e.id, date: disclosedOf(x), only: 'evidence', focus: x.id },
       ...B(`${md(disclosedOf(x))} ${esc(x.source || '')}：“${esc(cut(x.quote || x.title, 24))}”`, `${who('模型离线')}把它标成“${esc(x.kind || '观点')}”，权重 ${esc(x.weight ?? '—')}`, '它默认交易会照计划推进') },
     { ms: 5800, go: { view: 'event', event: e.id, date: disclosedOf(by), only: 'evidence', focus: x.id },
-      ...B(`${md(disclosedOf(by))} ${esc(docName(by))}：${esc(cut(by.summary || by.title, 30))}`, `${who('规则')}把那条观点标成“前提已不成立”，不删`, '回放到这天之前，它看起来还是一条正常的研报') },
+      ...B(`${md(disclosedOf(by))} ${esc(docName(by))}：${esc(cut(clean(e, by.summary || by.title), 30))}`, `${who('规则')}把那条观点标成“前提已不成立”，不删`, '回放到这天之前，它看起来还是一条正常的研报') },
   ] };
 }
 

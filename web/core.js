@@ -57,29 +57,58 @@ const grp = (n, dec) => Math.abs(n).toLocaleString('en-US', { minimumFractionDig
 const decimals = (n) => { const s = String(n); const i = s.indexOf('.'); return i < 0 ? 0 : s.length - i - 1; };
 const sgn = (n) => (n < 0 ? '−' : '');
 
-// 原始单位精确值，用在表格和引用旁
+// 每个指标按自己的 unit 显示：金额（元/万元/亿元）、股数（股）、每股价格（元/股）、比例（%）
+export const MONEY = { '元': 1, '万元': 1e4, '亿元': 1e8 };
+const upTo = (x, d = 2) => Number(x.toFixed(d)).toLocaleString('en-US', { maximumFractionDigits: d });
+// 原文口径的精确值，用在表格和引用旁
 export function exact(n, unit) {
   if (n == null || isNaN(n)) return null;
   if (unit === '%') return sgn(n) + grp(n, decimals(n)) + '%';
+  if (unit === '元/股') return sgn(n) + grp(n, Math.max(2, decimals(n))) + ' 元/股';
   return sgn(n) + grp(n, decimals(n)) + (unit ? ' ' + unit : '');
 }
-// 万元 → 人读的（≥1 亿用亿，两位小数）
-export function human(n, unit) {
+// 人读的：金额大于 1 亿写亿元、大于 1 万写万元；股数同理；价格保留两位
+export function humanParts(n, unit) {
   if (n == null || isNaN(n)) return null;
-  if (unit === '万元' && Math.abs(n) >= 10000) return sgn(n) + (Math.abs(n) / 10000).toFixed(2) + ' 亿';
-  if (unit === '万元') return sgn(n) + grp(n, Math.min(decimals(n), 2)) + ' 万';
-  if (unit === '%') return sgn(n) + grp(n, decimals(n)) + '%';
-  return exact(n, unit);
+  const s0 = sgn(n);
+  if (MONEY[unit]) {
+    const y = Math.abs(n) * MONEY[unit];
+    if (y >= 1e8) return [s0 + (y / 1e8).toFixed(2), '亿元'];
+    if (y >= 1e4) return [s0 + upTo(y / 1e4), '万元'];
+    return [s0 + upTo(y), '元'];
+  }
+  if (unit === '股') {
+    const y = Math.abs(n);
+    if (y >= 1e8) return [s0 + (y / 1e8).toFixed(2), '亿股'];
+    if (y >= 1e4) return [s0 + upTo(y / 1e4), '万股'];
+    return [s0 + upTo(y, 0), '股'];
+  }
+  if (unit === '元/股') return [s0 + Math.abs(n).toFixed(2), '元/股'];
+  if (unit === '%') return [s0 + upTo(Math.abs(n), 4), '%'];
+  return [s0 + upTo(Math.abs(n), 4), unit || ''];
 }
+const join = ([num, u]) => (u === '%' ? num + '%' : u ? num + ' ' + u : num);
+export function human(n, unit) { const p = humanParts(n, unit); return p ? join(p) : null; }
 export function rangeText(v, unit, mode = 'human') {
   if (!v || (v.low == null && v.high == null)) return null;
   const f = mode === 'exact' ? (n) => exact(n, unit) : (n) => human(n, unit);
-  if (v.low === v.high || v.high == null || v.low == null) return f(v.low ?? v.high);
-  const a = f(v.low), b = f(v.high);
-  // 同单位只写一次：−1.30 ~ −1.04 亿
-  const ua = a.match(/\s?(亿|万|万元|%)$/), ub = b.match(/\s?(亿|万|万元|%)$/);
-  if (ua && ub && ua[1] === ub[1]) return a.slice(0, -ua[0].length) + ' ~ ' + b;
-  return a + ' ~ ' + b;
+  if (v.low == null) return '不超过 ' + f(v.high);
+  if (v.high == null) return '不低于 ' + f(v.low);
+  if (v.low === v.high) return f(v.low);
+  if (mode === 'exact') return `${exact(v.low, '')} ~ ${exact(v.high, unit)}`;
+  const A = humanParts(v.low, unit), B = humanParts(v.high, unit);
+  // 同单位只写一次：−1.30 ~ −1.04 亿元
+  if (A[1] === B[1]) return A[1] === '%' ? `${A[0]}% ~ ${B[0]}%` : `${A[0]} ~ ${B[0]} ${B[1]}`;
+  return `${join(A)} ~ ${join(B)}`;
+}
+// 叙述里用的说法：利润类写“亏损 / 盈利”，区间写“至”
+export function moneyText(v, unit, key) {
+  if (!v || (v.low == null && v.high == null)) return null;
+  if (v.low == null || v.high == null) return rangeText(v, unit);
+  const profit = /利润|净利/.test(key || '');
+  if (!profit) return rangeText(v, unit).replace(' ~ ', ' 至 ');
+  const lo = Math.min(Math.abs(v.low), Math.abs(v.high)), hi = Math.max(Math.abs(v.low), Math.abs(v.high));
+  return `${(v.low + v.high) / 2 < 0 ? '亏损' : '盈利'} ${rangeText({ low: lo, high: hi }, unit).replace(' ~ ', ' 至 ')}`;
 }
 export const mid = (v) => (v.low + v.high) / 2;
 export function change(prev, cur) {

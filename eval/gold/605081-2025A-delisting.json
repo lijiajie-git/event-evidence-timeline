@@ -1,0 +1,1571 @@
+{
+ "id": "605081-2025A-delisting",
+ "name": "*ST太和 2025 年度：预亏、监管工作函、立案和责令改正、预告更正、年报兑现、终止上市到摘牌",
+ "code": "605081",
+ "period": "2025A",
+ "event_type": "终止上市",
+ "labeled_by": "Claude Opus 5.5（模型标注，不是人工标注）",
+ "labeled_at": "2026-11-11",
+ "blind": "标注时没有打开 pipeline/extracted/、data/events.json、data/qa.json、data/audit*.json、eval/report.*、eval/history.json、eval/traps/、eval/adjudication.md、web/、workbench.html；只读了公告原文和本地新闻、异动原始数据。",
+ "sources_read": [
+  "data/raw/text/1224957246.txt",
+  "data/raw/text/1224957248.txt",
+  "data/raw/text/1224957247.txt",
+  "data/raw/text/1224979936.txt",
+  "data/raw/text/1224999449.txt",
+  "data/raw/text/1225019534.txt",
+  "data/raw/text/1225021340.txt",
+  "data/raw/text/1225021342.txt",
+  "data/raw/text/1225050170.txt",
+  "data/raw/text/1225103012.txt",
+  "data/raw/text/1225133682.txt",
+  "data/raw/text/1225133701.txt",
+  "data/raw/text/1225133706.txt",
+  "data/raw/text/1225133709.txt",
+  "data/raw/text/1225250617.txt",
+  "data/raw/text/1225267974.txt",
+  "data/raw/text/1225268019.txt",
+  "data/raw/text/1225268266.txt",
+  "data/raw/text/1225268285.txt",
+  "data/raw/text/1225268053.txt",
+  "data/raw/text/1225310428.txt",
+  "data/raw/text/1225310364.txt",
+  "data/raw/text/1225340564.txt",
+  "data/raw/text/1225340563.txt",
+  "data/raw/text/1225355314.txt",
+  "data/raw/text/1225360732.txt",
+  "data/raw/text/1225391219.txt",
+  "data/raw/text/1225381510.txt",
+  "data/raw/text/1225396959.txt",
+  "data/raw/news/605081.SH.json（timeline 为空，只有 45 条异动解读）"
+ ],
+ "scope_note": "公告列表看到 6-30 摘牌公告为止，之后没有该公司公告。公司 2025-04-29 起已被实施退市风险警示（因 2024 年度），本事件从 1-30 预亏开始。年报 4-30 披露后没有再更正年报。监管工作函本身没有单独公告，只有 3-20 回复；回复在 5-16 被更正重发。终止上市决定、退市整理期（6-08 至 6-29）、摘牌日（7-03）都以公告为准。新闻 timeline 为空。",
+ "evidence": [
+  {
+   "key": "ann:1224957246",
+   "membership": "required",
+   "kind": "事实",
+   "tier": "A",
+   "role": "首次披露",
+   "disclosed": "2026-01-30",
+   "quote": "预计 2025 年年度归属于母公司所有者的净利润为-24,400.00 万元到-20,400.00 万元"
+  },
+  {
+   "key": "ann:1225019534",
+   "membership": "required",
+   "kind": "事实",
+   "tier": "A",
+   "role": "状态变化",
+   "disclosed": "2026-03-20",
+   "quote": "关于 2025 年度业绩预告相关事项监管工作函的回复公告",
+   "note": "上交所监管工作函（上证公函【2026】第 0386 号）的回复；收函公告本身不在公告列表里，回复是第一份监管问询证据"
+  },
+  {
+   "key": "ann:1225133682",
+   "membership": "required",
+   "kind": "事实",
+   "tier": "A",
+   "role": "状态变化",
+   "disclosed": "2026-04-21",
+   "quote": "中国证券监督管理委员会决定对公司立案",
+   "note": "立案告知书（证监立案字0032026005号），同日披露的第六次风险提示公告写明 4-18 送达"
+  },
+  {
+   "key": "ann:1225133701",
+   "membership": "required",
+   "kind": "事实",
+   "tier": "A",
+   "role": "状态变化",
+   "disclosed": "2026-04-21",
+   "quote": "公司存在通过虚构工程项目、提前确认进度等方式确认工程项目收入的情况",
+   "note": "上海证监局责令改正；认定 3-20 回复公告存在虚假记载、1-30 预告的营业收入不实"
+  },
+  {
+   "key": "ann:1225250617",
+   "membership": "required",
+   "kind": "事实",
+   "tier": "A",
+   "role": "更正",
+   "disclosed": "2026-04-29",
+   "quote": "更正后的业绩预告情况：预计 2025 年年度实现利润总额为-28,301.33 万元至-33,223.30 万元"
+  },
+  {
+   "key": "ann:1225267974",
+   "membership": "required",
+   "kind": "事实",
+   "tier": "A",
+   "role": "兑现",
+   "disclosed": "2026-04-30",
+   "quote": "公司2025年度归属于上市公司股东的净利润为-304,009,895.57元",
+   "equivalent": [
+    "ann:1225267992"
+   ],
+   "note": "年报摘要；年报全文 1225267992 视为同一条证据"
+  },
+  {
+   "key": "ann:1225268019",
+   "membership": "required",
+   "kind": "事实",
+   "tier": "A",
+   "role": "状态变化",
+   "disclosed": "2026-04-30",
+   "quote": "公司股票已触及财务类终止上市情形",
+   "note": "4-30 开市起停牌"
+  },
+  {
+   "key": "ann:1225268266",
+   "membership": "required",
+   "kind": "事实",
+   "tier": "A",
+   "role": "状态变化",
+   "disclosed": "2026-04-30",
+   "quote": "对你公司股票作出终止上市的决定",
+   "note": "上交所拟终止上市事先告知书，4-29 收到"
+  },
+  {
+   "key": "ann:1225310428",
+   "membership": "required",
+   "kind": "事实",
+   "tier": "A",
+   "role": "更正",
+   "disclosed": "2026-05-16",
+   "quote": "关于 2025 年度业绩预告相关事项监管工作函回复的更正公告",
+   "note": "按证监局责令改正重发的回复；删去了浙江耀盈相关项目，表格金额都改了，正文没有逐条列出改了什么"
+  },
+  {
+   "key": "ann:1225340564",
+   "membership": "required",
+   "kind": "事实",
+   "tier": "A",
+   "role": "状态变化",
+   "disclosed": "2026-05-30",
+   "quote": "上海证券交易所决定终止公司股票上市",
+   "note": "终止上市决定（[2026]118 号）5-29 收到"
+  },
+  {
+   "key": "ann:1225340563",
+   "membership": "required",
+   "kind": "事实",
+   "tier": "A",
+   "role": "状态变化",
+   "disclosed": "2026-05-30",
+   "quote": "退市整理期交易起始日为2026 年 6 月 8 日，预计最后交易日期为 2026 年 6 月 29 日",
+   "note": "退市整理期 15 个交易日，简称改为退市太和"
+  },
+  {
+   "key": "ann:1225396959",
+   "membership": "required",
+   "kind": "事实",
+   "tier": "A",
+   "role": "状态变化",
+   "disclosed": "2026-06-30",
+   "quote": "终止上市暨摘牌日为 2026 年 7 月 3 日"
+  },
+  {
+   "key": "ann:1224957248",
+   "membership": "optional",
+   "kind": "事实",
+   "tier": "A",
+   "role": "风险提示",
+   "disclosed": "2026-01-30",
+   "quote": "本次公告为公司第一次风险提示公告"
+  },
+  {
+   "key": "ann:1224957247",
+   "membership": "optional",
+   "kind": "事实",
+   "tier": "A",
+   "role": "其他",
+   "disclosed": "2026-01-30",
+   "quote": "我们尚不能确定太和水公司业绩预告中2025 年扣除与主营业务无关的业务收入和不具备商业实质的收入后的营业收入超过3亿元",
+   "note": "年审会计师预审计专项说明，和预告同日"
+  },
+  {
+   "key": "ann:1224979936",
+   "membership": "optional",
+   "kind": "事实",
+   "tier": "A",
+   "role": "风险提示",
+   "disclosed": "2026-02-13",
+   "quote": null
+  },
+  {
+   "key": "ann:1224999449",
+   "membership": "optional",
+   "kind": "事实",
+   "tier": "A",
+   "role": "风险提示",
+   "disclosed": "2026-03-07",
+   "quote": null
+  },
+  {
+   "key": "ann:1225021340",
+   "membership": "optional",
+   "kind": "事实",
+   "tier": "A",
+   "role": "风险提示",
+   "disclosed": "2026-03-21",
+   "quote": null
+  },
+  {
+   "key": "ann:1225021342",
+   "membership": "optional",
+   "kind": "事实",
+   "tier": "A",
+   "role": "监管问询回复",
+   "disclosed": "2026-03-21",
+   "quote": null,
+   "note": "会计师对监管工作函的回复，和公司回复配套"
+  },
+  {
+   "key": "ann:1225050170",
+   "membership": "optional",
+   "kind": "事实",
+   "tier": "A",
+   "role": "其他",
+   "disclosed": "2026-03-31",
+   "quote": null,
+   "note": "年报编制及审计进展"
+  },
+  {
+   "key": "ann:1225078640",
+   "membership": "optional",
+   "kind": "事实",
+   "tier": "A",
+   "role": "风险提示",
+   "disclosed": "2026-04-04",
+   "quote": null
+  },
+  {
+   "key": "ann:1225103012",
+   "membership": "optional",
+   "kind": "事实",
+   "tier": "A",
+   "role": "其他",
+   "disclosed": "2026-04-15",
+   "quote": "会计师认为部分本年新增的工程收入在手续齐备性、客户履约能力等方面存在瑕疵"
+  },
+  {
+   "key": "ann:1225133706",
+   "membership": "optional",
+   "kind": "事实",
+   "tier": "A",
+   "role": "风险提示",
+   "disclosed": "2026-04-21",
+   "quote": "2026 年 4 月 18 日，中国证券监督管理委员会上海监管局（以下简称“上海证监局”）向公司送达",
+   "note": "第六次风险提示；复述立案、责令改正和会计师 1.55 亿元扣除"
+  },
+  {
+   "key": "ann:1225133709",
+   "membership": "optional",
+   "kind": "事实",
+   "tier": "A",
+   "role": "其他",
+   "disclosed": "2026-04-21",
+   "quote": "初步扣除营业收入金额为1.55亿元",
+   "note": "年审会计师审计进展专项说明，落款 4-19"
+  },
+  {
+   "key": "ann:1225133678",
+   "membership": "optional",
+   "kind": "事实",
+   "tier": "A",
+   "role": "其他",
+   "disclosed": "2026-04-21",
+   "quote": null,
+   "note": "独立董事督促函"
+  },
+  {
+   "key": "ann:1225267992",
+   "membership": "optional",
+   "kind": "事实",
+   "tier": "A",
+   "role": "兑现",
+   "disclosed": "2026-04-30",
+   "quote": null,
+   "note": "年报全文，与摘要 1225267974 等同"
+  },
+  {
+   "key": "ann:1225267859",
+   "membership": "optional",
+   "kind": "事实",
+   "tier": "A",
+   "role": "兑现",
+   "disclosed": "2026-04-30",
+   "quote": null,
+   "note": "审计报告（带强调事项段的无保留意见）"
+  },
+  {
+   "key": "ann:1225268009",
+   "membership": "optional",
+   "kind": "事实",
+   "tier": "A",
+   "role": "其他",
+   "disclosed": "2026-04-30",
+   "quote": null,
+   "note": "内部控制审计报告（否定意见），是终止上市理由之一"
+  },
+  {
+   "key": "ann:1225268285",
+   "membership": "optional",
+   "kind": "事实",
+   "tier": "A",
+   "role": "监管问询",
+   "disclosed": "2026-04-30",
+   "quote": "关于上海太和水科技发展股份有限公司终止上市相关事项的监管工作函",
+   "note": "交易所终止上市相关事项监管工作函，4-29 收到；也可以算 required"
+  },
+  {
+   "key": "ann:1225267849",
+   "membership": "optional",
+   "kind": "事实",
+   "tier": "A",
+   "role": "其他",
+   "disclosed": "2026-04-30",
+   "quote": null
+  },
+  {
+   "key": "ann:1225268053",
+   "membership": "optional",
+   "kind": "事实",
+   "tier": "A",
+   "role": "其他",
+   "disclosed": "2026-04-30",
+   "quote": null,
+   "note": "营业收入扣除专项核查意见；巨潮标题把“太和水”写成“大和水”，正文没错"
+  },
+  {
+   "key": "ann:1225268000",
+   "membership": "optional",
+   "kind": "事实",
+   "tier": "A",
+   "role": "其他",
+   "disclosed": "2026-04-30",
+   "quote": null
+  },
+  {
+   "key": "ann:1225267978",
+   "membership": "optional",
+   "kind": "事实",
+   "tier": "A",
+   "role": "其他",
+   "disclosed": "2026-04-30",
+   "quote": null
+  },
+  {
+   "key": "ann:1225310364",
+   "membership": "optional",
+   "kind": "事实",
+   "tier": "A",
+   "role": "其他",
+   "disclosed": "2026-05-16",
+   "quote": "监管工作函回复更正公告于2026年5月16日完成整改并披露",
+   "note": "整改方案，说明 4-29 预告更正和 5-16 回复更正都是整改结果"
+  },
+  {
+   "key": "ann:1225355314",
+   "membership": "optional",
+   "kind": "事实",
+   "tier": "A",
+   "role": "风险提示",
+   "disclosed": "2026-06-06",
+   "quote": null
+  },
+  {
+   "key": "ann:1225360732",
+   "membership": "optional",
+   "kind": "事实",
+   "tier": "A",
+   "role": "风险提示",
+   "disclosed": "2026-06-10",
+   "quote": null,
+   "note": "退市整理期内的股票交易风险提示；表头简称仍写“*ST 太和”（6-08 起已是退市太和）"
+  },
+  {
+   "key": "ann:1225367756",
+   "membership": "optional",
+   "kind": "事实",
+   "tier": "A",
+   "role": "风险提示",
+   "disclosed": "2026-06-13",
+   "quote": null
+  },
+  {
+   "key": "ann:1225381510",
+   "membership": "optional",
+   "kind": "事实",
+   "tier": "A",
+   "role": "其他",
+   "disclosed": "2026-06-23",
+   "quote": "公司已聘请金圆统一证券有限公司作为公司的主办券商"
+  },
+  {
+   "key": "ann:1225381522",
+   "membership": "optional",
+   "kind": "事实",
+   "tier": "A",
+   "role": "风险提示",
+   "disclosed": "2026-06-23",
+   "quote": null
+  },
+  {
+   "key": "ann:1225384286",
+   "membership": "optional",
+   "kind": "事实",
+   "tier": "A",
+   "role": "风险提示",
+   "disclosed": "2026-06-24",
+   "quote": null
+  },
+  {
+   "key": "ann:1225386322",
+   "membership": "optional",
+   "kind": "事实",
+   "tier": "A",
+   "role": "风险提示",
+   "disclosed": "2026-06-25",
+   "quote": null
+  },
+  {
+   "key": "ann:1225388342",
+   "membership": "optional",
+   "kind": "事实",
+   "tier": "A",
+   "role": "风险提示",
+   "disclosed": "2026-06-26",
+   "quote": null
+  },
+  {
+   "key": "ann:1225391219",
+   "membership": "optional",
+   "kind": "事实",
+   "tier": "A",
+   "role": "风险提示",
+   "disclosed": "2026-06-27",
+   "quote": null
+  },
+  {
+   "key": "ann:1225375859",
+   "membership": "optional",
+   "kind": "事实",
+   "tier": "A",
+   "role": "其他",
+   "disclosed": "2026-06-18",
+   "quote": null
+  },
+  {
+   "key": "ann:1224985138",
+   "membership": "optional",
+   "kind": "事实",
+   "tier": "A",
+   "role": "风险提示",
+   "disclosed": "2026-02-27",
+   "quote": null
+  },
+  {
+   "key": "ann:1225031337",
+   "membership": "optional",
+   "kind": "事实",
+   "tier": "A",
+   "role": "风险提示",
+   "disclosed": "2026-03-26",
+   "quote": null
+  },
+  {
+   "key": "ann:1225039755",
+   "membership": "optional",
+   "kind": "事实",
+   "tier": "A",
+   "role": "风险提示",
+   "disclosed": "2026-03-28",
+   "quote": null
+  },
+  {
+   "key": "ann:1225071390",
+   "membership": "optional",
+   "kind": "事实",
+   "tier": "A",
+   "role": "风险提示",
+   "disclosed": "2026-04-02",
+   "quote": null
+  },
+  {
+   "key": "ann:1225084364",
+   "membership": "optional",
+   "kind": "事实",
+   "tier": "A",
+   "role": "风险提示",
+   "disclosed": "2026-04-09",
+   "quote": null
+  },
+  {
+   "key": "ann:1225107535",
+   "membership": "optional",
+   "kind": "事实",
+   "tier": "A",
+   "role": "风险提示",
+   "disclosed": "2026-04-16",
+   "quote": null
+  },
+  {
+   "key": "ann:1225110575",
+   "membership": "optional",
+   "kind": "事实",
+   "tier": "A",
+   "role": "风险提示",
+   "disclosed": "2026-04-17",
+   "quote": null
+  },
+  {
+   "key": "ann:1225113644",
+   "membership": "optional",
+   "kind": "事实",
+   "tier": "A",
+   "role": "风险提示",
+   "disclosed": "2026-04-17",
+   "quote": null
+  },
+  {
+   "key": "ann:1225147998",
+   "membership": "optional",
+   "kind": "事实",
+   "tier": "A",
+   "role": "风险提示",
+   "disclosed": "2026-04-23",
+   "quote": null
+  },
+  {
+   "key": "ann:1225211359",
+   "membership": "optional",
+   "kind": "事实",
+   "tier": "A",
+   "role": "风险提示",
+   "disclosed": "2026-04-28",
+   "quote": null
+  },
+  {
+   "key": "anomaly:2026-02-02|跌停",
+   "membership": "optional",
+   "kind": "推测",
+   "tier": "D",
+   "role": "异动归因",
+   "disclosed": "2026-02-02",
+   "quote": "公司预计2025年归母净利润亏损2.04亿元至2.44亿元"
+  },
+  {
+   "key": "anomaly:2026-02-26|涨停",
+   "membership": "optional",
+   "kind": "推测",
+   "tier": "D",
+   "role": "异动归因",
+   "disclosed": "2026-02-26",
+   "quote": "同比减亏27.05%至39.01%",
+   "note": "同比是解读方自己算的，和上年同期 -33,448.88 万元对得上"
+  },
+  {
+   "key": "anomaly:2026-03-02|跌停",
+   "membership": "optional",
+   "kind": "推测",
+   "tier": "D",
+   "role": "异动归因",
+   "disclosed": "2026-03-02",
+   "quote": null
+  },
+  {
+   "key": "anomaly:2026-03-03|跌停",
+   "membership": "optional",
+   "kind": "推测",
+   "tier": "D",
+   "role": "异动归因",
+   "disclosed": "2026-03-03",
+   "quote": null,
+   "note": "主要讲股东股份流拍，第 3 条复述退市风险"
+  },
+  {
+   "key": "anomaly:2026-03-20|跌停",
+   "membership": "optional",
+   "kind": "推测",
+   "tier": "D",
+   "role": "异动归因",
+   "disclosed": "2026-03-20",
+   "quote": null
+  },
+  {
+   "key": "anomaly:2026-03-23|跌停",
+   "membership": "optional",
+   "kind": "推测",
+   "tier": "D",
+   "role": "异动归因",
+   "disclosed": "2026-03-23",
+   "quote": null
+  },
+  {
+   "key": "anomaly:2026-03-24|跌停",
+   "membership": "optional",
+   "kind": "推测",
+   "tier": "D",
+   "role": "异动归因",
+   "disclosed": "2026-03-24",
+   "quote": null
+  },
+  {
+   "key": "anomaly:2026-03-25|跌停",
+   "membership": "optional",
+   "kind": "推测",
+   "tier": "D",
+   "role": "异动归因",
+   "disclosed": "2026-03-25",
+   "quote": null
+  },
+  {
+   "key": "anomaly:2026-03-26|跌停",
+   "membership": "optional",
+   "kind": "推测",
+   "tier": "D",
+   "role": "异动归因",
+   "disclosed": "2026-03-26",
+   "quote": "新增2.10亿元工程业务收入是否扣除尚需论证"
+  },
+  {
+   "key": "anomaly:2026-03-27|涨停",
+   "membership": "optional",
+   "kind": "推测",
+   "tier": "D",
+   "role": "异动归因",
+   "disclosed": "2026-03-27",
+   "quote": null
+  },
+  {
+   "key": "anomaly:2026-03-30|跌停",
+   "membership": "optional",
+   "kind": "推测",
+   "tier": "D",
+   "role": "异动归因",
+   "disclosed": "2026-03-30",
+   "quote": null
+  },
+  {
+   "key": "anomaly:2026-03-31|跌停",
+   "membership": "optional",
+   "kind": "推测",
+   "tier": "D",
+   "role": "异动归因",
+   "disclosed": "2026-03-31",
+   "quote": null
+  },
+  {
+   "key": "anomaly:2026-04-01|跌停",
+   "membership": "optional",
+   "kind": "推测",
+   "tier": "D",
+   "role": "异动归因",
+   "disclosed": "2026-04-01",
+   "quote": null
+  },
+  {
+   "key": "anomaly:2026-04-02|跌停",
+   "membership": "optional",
+   "kind": "推测",
+   "tier": "D",
+   "role": "异动归因",
+   "disclosed": "2026-04-02",
+   "quote": null
+  },
+  {
+   "key": "anomaly:2026-04-03|跌停",
+   "membership": "optional",
+   "kind": "推测",
+   "tier": "D",
+   "role": "异动归因",
+   "disclosed": "2026-04-03",
+   "quote": null
+  },
+  {
+   "key": "anomaly:2026-04-07|跌停",
+   "membership": "optional",
+   "kind": "推测",
+   "tier": "D",
+   "role": "异动归因",
+   "disclosed": "2026-04-07",
+   "quote": "新增工程业务营业收入3.05亿元是否扣除仍待论证",
+   "note": "把工程收入总额 3.05 亿当成了新增工程收入（原文是 2.10 亿），见冲突 G4"
+  },
+  {
+   "key": "anomaly:2026-04-08|涨停",
+   "membership": "optional",
+   "kind": "推测",
+   "tier": "D",
+   "role": "异动归因",
+   "disclosed": "2026-04-08",
+   "quote": null,
+   "accept_kind": [
+    "推测",
+    "观点"
+   ],
+   "note": "一半是行业消息（算力），一半复述公司公告，可收可不收"
+  },
+  {
+   "key": "anomaly:2026-04-09|跌停",
+   "membership": "optional",
+   "kind": "推测",
+   "tier": "D",
+   "role": "异动归因",
+   "disclosed": "2026-04-09",
+   "quote": null
+  },
+  {
+   "key": "anomaly:2026-04-13|涨停",
+   "membership": "optional",
+   "kind": "推测",
+   "tier": "D",
+   "role": "异动归因",
+   "disclosed": "2026-04-13",
+   "quote": null,
+   "accept_kind": [
+    "推测",
+    "观点"
+   ],
+   "note": "一半是行业消息（算力），一半复述公司公告，可收可不收"
+  },
+  {
+   "key": "anomaly:2026-04-15|涨停",
+   "membership": "optional",
+   "kind": "推测",
+   "tier": "D",
+   "role": "异动归因",
+   "disclosed": "2026-04-15",
+   "quote": null
+  },
+  {
+   "key": "anomaly:2026-04-16|涨停",
+   "membership": "optional",
+   "kind": "推测",
+   "tier": "D",
+   "role": "异动归因",
+   "disclosed": "2026-04-16",
+   "quote": null,
+   "accept_kind": [
+    "推测",
+    "观点"
+   ],
+   "note": "一半是行业消息（算力），一半复述公司公告，可收可不收"
+  },
+  {
+   "key": "anomaly:2026-04-17|涨停",
+   "membership": "optional",
+   "kind": "推测",
+   "tier": "D",
+   "role": "异动归因",
+   "disclosed": "2026-04-17",
+   "quote": null
+  },
+  {
+   "key": "anomaly:2026-04-20|跌停",
+   "membership": "optional",
+   "kind": "推测",
+   "tier": "D",
+   "role": "异动归因",
+   "disclosed": "2026-04-20",
+   "quote": "上交所4月19日对公司股票预计触及财务类终止上市情形出具相关事项的监管工作函",
+   "note": "公告列表里没有对应的 4-19 工作函公告，无法核实"
+  },
+  {
+   "key": "anomaly:2026-04-21|跌停",
+   "membership": "optional",
+   "kind": "推测",
+   "tier": "D",
+   "role": "异动归因",
+   "disclosed": "2026-04-21",
+   "quote": "公司因涉嫌信息披露违法违规被中国证监会立案"
+  },
+  {
+   "key": "anomaly:2026-04-22|跌停",
+   "membership": "optional",
+   "kind": "推测",
+   "tier": "D",
+   "role": "异动归因",
+   "disclosed": "2026-04-22",
+   "quote": null
+  },
+  {
+   "key": "anomaly:2026-04-23|跌停",
+   "membership": "optional",
+   "kind": "推测",
+   "tier": "D",
+   "role": "异动归因",
+   "disclosed": "2026-04-23",
+   "quote": null
+  },
+  {
+   "key": "anomaly:2026-04-24|跌停",
+   "membership": "optional",
+   "kind": "推测",
+   "tier": "D",
+   "role": "异动归因",
+   "disclosed": "2026-04-24",
+   "quote": null
+  },
+  {
+   "key": "anomaly:2026-04-27|跌停",
+   "membership": "optional",
+   "kind": "推测",
+   "tier": "D",
+   "role": "异动归因",
+   "disclosed": "2026-04-27",
+   "quote": null
+  },
+  {
+   "key": "anomaly:2026-04-28|跌停",
+   "membership": "optional",
+   "kind": "推测",
+   "tier": "D",
+   "role": "异动归因",
+   "disclosed": "2026-04-28",
+   "quote": "初步扣除营业收入金额为1.55亿元"
+  },
+  {
+   "key": "anomaly:2026-04-29|跌停",
+   "membership": "optional",
+   "kind": "推测",
+   "tier": "D",
+   "role": "异动归因",
+   "disclosed": "2026-04-29",
+   "quote": null
+  },
+  {
+   "key": "anomaly:2026-06-08|大跌",
+   "membership": "optional",
+   "kind": "推测",
+   "tier": "D",
+   "role": "异动归因",
+   "disclosed": "2026-06-08",
+   "quote": "公司股票于2026年6月8日进入退市整理期交易"
+  },
+  {
+   "key": "anomaly:2026-06-09|涨停",
+   "membership": "optional",
+   "kind": "推测",
+   "tier": "D",
+   "role": "异动归因",
+   "disclosed": "2026-06-09",
+   "quote": null
+  },
+  {
+   "key": "anomaly:2026-06-10|跌停",
+   "membership": "optional",
+   "kind": "推测",
+   "tier": "D",
+   "role": "异动归因",
+   "disclosed": "2026-06-10",
+   "quote": null
+  },
+  {
+   "key": "anomaly:2026-06-11|大跌",
+   "membership": "optional",
+   "kind": "推测",
+   "tier": "D",
+   "role": "异动归因",
+   "disclosed": "2026-06-11",
+   "quote": null
+  },
+  {
+   "key": "anomaly:2026-06-18|大涨",
+   "membership": "optional",
+   "kind": "推测",
+   "tier": "D",
+   "role": "异动归因",
+   "disclosed": "2026-06-18",
+   "quote": "公司股票将于2026年6月26日起进入退市整理期交易",
+   "note": "日期、交易所都和公告不符（像别家公司的内容），见冲突 G2"
+  },
+  {
+   "key": "anomaly:2026-06-22|大跌",
+   "membership": "optional",
+   "kind": "推测",
+   "tier": "D",
+   "role": "异动归因",
+   "disclosed": "2026-06-22",
+   "quote": "据2026年6月8日特别处理及名称变更公告",
+   "note": "公告列表里没有 6-08 的名称变更公告，改简称是 5-30 公告里说的；第 2 条讲 2026 一季报"
+  },
+  {
+   "key": "anomaly:2026-06-29|大涨",
+   "membership": "optional",
+   "kind": "推测",
+   "tier": "D",
+   "role": "异动归因",
+   "disclosed": "2026-06-29",
+   "quote": "据2026年5月23日公告，公司股票于2026年6月1日进入退市整理期",
+   "note": "日期错，见冲突 G3"
+  }
+ ],
+ "exclude": [
+  {
+   "key": "ann:1225268016",
+   "reason": "2026 年第一季度报告，报告期不同"
+  },
+  {
+   "key": "ann:1224925354",
+   "reason": "股东股份司法拍卖，别的事件"
+  },
+  {
+   "key": "ann:1224990635",
+   "reason": "股东股份司法拍卖流拍，别的事件"
+  },
+  {
+   "key": "ann:1224993756",
+   "reason": "股东股份第二次司法拍卖，别的事件"
+  },
+  {
+   "key": "ann:1225050166",
+   "reason": "股东股份第二次司法拍卖流拍，别的事件"
+  },
+  {
+   "key": "ann:1224948987",
+   "reason": "5% 以上股东减持结果，别的事件"
+  },
+  {
+   "key": "ann:1224950854",
+   "reason": "5% 以上股东减持计划，别的事件"
+  },
+  {
+   "key": "ann:1225328939",
+   "reason": "5% 以上股东减持结果，别的事件"
+  },
+  {
+   "key": "ann:1225355325",
+   "reason": "董事长离任，别的事件"
+  },
+  {
+   "key": "ann:1225268058",
+   "reason": "2026 年度融资额度，别的事件"
+  },
+  {
+   "key": "ann:1225267873",
+   "reason": "董事及高管薪酬方案，别的事件"
+  },
+  {
+   "key": "anomaly:2025-12-05|涨停",
+   "reason": "事件开始前；归因雄安短名单和算力合同"
+  },
+  {
+   "key": "anomaly:2025-12-12|涨停",
+   "reason": "事件开始前；归因弥补亏损议案"
+  },
+  {
+   "key": "anomaly:2025-12-30|涨停",
+   "reason": "事件开始前；归因股东股份司法拍卖和 EOD 项目"
+  },
+  {
+   "key": "anomaly:2026-01-26|涨停",
+   "reason": "事件开始前；只讲算力合同和主营"
+  }
+ ],
+ "claims": [
+  {
+   "key": "total_profit",
+   "label": "利润总额",
+   "required": true,
+   "unit": "万元",
+   "versions": [
+    {
+     "evidence": "ann:1224957246",
+     "low": -24253.0,
+     "high": -20253.0,
+     "unit": "万元",
+     "basis": "预告",
+     "quote": "预计 2025 年年度实现利润总额-24,253.00 万元到-20,253.00 万元"
+    },
+    {
+     "evidence": "ann:1225250617",
+     "low": -33223.3,
+     "high": -28301.33,
+     "unit": "万元",
+     "basis": "预告更正",
+     "quote": "预计 2025 年年度实现利润总额为-28,301.33 万元至-33,223.30 万元",
+     "note": "原文区间先写上限后写下限"
+    },
+    {
+     "evidence": "ann:1225267974",
+     "low": -307623126.0,
+     "high": -307623126.0,
+     "unit": "元",
+     "basis": "经审计年报",
+     "quote": "利润总额         -307,623,126.00",
+     "alt_evidence": [
+      "ann:1225267992"
+     ]
+    }
+   ]
+  },
+  {
+   "key": "net_profit_parent",
+   "label": "归母净利润",
+   "required": true,
+   "unit": "万元",
+   "versions": [
+    {
+     "evidence": "ann:1224957246",
+     "low": -24400.0,
+     "high": -20400.0,
+     "unit": "万元",
+     "basis": "预告",
+     "quote": "预计 2025 年年度归属于母公司所有者的净利润为-24,400.00 万元到-20,400.00 万元"
+    },
+    {
+     "evidence": "ann:1225250617",
+     "low": -32833.07,
+     "high": -27968.91,
+     "unit": "万元",
+     "basis": "预告更正",
+     "quote": "预计 2025 年年度实现归属于母公司所有者的净利润为-27,968.91 万元至-32,833.07 万元"
+    },
+    {
+     "evidence": "ann:1225267974",
+     "low": -304009895.57,
+     "high": -304009895.57,
+     "unit": "元",
+     "basis": "经审计年报",
+     "quote": "公司2025年度归属于上市公司股东的净利润为-304,009,895.57元",
+     "alt_evidence": [
+      "ann:1225267992"
+     ]
+    }
+   ]
+  },
+  {
+   "key": "net_profit_deducted",
+   "label": "扣非归母净利润",
+   "required": true,
+   "unit": "万元",
+   "versions": [
+    {
+     "evidence": "ann:1224957246",
+     "low": -22000.0,
+     "high": -18000.0,
+     "unit": "万元",
+     "basis": "预告",
+     "quote": "归属于母公司所有者的扣除非经常性损益后的净利润为-22,000.00 万元到-18,000.00 万元"
+    },
+    {
+     "evidence": "ann:1225250617",
+     "low": -29983.74,
+     "high": -25541.7,
+     "unit": "万元",
+     "basis": "预告更正",
+     "quote": "归属于母公司所有者的扣除非经常性损益后的净利润-25,541.70 万元至-29,983.74 万元"
+    },
+    {
+     "evidence": "ann:1225267974",
+     "low": -277627221.33,
+     "high": -277627221.33,
+     "unit": "元",
+     "basis": "经审计年报",
+     "quote": "归属于上市公司股东的扣除非经常性损益的净利润为-277,627,221.33元",
+     "alt_evidence": [
+      "ann:1225267992"
+     ]
+    }
+   ]
+  },
+  {
+   "key": "revenue",
+   "label": "营业收入",
+   "required": true,
+   "unit": "万元",
+   "versions": [
+    {
+     "evidence": "ann:1224957246",
+     "low": 38000.0,
+     "high": 40000.0,
+     "unit": "万元",
+     "basis": "预告",
+     "quote": "预计 2025 年年度营业收入为 38,000.00 万元到 40,000.00 万元"
+    },
+    {
+     "evidence": "ann:1225250617",
+     "low": 9640.63,
+     "high": 11317.26,
+     "unit": "万元",
+     "basis": "预告更正",
+     "quote": "预计 2025 年年度实现营业收入 9,640.63 万元至 11,317.26 万元"
+    },
+    {
+     "evidence": "ann:1225267974",
+     "low": 104789439.81,
+     "high": 104789439.81,
+     "unit": "元",
+     "basis": "经审计年报",
+     "quote": "营业收入          104,789,439.81",
+     "alt_evidence": [
+      "ann:1225267992"
+     ]
+    }
+   ]
+  },
+  {
+   "key": "revenue_deducted",
+   "label": "扣除后营业收入",
+   "required": true,
+   "unit": "万元",
+   "versions": [
+    {
+     "evidence": "ann:1224957246",
+     "low": 37792.75,
+     "high": 39792.75,
+     "unit": "万元",
+     "basis": "预告",
+     "quote": "不具备商业实质的收入后的营业收入为 37,792.75 万元到 39,792.75 万元"
+    },
+    {
+     "evidence": "ann:1225250617",
+     "low": 9452.4,
+     "high": 11096.29,
+     "unit": "万元",
+     "basis": "预告更正",
+     "quote": "不具备商业实质的收入后的营业收入为 9,452.40 万元到 11,096.29 万元"
+    },
+    {
+     "evidence": "ann:1225267974",
+     "low": 102743407.91,
+     "high": 102743407.91,
+     "unit": "元",
+     "basis": "经审计年报",
+     "quote": "和不具备商业实      102,743,407.91",
+     "alt_evidence": [
+      "ann:1225267992"
+     ]
+    }
+   ]
+  },
+  {
+   "key": "net_assets",
+   "label": "期末归母净资产",
+   "required": false,
+   "unit": "万元",
+   "versions": [
+    {
+     "evidence": "ann:1224957246",
+     "low": 69700.0,
+     "high": 83490.0,
+     "unit": "万元",
+     "basis": "预告",
+     "quote": "预计 2025 年末净资产为 69,700.00 万元到 83,490.00 万元"
+    },
+    {
+     "evidence": "ann:1225250617",
+     "low": 61582.78,
+     "high": 72292.82,
+     "unit": "万元",
+     "basis": "预告更正",
+     "quote": "预计 2025 年末净资产为 61,582.78 万元到 72,292.82 万元"
+    },
+    {
+     "evidence": "ann:1225267974",
+     "low": 670558469.56,
+     "high": 670558469.56,
+     "unit": "元",
+     "basis": "经审计年报",
+     "quote": "归属于上市公司             670,558,469.56",
+     "note": "预告的上年同期期末净资产 97,244.23 万元等于年报的 2024 年归母净资产，所以按归母净资产对",
+     "alt_evidence": [
+      "ann:1225267992"
+     ]
+    }
+   ],
+   "aliases": [
+    "净资产"
+   ]
+  }
+ ],
+ "supersessions": [
+  {
+   "from": "ann:1224957246",
+   "to": "ann:1225250617",
+   "type": "更正",
+   "quote": "（二）更正前业绩预告情况："
+  },
+  {
+   "from": "ann:1225250617",
+   "to": "ann:1225267974",
+   "type": "兑现",
+   "quote": "公司2025年度归属于上市公司股东的净利润为-304,009,895.57元",
+   "accept_targets": [
+    "ann:1225250617",
+    "ann:1224957246"
+   ]
+  },
+  {
+   "from": "ann:1225019534",
+   "to": "ann:1225133701",
+   "type": "否认",
+   "quote": "导致《回复公告》存在虚假记载，《业绩预告》披露的预计实现营业收入金额不实",
+   "accept_targets": [
+    "ann:1225019534",
+    "ann:1224957246"
+   ],
+   "note": "监管认定公司回复和预告不实；也可以理解成“更正”"
+  },
+  {
+   "from": "ann:1225019534",
+   "to": "ann:1225310428",
+   "type": "更正",
+   "quote": "关于 2025 年度业绩预告相关事项监管工作函回复的更正公告"
+  },
+  {
+   "from": "ann:1225268266",
+   "to": "ann:1225340564",
+   "type": "推进",
+   "quote": "上海证券交易所决定终止公司股票上市",
+   "accept_targets": [
+    "ann:1225268266",
+    "ann:1225268019",
+    "ann:1225268285"
+   ]
+  },
+  {
+   "from": "ann:1225340564",
+   "to": "ann:1225396959",
+   "type": "推进",
+   "quote": "上海证券交易所将在 2026 年 7 月 3 日对公司股票予以摘牌，公司股票终止上市",
+   "accept_targets": [
+    "ann:1225340564",
+    "ann:1225340563"
+   ]
+  }
+ ],
+ "status_checkpoints": [
+  {
+   "as_of": "2026-01-30",
+   "state": "已预告",
+   "accept_states": [
+    "已预告",
+    "风险警示"
+   ],
+   "evidence": "ann:1224957246",
+   "quote": "2025 年度业绩预亏暨风险提示公告",
+   "note": "公司 2025-04-29 起已是 *ST，所以也接受“风险警示”"
+  },
+  {
+   "as_of": "2026-03-19",
+   "state": "已预告",
+   "accept_states": [
+    "已预告",
+    "风险警示"
+   ],
+   "evidence": "ann:1224957246",
+   "quote": "2025 年度业绩预亏暨风险提示公告",
+   "note": "第一次状态变化（3-20 监管工作函回复）前一天"
+  },
+  {
+   "as_of": "2026-03-20",
+   "state": "监管问询",
+   "evidence": "ann:1225019534",
+   "quote": "关于 2025 年度业绩预告相关事项监管工作函的回复公告"
+  },
+  {
+   "as_of": "2026-04-21",
+   "state": "立案",
+   "accept_states": [
+    "立案",
+    "监管问询"
+   ],
+   "evidence": "ann:1225133682",
+   "quote": "中国证券监督管理委员会决定对公司立案",
+   "note": "同日还有证监局责令改正决定书"
+  },
+  {
+   "as_of": "2026-04-28",
+   "state": "立案",
+   "accept_states": [
+    "立案",
+    "监管问询"
+   ],
+   "evidence": "ann:1225133682",
+   "quote": "中国证券监督管理委员会决定对公司立案",
+   "note": "预告更正前一天，查回放有没有提前用到更正"
+  },
+  {
+   "as_of": "2026-04-29",
+   "state": "预告更正",
+   "evidence": "ann:1225250617",
+   "quote": "关于 2025 年度业绩预告的更正及 2025 年年度报告"
+  },
+  {
+   "as_of": "2026-04-30",
+   "state": "已兑现",
+   "accept_states": [
+    "已兑现",
+    "终止上市",
+    "监管问询",
+    "风险警示"
+   ],
+   "evidence": "ann:1225267974",
+   "quote": "公司2025年度归属于上市公司股东的净利润为-304,009,895.57元",
+   "note": "同日还有触及终止上市情形暨停牌、事先告知书、终止上市相关监管工作函；此时只是拟终止，正式决定在 5-29"
+  },
+  {
+   "as_of": "2026-05-30",
+   "state": "终止上市",
+   "evidence": "ann:1225340564",
+   "quote": "上海证券交易所决定终止公司股票上市"
+  },
+  {
+   "as_of": "2026-06-30",
+   "state": "终止上市",
+   "evidence": "ann:1225396959",
+   "quote": "终止上市暨摘牌日为 2026 年 7 月 3 日",
+   "note": "退市整理期 6-08 至 6-29，摘牌日 7-03（晚于公告日）"
+  }
+ ],
+ "conflicts": [
+  {
+   "id": "G1",
+   "required": true,
+   "evidence": [
+    "ann:1225019534",
+    "ann:1225133701"
+   ],
+   "match_any": [
+    "虚假记载",
+    "虚构工程项目",
+    "提前确认进度"
+   ],
+   "text": "3-20 公司回复监管工作函称四季度确认收入的项目“不存在提前确认收入”；4-21 上海证监局认定公司虚构工程项目、提前确认进度，回复公告存在虚假记载，1-30 预告的营业收入不实。",
+   "resolved_by": "ann:1225133701",
+   "resolution": "监管认定；公司 4-29 更正预告、5-16 更正回复",
+   "quotes": [
+    [
+     "ann:1225019534",
+     "上述项目不存在提前确认收入或不符合收入确认的情形"
+    ],
+    [
+     "ann:1225133701",
+     "公司存在通过虚构工程项目、提前确认进度等方式确认工程项目收入的情况"
+    ]
+   ]
+  },
+  {
+   "id": "G2",
+   "required": false,
+   "evidence": [
+    "anomaly:2026-06-18|大涨",
+    "ann:1225340563"
+   ],
+   "match_any": [
+    "6月26日",
+    "7月16日",
+    "深交所"
+   ],
+   "text": "6-18 异动解读说退市整理期 6-26 开始、最后交易日 7-16、在深交所风险警示板交易；公告是 6-08 开始、6-29 最后交易日、上交所。",
+   "resolved_by": "ann:1225340563",
+   "resolution": "以公告为准",
+   "quotes": [
+    [
+     "anomaly:2026-06-18|大涨",
+     "公司股票将于2026年6月26日起进入退市整理期交易"
+    ],
+    [
+     "ann:1225340563",
+     "退市整理期交易起始日为2026 年 6 月 8 日，预计最后交易日期为 2026 年 6 月 29 日"
+    ]
+   ]
+  },
+  {
+   "id": "G3",
+   "required": false,
+   "evidence": [
+    "anomaly:2026-06-29|大涨",
+    "ann:1225340563"
+   ],
+   "match_any": [
+    "5月23日",
+    "6月1日"
+   ],
+   "text": "6-29 异动解读说“据 5-23 公告，6-01 进入退市整理期”；公告是 5-30 披露、6-08 进入。",
+   "resolved_by": "ann:1225340563",
+   "resolution": "以公告为准",
+   "quotes": [
+    [
+     "anomaly:2026-06-29|大涨",
+     "据2026年5月23日公告，公司股票于2026年6月1日进入退市整理期"
+    ],
+    [
+     "ann:1225340563",
+     "本公司股票于 2026 年 6 月 8 日进入退市整理期交易"
+    ]
+   ]
+  },
+  {
+   "id": "G4",
+   "required": false,
+   "evidence": [
+    "anomaly:2026-04-07|跌停",
+    "ann:1225019534"
+   ],
+   "match_any": [
+    "3.05"
+   ],
+   "text": "4-07 异动解读把“新增工程业务营业收入”写成 3.05 亿元；监管工作函回复里新增工程业务收入是 2.10 亿元，3.05 亿元是全年工程项目收入。",
+   "resolved_by": "ann:1225019534",
+   "resolution": "以公告为准",
+   "quotes": [
+    [
+     "anomaly:2026-04-07|跌停",
+     "新增工程业务营业收入3.05亿元是否扣除仍待论证"
+    ],
+    [
+     "ann:1225019534",
+     "2025 年，公司新增工程业务营业收入 2.10 亿元"
+    ]
+   ]
+  },
+  {
+   "id": "G5",
+   "required": false,
+   "evidence": [
+    "ann:1225250617",
+    "ann:1224957246"
+   ],
+   "match_any": [
+    "3.05",
+    "调减营业收入"
+   ],
+   "text": "4-29 更正公告说营业收入“调减合计约 3.05 亿元”，但更正前后营业收入区间（38,000–40,000 万元 → 9,640.63–11,317.26 万元）只差约 2.84–2.87 亿元。",
+   "resolved_by": null,
+   "resolution": "未解决；公司没有解释差额",
+   "quotes": [
+    [
+     "ann:1225250617",
+     "相应调减营业收入合计约 3.05 亿元"
+    ],
+    [
+     "ann:1225250617",
+     "预计 2025 年年度实现营业收入 9,640.63 万元至 11,317.26 万元"
+    ],
+    [
+     "ann:1224957246",
+     "预计 2025 年年度营业收入为 38,000.00 万元到 40,000.00 万元"
+    ]
+   ]
+  },
+  {
+   "id": "G6",
+   "required": false,
+   "added_after_adjudication": true,
+   "evidence": [
+    "ann:1225019534",
+    "ann:1225310428"
+   ],
+   "match_any": [
+    "15 个",
+    "3 个",
+    "总额法",
+    "净额法"
+   ],
+   "text": "3-20 回复写新增 15 个市政工程项目、按总额法确认收入；5-16 更正公告改为 3 个项目、按净额法确认。",
+   "resolved_by": "ann:1225310428",
+   "resolution": "公司更正",
+   "quotes": [
+    [
+     "ann:1225019534",
+     "新增 15 个市政工程类项目通过竞争性谈判合作"
+    ],
+    [
+     "ann:1225310428",
+     "新增 3 个市政工程类项目通过竞争性谈判合作"
+    ]
+   ]
+  },
+  {
+   "id": "G7",
+   "required": false,
+   "added_after_adjudication": true,
+   "evidence": [
+    "ann:1225019534",
+    "ann:1225310428"
+   ],
+   "match_any": [
+    "1.51",
+    "1.65",
+    "5,208.64",
+    "1,995.69"
+   ],
+   "text": "母公司销售商品、提供劳务收到的现金和市政工程回款：3-20 回复写 1.51 亿元、5,208.64 万元，5-16 更正为 1.65 亿元、1,995.69 万元。",
+   "resolved_by": "ann:1225310428",
+   "resolution": "公司更正",
+   "quotes": [
+    [
+     "ann:1225019534",
+     "销售商品、提供劳务收到现金达 1.51 亿元"
+    ],
+    [
+     "ann:1225310428",
+     "销售商品、提供劳务收到现金达 1.65 亿元"
+    ]
+   ]
+  },
+  {
+   "id": "G8",
+   "required": false,
+   "added_after_adjudication": true,
+   "evidence": [
+    "ann:1225019534",
+    "ann:1225310428"
+   ],
+   "match_any": [
+    "备用金",
+    "内部控制失效"
+   ],
+   "text": "备用金：3-20 回复称不存在内部控制失效，5-16 更正称是前财务负责人或原实控人指令员工借支公司资金。",
+   "resolved_by": "ann:1225310428",
+   "resolution": "公司更正",
+   "quotes": [
+    [
+     "ann:1225019534",
+     "不存在内部控制失效情形"
+    ],
+    [
+     "ann:1225310428",
+     "系公司前财务负责人或原实际控制人指令员工通过员工备用金形式借支公司资金"
+    ]
+   ]
+  },
+  {
+   "id": "G9",
+   "required": false,
+   "added_after_adjudication": true,
+   "evidence": [
+    "ann:1225211359",
+    "ann:1225250617"
+   ],
+   "match_any": [
+    "不存在需要更正"
+   ],
+   "text": "4-28 异常波动公告声明前期披露不存在需要更正之处，4-29 公司发布业绩预告更正。",
+   "resolved_by": "ann:1225250617",
+   "resolution": "公司更正",
+   "quotes": [
+    [
+     "ann:1225211359",
+     "公司前期披露的信息不存在需要更正、补充之处"
+    ]
+   ]
+  }
+ ],
+ "rejected_conflicts": [
+  {
+   "match_any": [
+    "4 月 29 日",
+    "4月29日"
+   ],
+   "evidence": [
+    "ann:1225340564",
+    "ann:1225268019",
+    "ann:1225250617"
+   ],
+   "reason": "年报 4-29 晚上网、巨潮记 4-30，是披露时间精度不同，不算冲突（抽取说明第 18 条）"
+  }
+ ],
+ "review_note": "评测窗口复核（2026-11-11）：G2、G3 降为可选（涉及的异动解读是可选证据，抽取没收就不该要求找出冲突）；看到抽取后补入 G6–G9（3-20 回复与 5-16 更正、4-28 声明与 4-29 更正），记一条误报规则（4-29 对 4-30）；期末净资产加别名。"
+}

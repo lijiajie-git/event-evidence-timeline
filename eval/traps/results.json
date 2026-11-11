@@ -1,13 +1,13 @@
 {
- "generated_at": "2026-11-11T19:39:00+00:00",
+ "generated_at": "2026-11-11T19:51:41+00:00",
  "command": "python3 eval/score.py",
  "baseline": {
   "event": "600187-2025A-forecast",
   "build_exit": 0,
   "compliance_exit": 0,
   "output": [
-   "OK 3 个事件; 36 条证据",
-   "合规检查通过：3 个事件，未发现买卖建议或涨跌预测用语"
+   "OK 9 个事件; 95 条证据",
+   "合规检查通过：9 个事件，未发现买卖建议或涨跌预测用语"
   ]
  },
  "note": "T12 只测规则部分；抽取模型读到注入文本会不会被带偏，需要主窗口用注入后的文本重跑一次抽取才知道，本评测没有测。",
@@ -94,13 +94,6 @@
      "what": "漏版本"
     },
     {
-     "_m": "数值抽取精确匹配",
-     "claim": "net_profit_parent",
-     "code": "E2c",
-     "got": "-13000~-10400 万元（ann:1225230061）",
-     "what": "金标没有的版本"
-    },
-    {
      "_m": "版本链",
      "claim": "net_profit_parent",
      "code": "E2b",
@@ -119,8 +112,8 @@
    "expected": "应判为挂错：首次披露的数字出处应是首次公告，不是更正公告",
    "pipeline": "组装退出码 0，合规检查退出码 0（放行）",
    "pipeline_output": [
-    "OK 3 个事件; 36 条证据",
-    "合规检查通过：3 个事件，未发现买卖建议或涨跌预测用语"
+    "OK 9 个事件; 95 条证据",
+    "合规检查通过：9 个事件，未发现买卖建议或涨跌预测用语"
    ],
    "eval_detects": true,
    "eval_new_failures": [
@@ -141,13 +134,6 @@
      "expect": "-13000~-10400 万元（ann:1224956497）",
      "version": 1,
      "what": "漏版本"
-    },
-    {
-     "_m": "数值抽取精确匹配",
-     "claim": "net_profit_parent",
-     "code": "E2c",
-     "got": "-13000~-10400 万元（ann:1225121518）",
-     "what": "金标没有的版本"
     },
     {
      "_m": "版本链",
@@ -217,8 +203,8 @@
     }
    ],
    "verdict": "管线拦住",
-   "previous_verdict": "管线放行，评测发现（已知缺口）",
-   "change": "之前放行、现在拦住"
+   "previous_verdict": "管线拦住",
+   "change": "没变"
   },
   {
    "id": "T05",
@@ -261,8 +247,8 @@
     }
    ],
    "verdict": "管线拦住",
-   "previous_verdict": "管线放行，评测发现（已知缺口）",
-   "change": "之前放行、现在拦住"
+   "previous_verdict": "管线拦住",
+   "change": "没变"
   },
   {
    "id": "T06",
@@ -271,8 +257,8 @@
    "expected": "应拦住：结论里的年份在所挂证据里找不到；报告期和金标不符",
    "pipeline": "组装退出码 0，合规检查退出码 0（放行）",
    "pipeline_output": [
-    "OK 3 个事件; 36 条证据",
-    "合规检查通过：3 个事件，未发现买卖建议或涨跌预测用语"
+    "OK 9 个事件; 95 条证据",
+    "合规检查通过：9 个事件，未发现买卖建议或涨跌预测用语"
    ],
    "eval_detects": true,
    "eval_new_failures": [
@@ -328,8 +314,8 @@
     }
    ],
    "verdict": "管线拦住",
-   "previous_verdict": "管线放行，评测发现（已知缺口）",
-   "change": "之前放行、现在拦住"
+   "previous_verdict": "管线拦住",
+   "change": "没变"
   },
   {
    "id": "T08",
@@ -363,8 +349,8 @@
    "expected": "应拦住：报告期不同，不该合并",
    "pipeline": "组装退出码 0，合规检查退出码 0（放行）",
    "pipeline_output": [
-    "OK 3 个事件; 37 条证据",
-    "合规检查通过：3 个事件，未发现买卖建议或涨跌预测用语"
+    "OK 9 个事件; 96 条证据",
+    "合规检查通过：9 个事件，未发现买卖建议或涨跌预测用语"
    ],
    "eval_detects": true,
    "eval_new_failures": [
@@ -449,8 +435,8 @@
     }
    ],
    "verdict": "管线拦住",
-   "previous_verdict": "管线放行，评测发现（已知缺口）",
-   "change": "之前放行、现在拦住"
+   "previous_verdict": "管线拦住",
+   "change": "没变"
   },
   {
    "id": "T12",
@@ -459,8 +445,8 @@
    "expected": "规则部分不受影响：输出应与基线一致",
    "pipeline": "除正文指纹外，输出与基线一致（规则未受影响）；被改正文的证据 ['e1'] 指纹变了，重抓比对能发现正文被动过",
    "pipeline_output": [
-    "OK 3 个事件; 36 条证据",
-    "合规检查通过：3 个事件，未发现买卖建议或涨跌预测用语"
+    "OK 9 个事件; 95 条证据",
+    "合规检查通过：9 个事件，未发现买卖建议或涨跌预测用语"
    ],
    "eval_detects": false,
    "eval_new_failures": [],
@@ -487,8 +473,8 @@
     }
    ],
    "verdict": "管线拦住",
-   "previous_verdict": "管线放行，评测发现（已知缺口）",
-   "change": "之前放行、现在拦住"
+   "previous_verdict": "管线拦住",
+   "change": "没变"
   },
   {
    "id": "T14",
@@ -497,7 +483,7 @@
    "expected": "合规检查拒绝",
    "pipeline": "组装退出码 0，合规检查退出码 1（拒绝）",
    "pipeline_output": [
-    "OK 3 个事件; 36 条证据",
+    "OK 9 个事件; 95 条证据",
     "600187-2025A-forecast 2026-08-20 inferences: 出现「买入」→ 建议买入，等待摘帽。"
    ],
    "eval_detects": true,
@@ -520,7 +506,7 @@
    "expected": "合规检查拒绝",
    "pipeline": "组装退出码 0，合规检查退出码 1（拒绝）",
    "pipeline_output": [
-    "OK 3 个事件; 36 条证据",
+    "OK 9 个事件; 95 条证据",
     "600187-2025A-forecast 2026-08-20 inferences: 出现「逢低」→ 短期利空出尽，可逢低布局。",
     "600187-2025A-forecast 2026-08-20 inferences: 出现「布局」→ 短期利空出尽，可逢低布局。"
    ],
@@ -540,8 +526,8 @@
     }
    ],
    "verdict": "管线拦住",
-   "previous_verdict": "管线放行，评测发现（已知缺口）",
-   "change": "之前放行、现在拦住"
+   "previous_verdict": "管线拦住",
+   "change": "没变"
   },
   {
    "id": "T16",
@@ -588,8 +574,8 @@
     }
    ],
    "verdict": "管线拦住",
-   "previous_verdict": "管线放行，评测发现（已知缺口）",
-   "change": "之前放行、现在拦住"
+   "previous_verdict": "管线拦住",
+   "change": "没变"
   },
   {
    "id": "T18",
@@ -619,8 +605,8 @@
     }
    ],
    "verdict": "管线拦住",
-   "previous_verdict": "管线放行，评测发现（已知缺口）",
-   "change": "之前放行、现在拦住"
+   "previous_verdict": "管线拦住",
+   "change": "没变"
   },
   {
    "id": "T19",
@@ -629,8 +615,8 @@
    "expected": "应拦住：版本链缺一环",
    "pipeline": "组装退出码 0，合规检查退出码 0（放行）",
    "pipeline_output": [
-    "OK 3 个事件; 36 条证据",
-    "合规检查通过：3 个事件，未发现买卖建议或涨跌预测用语"
+    "OK 9 个事件; 95 条证据",
+    "合规检查通过：9 个事件，未发现买卖建议或涨跌预测用语"
    ],
    "eval_detects": true,
    "eval_new_failures": [

@@ -1,0 +1,708 @@
+{
+ "id": "920685-2026-restructuring",
+ "name": "新芝生物发行股份及支付现金购买清博华 100% 股权：停牌筹划、预案、进展、终止",
+ "code": "920685",
+ "period": null,
+ "event_type": "重大资产重组",
+ "labeled_by": "Claude Opus 5.5（模型标注，不是人工标注）",
+ "labeled_at": "2026-11-11",
+ "blind": "标注时没有打开 pipeline/extracted/、data/events.json、data/qa.json、data/audit*.json、eval/report.*、eval/history.json、eval/traps/、eval/adjudication.md、web/、workbench.html；只读了公告原文和本地新闻、异动原始数据。",
+ "sources_read": [
+  "data/raw/text/1225425881.txt",
+  "data/raw/text/1225437257.txt",
+  "data/raw/text/1225446923.txt",
+  "data/raw/text/1225446924.txt",
+  "data/raw/text/1225446926.txt",
+  "data/raw/text/1225446922.txt",
+  "data/raw/text/1225446946.txt",
+  "data/raw/text/1225446945.txt",
+  "data/raw/text/1225526696.txt",
+  "data/raw/text/1225570631.txt",
+  "data/raw/text/1225576712.txt",
+  "data/raw/text/1225588269.txt",
+  "data/raw/text/1225514969.txt",
+  "data/raw/text/1225221685.txt",
+  "data/raw/news/920685.BJ.json（timeline 300 条，其中 7 月以后与重组有关的约 25 条；异动 3 条）"
+ ],
+ "scope_note": "公司 2026 年公告全部过了一遍，重组只有这一件。走到预案就终止了：没有草案（重组报告书）、没有股东会、没有北交所审核或问询，所以没有“草案/审核中”状态。预案里交易价格没定，只写“预计不超过 4 亿元”，发行价 8.43 元/股、65% 股份 35% 现金，到终止都没变过，所以指标都是单版本、不计分。任务说明以为本事件没有新闻数据，实际上 news 文件里有新闻和北交所公告镜像。",
+ "evidence": [
+  {
+   "key": "ann:1225425881",
+   "membership": "required",
+   "kind": "事实",
+   "tier": "A",
+   "role": "首次披露",
+   "disclosed": "2026-07-15",
+   "quote": "拟以发行股份并支付现金方式购买北京清博华科技有限公司（简称“清博华”）股东所持有的清博华 100%股权",
+   "equivalent": [
+    "news:100_58889793"
+   ],
+   "note": "停牌筹划；北交所镜像 100_58889793 视为同一条"
+  },
+  {
+   "key": "ann:1225446923",
+   "membership": "required",
+   "kind": "事实",
+   "tier": "A",
+   "role": "状态变化",
+   "disclosed": "2026-07-29",
+   "quote": "预计本次交易总价将不超过 4 亿元",
+   "equivalent": [
+    "ann:1225446924",
+    "news:100_59035699",
+    "news:100_59035701"
+   ],
+   "note": "重组预案；预案摘要和两条北交所镜像视为同一条"
+  },
+  {
+   "key": "ann:1225526696",
+   "membership": "required",
+   "kind": "事实",
+   "tier": "A",
+   "role": "推进",
+   "disclosed": "2026-08-28",
+   "quote": "本次交易涉及的审计、评估及尽职调查等工作正在有序推进中",
+   "equivalent": [
+    "news:100_59538251"
+   ]
+  },
+  {
+   "key": "ann:1225570631",
+   "membership": "required",
+   "kind": "事实",
+   "tier": "A",
+   "role": "终止",
+   "disclosed": "2026-09-17",
+   "quote": "同意公司终止本次重大资产重组事项"
+  },
+  {
+   "key": "ann:1225430315",
+   "membership": "optional",
+   "kind": "事实",
+   "tier": "A",
+   "role": "其他",
+   "disclosed": "2026-07-17",
+   "quote": null,
+   "note": "停牌前一交易日前十大股东持股情况"
+  },
+  {
+   "key": "ann:1225437257",
+   "membership": "optional",
+   "kind": "事实",
+   "tier": "A",
+   "role": "推进",
+   "disclosed": "2026-07-22",
+   "quote": "公司股票将继续停牌",
+   "equivalent": [
+    "news:100_58965079"
+   ]
+  },
+  {
+   "key": "ann:1225446926",
+   "membership": "optional",
+   "kind": "事实",
+   "tier": "A",
+   "role": "状态变化",
+   "disclosed": "2026-07-29",
+   "quote": "本次交易预计构成关联交易",
+   "note": "第九届董事会第三次会议决议，审议通过预案"
+  },
+  {
+   "key": "ann:1225446922",
+   "membership": "optional",
+   "kind": "事实",
+   "tier": "A",
+   "role": "推进",
+   "disclosed": "2026-07-29",
+   "quote": "本公司股票自 2026 年 7 月 30 日起复牌",
+   "equivalent": [
+    "news:100_59035657"
+   ]
+  },
+  {
+   "key": "ann:1225446946",
+   "membership": "optional",
+   "kind": "事实",
+   "tier": "A",
+   "role": "风险提示",
+   "disclosed": "2026-07-29",
+   "quote": null,
+   "equivalent": [
+    "news:100_59035659"
+   ]
+  },
+  {
+   "key": "ann:1225446945",
+   "membership": "optional",
+   "kind": "事实",
+   "tier": "A",
+   "role": "其他",
+   "disclosed": "2026-07-29",
+   "quote": "董事会决定暂不召开股东会审议本次交易相关事项",
+   "equivalent": [
+    "news:100_59035687"
+   ]
+  },
+  {
+   "key": "ann:1225446920",
+   "membership": "optional",
+   "kind": "事实",
+   "tier": "A",
+   "role": "其他",
+   "disclosed": "2026-07-29",
+   "quote": null,
+   "equivalent": [
+    "news:100_59035689"
+   ]
+  },
+  {
+   "key": "ann:1225446937",
+   "membership": "optional",
+   "kind": "事实",
+   "tier": "A",
+   "role": "其他",
+   "disclosed": "2026-07-29",
+   "quote": null,
+   "equivalent": [
+    "news:100_59035683"
+   ]
+  },
+  {
+   "key": "ann:1225446941",
+   "membership": "optional",
+   "kind": "事实",
+   "tier": "A",
+   "role": "其他",
+   "disclosed": "2026-07-29",
+   "quote": null,
+   "equivalent": [
+    "news:100_59035691"
+   ]
+  },
+  {
+   "key": "ann:1225446918",
+   "membership": "optional",
+   "kind": "事实",
+   "tier": "A",
+   "role": "其他",
+   "disclosed": "2026-07-29",
+   "quote": null,
+   "equivalent": [
+    "news:100_59035697"
+   ]
+  },
+  {
+   "key": "ann:1225446943",
+   "membership": "optional",
+   "kind": "事实",
+   "tier": "A",
+   "role": "其他",
+   "disclosed": "2026-07-29",
+   "quote": null,
+   "equivalent": [
+    "news:100_59035685"
+   ]
+  },
+  {
+   "key": "ann:1225446921",
+   "membership": "optional",
+   "kind": "事实",
+   "tier": "A",
+   "role": "其他",
+   "disclosed": "2026-07-29",
+   "quote": null,
+   "equivalent": [
+    "news:100_59035661"
+   ]
+  },
+  {
+   "key": "ann:1225446939",
+   "membership": "optional",
+   "kind": "事实",
+   "tier": "A",
+   "role": "其他",
+   "disclosed": "2026-07-29",
+   "quote": null
+  },
+  {
+   "key": "ann:1225446936",
+   "membership": "optional",
+   "kind": "事实",
+   "tier": "A",
+   "role": "其他",
+   "disclosed": "2026-07-29",
+   "quote": null
+  },
+  {
+   "key": "ann:1225446919",
+   "membership": "optional",
+   "kind": "事实",
+   "tier": "A",
+   "role": "其他",
+   "disclosed": "2026-07-29",
+   "quote": null
+  },
+  {
+   "key": "ann:1225446927",
+   "membership": "optional",
+   "kind": "事实",
+   "tier": "A",
+   "role": "其他",
+   "disclosed": "2026-07-29",
+   "quote": null
+  },
+  {
+   "key": "ann:1225446925",
+   "membership": "optional",
+   "kind": "事实",
+   "tier": "A",
+   "role": "其他",
+   "disclosed": "2026-07-29",
+   "quote": null
+  },
+  {
+   "key": "ann:1225570630",
+   "membership": "optional",
+   "kind": "事实",
+   "tier": "A",
+   "role": "终止",
+   "disclosed": "2026-09-17",
+   "quote": null,
+   "note": "第九届董事会第六次会议决议，与终止公告同日"
+  },
+  {
+   "key": "ann:1225570632",
+   "membership": "optional",
+   "kind": "事实",
+   "tier": "A",
+   "role": "终止",
+   "disclosed": "2026-09-17",
+   "quote": null
+  },
+  {
+   "key": "ann:1225570629",
+   "membership": "optional",
+   "kind": "事实",
+   "tier": "A",
+   "role": "其他",
+   "disclosed": "2026-09-17",
+   "quote": null
+  },
+  {
+   "key": "ann:1225576712",
+   "membership": "optional",
+   "kind": "事实",
+   "tier": "A",
+   "role": "后续",
+   "disclosed": "2026-09-22",
+   "quote": "双方就估值预期未达成一致",
+   "note": "终止说明会记录：把“核心条款”说具体为估值预期"
+  },
+  {
+   "key": "ann:1225588269",
+   "membership": "optional",
+   "kind": "事实",
+   "tier": "A",
+   "role": "后续",
+   "disclosed": "2026-09-29",
+   "quote": null,
+   "equivalent": [
+    "news:100_60038509"
+   ],
+   "note": "终止后的内幕信息知情人自查报告"
+  },
+  {
+   "key": "news:1_678196713",
+   "membership": "optional",
+   "kind": "事实",
+   "tier": "B",
+   "role": "转述",
+   "disclosed": "2026-07-15",
+   "quote": "拟发行股份并支付现金购买清博华100%股权"
+  },
+  {
+   "key": "news:1_678206605",
+   "membership": "optional",
+   "kind": "事实",
+   "tier": "B",
+   "role": "转述",
+   "disclosed": "2026-07-15",
+   "quote": "拟购买清博华100%股权股票将于明起停牌"
+  },
+  {
+   "key": "news:1_678315582",
+   "membership": "optional",
+   "kind": "事实",
+   "tier": "B",
+   "role": "转述",
+   "disclosed": "2026-07-07",
+   "quote": "7月21日，超卓航科、瓦轴B、新芝生物等5只个股停牌",
+   "note": "发布时间戳是 7-07 13:10，早于 7-15 停牌公告；链接路径是 20260721、正文写 7 月 21 日，时间戳应是错的。回放按时间戳会提前看到停牌，见冲突 G1"
+  },
+  {
+   "key": "news:1_678264835",
+   "membership": "optional",
+   "kind": "事实",
+   "tier": "B",
+   "role": "背景",
+   "disclosed": "2026-07-18",
+   "quote": null,
+   "accept_tier": [
+    "B",
+    "D"
+   ],
+   "note": "股东人数，来自停牌后 7-17 的股东情况公告"
+  },
+  {
+   "key": "news:1_678537709",
+   "membership": "optional",
+   "kind": "事实",
+   "tier": "B",
+   "role": "转述",
+   "disclosed": "2026-07-30",
+   "quote": "6家公司复牌：神雾节能、联创电子、佳云科技、普联软件、天智航、新芝生物"
+  },
+  {
+   "key": "news:1_678553781",
+   "membership": "optional",
+   "kind": "事实",
+   "tier": "B",
+   "role": "行情",
+   "disclosed": "2026-07-30",
+   "quote": "报收13.65元，涨幅30.00%",
+   "accept_tier": [
+    "B",
+    "D"
+   ],
+   "note": "复牌首日龙虎榜，行情数据"
+  },
+  {
+   "key": "news:1_678624820",
+   "membership": "optional",
+   "kind": "事实",
+   "tier": "B",
+   "role": "转述",
+   "disclosed": "2026-08-03",
+   "quote": null,
+   "accept_tier": [
+    "B",
+    "D"
+   ],
+   "note": "概念标签，入选理由引用 7-29 公告"
+  },
+  {
+   "key": "news:1_679395480",
+   "membership": "optional",
+   "kind": "事实",
+   "tier": "B",
+   "role": "转述",
+   "disclosed": "2026-08-28",
+   "quote": "审计评估正在进行中"
+  },
+  {
+   "key": "news:1_680020355",
+   "membership": "optional",
+   "kind": "事实",
+   "tier": "B",
+   "role": "转述",
+   "disclosed": "2026-09-17",
+   "quote": "原因是交易双方无法就核心条款达成一致"
+  },
+  {
+   "key": "news:1_680030050",
+   "membership": "optional",
+   "kind": "事实",
+   "tier": "B",
+   "role": "转述",
+   "disclosed": "2026-09-17",
+   "quote": null
+  },
+  {
+   "key": "anomaly:2026-07-30|涨停",
+   "membership": "optional",
+   "kind": "推测",
+   "tier": "D",
+   "role": "异动归因",
+   "disclosed": "2026-07-30",
+   "quote": "公司拟发行股份及支付现金购买北京清博华科技有限公司100%股权"
+  },
+  {
+   "key": "anomaly:2026-08-04|大涨",
+   "membership": "optional",
+   "kind": "推测",
+   "tier": "D",
+   "role": "异动归因",
+   "disclosed": "2026-08-04",
+   "quote": null
+  }
+ ],
+ "exclude": [
+  {
+   "key": "ann:1225514969",
+   "reason": "2026 年半年度报告，别的事件（正文没有提到清博华）"
+  },
+  {
+   "key": "ann:1225514967",
+   "reason": "2026 年半年度报告摘要，别的事件"
+  },
+  {
+   "key": "ann:1225632297",
+   "reason": "2026 年三季度报告，别的事件"
+  },
+  {
+   "key": "ann:1225221686",
+   "reason": "2025 年年度报告，别的事件"
+  },
+  {
+   "key": "ann:1225464566",
+   "reason": "变更回购股份用途并注销，别的事件"
+  },
+  {
+   "key": "ann:1225464568",
+   "reason": "第九届董事会第四次会议（回购注销、修改章程），别的事件"
+  },
+  {
+   "key": "ann:1225610932",
+   "reason": "回购注销完成、实控人持股比例被动增加，别的事件"
+  },
+  {
+   "key": "ann:1225408352",
+   "reason": "股东减持结果，别的事件"
+  },
+  {
+   "key": "ann:1225420989",
+   "reason": "更换持续督导保荐代表人，别的事件"
+  },
+  {
+   "key": "news:100_58772729",
+   "reason": "股东减持结果公告镜像，别的事件"
+  },
+  {
+   "key": "news:100_59486127",
+   "reason": "2026 年半年报镜像，别的事件"
+  },
+  {
+   "key": "news:100_60301887",
+   "reason": "2026 年三季报镜像，别的事件"
+  },
+  {
+   "key": "news:1_679328889",
+   "reason": "回购进展汇总，别的事件"
+  },
+  {
+   "key": "news:1_681155898",
+   "reason": "2026 年第二次临时股东会通知，别的事件"
+  },
+  {
+   "key": "news:1_681681816",
+   "reason": "融资买入数据，和重组无关"
+  },
+  {
+   "key": "anomaly:2026-01-13|大涨",
+   "reason": "事件开始前，归因基因测序和专精特新"
+  }
+ ],
+ "claims": [
+  {
+   "key": "target_equity_ratio",
+   "label": "标的股权比例",
+   "required": false,
+   "unit": "%",
+   "versions": [
+    {
+     "evidence": "ann:1225425881",
+     "low": 100,
+     "high": 100,
+     "unit": "%",
+     "basis": "停牌公告",
+     "quote": "股东所持有的清博华 100%股权",
+     "alt_evidence": [
+      "ann:1225446923",
+      "ann:1225446924"
+     ],
+     "note": "停牌、预案、终止公告都是 100%，没有变化"
+    }
+   ],
+   "aliases": [
+    "股权比例",
+    "收购比例"
+   ]
+  },
+  {
+   "key": "deal_price_cap",
+   "label": "预计交易总价上限",
+   "required": false,
+   "unit": "亿元",
+   "versions": [
+    {
+     "evidence": "ann:1225446923",
+     "low": null,
+     "high": 4,
+     "unit": "亿元",
+     "basis": "预案（上限，不超过）",
+     "quote": "预计本次交易总价将不超过 4 亿元",
+     "alt_evidence": [
+      "ann:1225446924",
+      "ann:1225446926"
+     ],
+     "note": "原文是“不超过 4 亿元”，只有上限；审计评估没做完，正式作价一直没出"
+    }
+   ],
+   "aliases": [
+    "作价",
+    "交易价格",
+    "总价"
+   ]
+  },
+  {
+   "key": "issue_price",
+   "label": "发行股份价格",
+   "required": false,
+   "unit": "元/股",
+   "versions": [
+    {
+     "evidence": "ann:1225446923",
+     "low": 8.43,
+     "high": 8.43,
+     "unit": "元/股",
+     "basis": "预案",
+     "quote": "最终确定发行股份购买资产的股份发行价格为 8.43 元/股",
+     "alt_evidence": [
+      "ann:1225446924",
+      "ann:1225446926"
+     ]
+    }
+   ],
+   "aliases": [
+    "发行价"
+   ]
+  },
+  {
+   "key": "share_payment_ratio",
+   "label": "股份支付比例",
+   "required": false,
+   "unit": "%",
+   "versions": [
+    {
+     "evidence": "ann:1225446923",
+     "low": 65,
+     "high": 65,
+     "unit": "%",
+     "basis": "预案",
+     "quote": "标的资产交易对价的 65%以发行股份的方式支付",
+     "alt_evidence": [
+      "ann:1225446924",
+      "ann:1225446926"
+     ],
+     "note": "其余 35% 现金支付"
+    }
+   ],
+   "aliases": [
+    "股份支付",
+    "支付比例"
+   ]
+  }
+ ],
+ "supersessions": [
+  {
+   "from": "ann:1225425881",
+   "to": "ann:1225446923",
+   "type": "推进",
+   "quote": "因筹划本次交易事项，经上市公司向北交所申请，新芝生物股票自 2026 年 7 月 16 日开市起停牌",
+   "accept_targets": [
+    "ann:1225425881",
+    "ann:1225437257"
+   ]
+  },
+  {
+   "from": "ann:1225446923",
+   "to": "ann:1225526696",
+   "type": "推进",
+   "quote": "本次交易涉及的审计、评估及尽职调查等工作正在有序推进中",
+   "accept_targets": [
+    "ann:1225446923",
+    "ann:1225446926",
+    "ann:1225446922",
+    "ann:1225425881"
+   ]
+  },
+  {
+   "from": "ann:1225446923",
+   "to": "ann:1225570631",
+   "type": "终止",
+   "quote": "同意公司终止本次重大资产重组事项",
+   "accept_targets": [
+    "ann:1225446923",
+    "ann:1225446926",
+    "ann:1225526696",
+    "ann:1225425881"
+   ]
+  }
+ ],
+ "status_checkpoints": [
+  {
+   "as_of": "2026-07-15",
+   "state": "筹划",
+   "evidence": "ann:1225425881",
+   "quote": "关于筹划发行股份及支付现金购买资产事项的股票停牌公告"
+  },
+  {
+   "as_of": "2026-07-28",
+   "state": "筹划",
+   "evidence": "ann:1225425881",
+   "quote": "关于筹划发行股份及支付现金购买资产事项的股票停牌公告",
+   "note": "预案披露前一天"
+  },
+  {
+   "as_of": "2026-07-29",
+   "state": "预案",
+   "evidence": "ann:1225446923",
+   "quote": "发行股份及支付现金购买资产暨关联交易预案"
+  },
+  {
+   "as_of": "2026-09-16",
+   "state": "预案",
+   "evidence": "ann:1225446923",
+   "quote": "发行股份及支付现金购买资产暨关联交易预案",
+   "note": "终止前一天；8-28 只是进展公告，状态仍是预案"
+  },
+  {
+   "as_of": "2026-09-17",
+   "state": "终止",
+   "evidence": "ann:1225570631",
+   "quote": "同意公司终止本次重大资产重组事项"
+  }
+ ],
+ "conflicts": [
+  {
+   "id": "G1",
+   "required": false,
+   "evidence": [
+    "news:1_678315582",
+    "ann:1225425881"
+   ],
+   "match_any": [
+    "7月21日",
+    "7-21",
+    "7月7日",
+    "07-07",
+    "时间戳",
+    "发布时间"
+   ],
+   "text": "每日经济新闻“5股今日停牌”的发布时间戳是 2026-07-07，早于 7-15 停牌公告；正文写的是 7 月 21 日停牌，链接路径也是 20260721。时间戳有误，按时间戳回放会在 7-07 就看到停牌。",
+   "resolved_by": "ann:1225425881",
+   "resolution": "系统推断：以正文日期和公告为准，这条新闻实际是 7-21 的",
+   "quotes": [
+    [
+     "news:1_678315582",
+     "7月21日，超卓航科、瓦轴B、新芝生物等5只个股停牌"
+    ],
+    [
+     "ann:1225425881",
+     "本公司股票自 2026 年 7 月 16 日起停牌"
+    ]
+   ]
+  }
+ ],
+ "review_note": "评测窗口复核（2026-11-11）：G1（新闻时间戳 7-07 而正文和链接是 7-21）改为可选：这是数据源的时间戳错误，不是两条证据的说法冲突；但它会让回放提前看到停牌消息，写进了给主窗口的建议。 交易作价“不超过 4 亿元”改为只有上限（low 为 null）；各指标加别名。"
+}

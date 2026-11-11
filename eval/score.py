@@ -53,9 +53,32 @@ def source(key, code):
     _text_cache[key] = out
     return out
 
+_raw_cache = {}
+def raw_source(key, code):
+    """不去空白的原文，用来抽数字（去空白后表格里相邻的两个数会粘在一起）。"""
+    if key in _raw_cache: return _raw_cache[key]
+    src, ref = key.split(":", 1); out = ""
+    if src == "ann":
+        t = f"data/raw/text/{ref}.txt"; out = open(t).read() if os.path.exists(t) else ""
+    elif src == "news":
+        n = news_file(code); i = next((i for i in (n or {}).get("timeline", {}).get("items", []) if i["id"] == ref), None)
+        if i: out = i["title"] + "\n" + (i.get("summary") or "")
+    elif src == "anomaly":
+        d, tag = ref.split("|"); n = news_file(code)
+        for i in ((n or {}).get("anomaly", {}).get("data") or {}).get("items", []):
+            if day(i["first_publish_time"]) == d and i.get("tag_name") == tag: out = i.get("analysis_content") or ""; break
+    _raw_cache[key] = out
+    return out
+
 # ---------- 数字解析 ----------
-SCALE = {"亿元": 1e8, "亿": 1e8, "万元": 1e4, "万": 1e4, "元": 1, "%": 1, "": None}
-NUM = re.compile(r"(-?\d[\d,，]*(?:\.\d+)?)\s*(亿元|万元|亿|万|元|%)?")
+SCALE = {"元/股": 1, "亿股": 1e8, "万股": 1e4, "股": 1, "亿元": 1e8, "亿": 1e8, "万元": 1e4, "万": 1e4, "元": 1, "%": 1, "": None}
+UNITS = ("元/股", "亿股", "万股", "股", "亿元", "万元", "亿", "万", "元", "%")
+NUM = re.compile(r"(-?\d[\d,，]*(?:\.\d+)?)\s*(元/股|亿股|万股|股|亿元|万元|亿|万|元|%)?")
+
+def ucls(u):
+    """单位类别：金额、股数、每股价格、百分比。不同类别的数不能互相比。"""
+    u = (u or "").strip()
+    return "pct" if u == "%" else "price" if u.startswith("元/股") else "shares" if u.endswith("股") else "money" if u else None
 
 def numbers(s):
     """返回 [(数值, 单位)]，数字里的半角/全角千分位逗号都去掉。"""
@@ -68,7 +91,7 @@ def numbers(s):
 
 def factor(unit):
     u = (unit or "").strip()
-    for k in ("亿元", "万元", "亿", "万", "元", "%"):
+    for k in UNITS:
         if u.startswith(k): return SCALE[k]
     return None
 
@@ -79,9 +102,10 @@ def decimals(x):
 
 def same_value(pred, pred_unit, gold, gold_unit):
     """pred 按自身精度四舍五入后与金标相等即算精确匹配。单位不同先换算成元。"""
+    if pred is None and gold is None: return True
     fp, fg = factor(pred_unit), factor(gold_unit)
     if fp is None or fg is None or pred is None or gold is None: return False
-    if (pred_unit == "%") != (gold_unit == "%"): return False
+    if ucls(pred_unit) != ucls(gold_unit): return False
     gran = fp * 10 ** (-decimals(pred))
     return abs(pred * fp - gold * fg) <= gran / 2 + 1e-6 * max(1, abs(gold * fg))
 
@@ -95,17 +119,17 @@ def value_in_quote(val, unit, quote):
     """数值和引用对得上：引用里有一个数，换算到同一单位后等于 val。引用里的数没有单位时（表格）按元、万元、亿元都试。"""
     fp = factor(unit)
     if fp is None or val is None: return False
+    base = {"pct": "%", "shares": "股", "price": "元/股"}.get(ucls(unit), "元")
     for n, u in numbers(quote):
-        cands = [SCALE[u]] if u else [1, 1e4, 1e8]
+        if u and ucls(u) != ucls(unit): continue
+        cands = [SCALE[u]] if u else ([1] if ucls(unit) in ("pct", "price") else [1, 1e4, 1e8])
         for s in cands:
-            if s is None: continue
-            if unit == "%" and u not in ("%", ""): continue
-            if same_value(val, unit, n * s, "元" if unit != "%" else "%"): return True
+            if same_value(val, unit, n * s, base): return True
     return False
 
 # ---------- 状态归类（抽取写的状态词 → 标准状态） ----------
 STATE_RULES = [
-    ("终止上市", ["终止上市", "摘牌", "退市整理"]), ("终止", ["终止"]), ("否认", ["否认", "澄清", "不实"]),
+    ("终止上市", ["终止上市", "摘牌", "退市整理"]), ("终止", ["终止"]), ("否认", ["否认", "不实"]), ("澄清", ["澄清"]),
     ("未通过", ["未通过", "不予", "否决"]), ("立案", ["立案"]), ("审核中", ["审核", "问询", "受理"]),
     ("草案", ["草案", "报告书"]), ("预案", ["预案"]), ("筹划", ["筹划", "停牌"]),
     ("定期报告更正", ["年报更正", "年报表述更正", "年报.*更正", "定期报告更正", "报告.*更正", "非经常性损益更正", "更正.*年报", "更正.*报告"]),
@@ -140,9 +164,11 @@ CLAIM_RULES = [
     ("revenue", ["营业收入", "营收", "revenue"]),
 ]
 
-def map_claim(c, gold_keys):
+def map_claim(c, gold_keys, aliases=None):
     s = f"{c.get('key','')} {c.get('label','')} {c.get('name','')}".lower()
     if c.get("key") in gold_keys: return c["key"]
+    hits = [(len(a), k) for k, al in (aliases or {}).items() for a in al if a.lower() in s]
+    if hits: return max(hits)[1]
     for k, pats in CLAIM_RULES:
         if k in gold_keys and any(p.lower() in s for p in pats): return k
     return None
@@ -171,6 +197,7 @@ def check_gold(gold):
             for n, v in enumerate(c["versions"]):
                 chk(f"{c['key']} v{n+1}", v["evidence"], v["quote"])
                 for side in ("low", "high"):
+                    if v[side] is None: continue  # 原文只给了上限或下限
                     ok = value_in_quote(v[side], v["unit"], v["quote"])
                     rows.append(dict(event=g["id"], where=f"{c['key']} v{n+1} {side}", kind="数值在片段里", ok=ok, detail=None if ok else f"{v[side]} {v['unit']} 不在片段里"))
         for s in g.get("supersessions", []): chk(f"取代 {s['from']}→{s['to']}", s["to"], s.get("quote"))
@@ -206,12 +233,12 @@ def score_event(g, x, all_gold):
     gclaims = {c["key"]: c for c in g.get("claims", [])}
     mapped, unmapped = {}, []
     for c in x.get("claims", []):
-        k = map_claim(c, set(gclaims))
+        k = map_claim(c, set(gclaims), {gk: gc.get("aliases", []) for gk, gc in gclaims.items()})
         (mapped.setdefault(k, []).append(c) if k else unmapped.append(c.get("key")))
     num_m, chain_m, rel_m = M(), M(), M()
     for gk, gc in gclaims.items():
         pcs = mapped.get(gk, [])
-        pv = [(v, pc.get("unit")) for pc in pcs for v in pc.get("versions", [])]
+        pv = [(v, pc.get("unit")) for pc in pcs for v in pc.get("versions", []) if not (v.get("low") is None and v.get("high") is None)]  # 两端都为空的版本（原文没给数）不算一版
         pos = []
         for gi, gvv in enumerate(gc["versions"]):
             okeys = {gvv["evidence"], *gvv.get("alt_evidence", [])}
@@ -237,16 +264,21 @@ def score_event(g, x, all_gold):
             for gi in range(len(gc["versions"]) - 1):
                 chain_m["den"] += 1
                 a, b = pos[gi], pos[gi + 1]
-                ok = a is not None and b is not None and b == a + 1
+                # 中间夹着的版本如果只是原样重述上一版的数（例如更正公告重述没改的归母净利润），不算断链
+                gap = pv[a + 1:b] if a is not None and b is not None and b > a else []
+                ok = a is not None and b is not None and b > a and all(
+                    same_value(v.get("low"), u, gc["versions"][gi]["low"], gc["versions"][gi]["unit"]) and same_value(v.get("high"), u, gc["versions"][gi]["high"], gc["versions"][gi]["unit"]) for v, u in gap)
                 chain_m["num"] += ok
                 if not ok:
                     chain_m["failures"].append(dict(code="E2b", claim=gk, edge=f"v{gi+1}→v{gi+2}", what="缺版本" if a is None or b is None else f"顺序或相邻关系不对（抽取位置 {a}→{b}）"))
         # 抽取多出来的版本
         used = {p for p in pos if p is not None}
         for j, (v, u) in enumerate(pv):
-            if j not in used:
+            if j not in used and any(same_value(v.get("low"), u, gvv["low"], gvv["unit"]) and same_value(v.get("high"), u, gvv["high"], gvv["unit"]) for gvv in gc["versions"]):
+                num_m.setdefault("repeats", []).append(dict(claim=gk, got=f"{v.get('low')}~{v.get('high')} {u}（{key_of.get(v.get('evidence_id'))}）", what="原样重述已有版本的数，不计错"))
+            elif j not in used:
                 num_m["failures"].append(dict(code="E2c", claim=gk, what="金标没有的版本", got=f"{v.get('low')}~{v.get('high')} {u}（{key_of.get(v.get('evidence_id'))}）"))
-    for k in unmapped: num_m["failures"].append(dict(code="E1x", what="抽取的指标名映射不到金标", got=k))
+    if unmapped: num_m["note"] = f"抽取另建了金标没有的指标 {unmapped}，不计分，待裁决"
     for gk, gc in gclaims.items():
         if gc["required"] and gk not in mapped:
             num_m["failures"].append(dict(code="E2a", claim=gk, what="整项指标没有抽取"))
@@ -276,7 +308,14 @@ def score_event(g, x, all_gold):
         gold_day = source(cp["evidence"], code)[0]
         want = cp.get("accept_states", [cp["state"]])
         judged = [(s, k, d, canon_state(s) if s else None) for s, k, d in cands]
-        ok = any(c in want and (k == cp["evidence"] or d == gold_day) for s, k, d, c in judged)
+        # 同一状态连续出现（如进展公告重复记“预案”）时，这一段里任何一条是金标触发证据都算对
+        run = []
+        for d0, s0, k0 in reversed(upto):
+            c0 = canon_state(s0)
+            if c0 not in want: break
+            run.append((k0, d0))
+        okeys = {cp["evidence"], *cp.get("accept_evidence", [])}
+        ok = any(c in want for s, k, d, c in judged) and any(k0 in okeys or d0 == gold_day for k0, d0 in run)
         st["num"] += ok
         if not ok:
             got, gk, gd, c = judged[-1]
@@ -367,14 +406,17 @@ def score_event(g, x, all_gold):
     recall_num, recall_den = 0, 0
     for gk, pcs in mapped.items():
         for pc in pcs:
+            seen_vals = []
             for n, v in enumerate(pc.get("versions", [])):
+                rep = any(same_value(v.get("low"), pc.get("unit"), a, pc.get("unit")) and same_value(v.get("high"), pc.get("unit"), b, pc.get("unit")) for a, b in seen_vals)
+                seen_vals.append((v.get("low"), v.get("high")))
                 # 这个数值在金标里应该出自哪条证据：按数值找金标版本
                 want = None
                 for gvv, keys in gold_ver_keys.get(gk, []):
                     if same_value(v.get("low"), pc.get("unit"), gvv["low"], gvv["unit"]) and same_value(v.get("high"), pc.get("unit"), gvv["high"], gvv["unit"]):
                         want = keys; break
-                classify(f"{pc.get('key')} v{n+1}", v.get("evidence_id"), v.get("quote"), want)
-                if not value_in_quote(v.get("low"), pc.get("unit"), v.get("quote") or "") or not value_in_quote(v.get("high"), pc.get("unit"), v.get("quote") or ""):
+                classify(f"{pc.get('key')} v{n+1}", v.get("evidence_id"), v.get("quote"), None if rep else want)  # 原样重述前一版的数，只查引用在不在所挂证据里
+                if any(v.get(sd) is not None and not value_in_quote(v.get(sd), pc.get("unit"), v.get("quote") or "") for sd in ("low", "high")):
                     cite["failures"].append(dict(code="E1e", where=f"{pc.get('key')} v{n+1}", what="数值和自己的引用对不上（单位、量级或数字被改）", got=f"{v.get('low')}~{v.get('high')} {pc.get('unit')}", quote=(v.get("quote") or "")[:50]))
                     cite["wrong"] += 1
     for gk, gc in gclaims.items():
@@ -387,14 +429,27 @@ def score_event(g, x, all_gold):
                      for pc in mapped.get(gk, []) for v in pc.get("versions", []))
             recall_num += ok
     # 结论里的数字
-    concl = dict(correct=0, wrong=0, unsupported=0, unchecked=0)
+    concl = dict(correct=0, wrong=0, unsupported=0, unchecked=0, derived=0, price=0)
+    _nums = {}
+    def nums_of(k):
+        if k not in _nums: _nums[k] = numbers(raw_source(k, code))
+        return _nums[k]
+    all_keys = set(key_of.values()) | {e["key"] for e in g["evidence"]}
+    price_nums = []  # 行情数据（收盘价、涨跌幅）：结论里引用的行情数字从这里找
+    pf = f"data/prices/{x.get('thscode')}.json"
+    if x.get("thscode") and os.path.exists(pf):
+        bars = json.load(open(pf)).get("bars", [])
+        for b0, b1 in zip(bars, bars[1:]):
+            price_nums.append((b1["close"], "元"))
+            if b0.get("close"): price_nums.append((round((b1["close"] / b0["close"] - 1) * 100, 2), "%"))
+    claim_pool = [(abs(v.get(sd)) * (factor(pc.get("unit")) or 1), pc.get("unit")) for pcs in mapped.values() for pc in pcs for v in pc.get("versions", []) for sd in ("low", "high") if v.get(sd) is not None]
     future = M()
     mix = M()
     def grounds(n, u, txt):
         if not txt: return False
-        for m, mu in numbers(txt):
+        for m, mu in (txt if isinstance(txt, list) else numbers(txt)):
             if u == "%" or mu == "%":
-                if u == mu and abs(abs(n) - abs(m)) < 1e-6: return True
+                if (u == mu or not mu) and abs(abs(n) - abs(m)) < 1e-6: return True
                 continue
             if not u and not mu:
                 if abs(abs(n) - abs(m)) < 1e-6: return True
@@ -421,10 +476,24 @@ def score_event(g, x, all_gold):
                 nums = [(n, u) for n, u in numbers(it.get("text")) if u or abs(n) >= 1000 or not float(n).is_integer()]
                 if not nums: concl["unchecked"] += 1
                 else:
-                    cited = "".join(text_of.get(i) or "" for i in ids)
+                    cited = [p for i in ids if i in key_of for p in nums_of(key_of[i])]
                     bad_here = [(n, u) for n, u in nums if not grounds(n, u, cited)]
+                    # 两数之差或之和：参与运算的数取本句里的数和本事件指标的各版数值
+                    pool = [(abs(n) * (SCALE.get(u) or 1), u) for n, u in nums if (n, u) not in bad_here] + claim_pool
+                    tol = lambda n, u: (SCALE.get(u) or 1) * 10 ** (-decimals(n)) + 1e-6
+                    derived, changed = [], True
+                    while changed:  # 推算出来的数可以再参与下一步推算（如先算差 1,200 万，再和 1,980.51 万比）
+                        changed = False
+                        for n, u in bad_here:
+                            if (n, u) in derived or u == "%": continue
+                            xv = abs(n) * (SCALE.get(u) or 1)
+                            if any(abs(xv - abs(p1 - p2)) <= tol(n, u) or abs(xv - (p1 + p2)) <= tol(n, u) for (p1, _), (p2, _) in __import__("itertools").combinations(pool, 2)):
+                                derived.append((n, u)); pool.append((xv, u)); changed = True
+                    if derived: concl["derived"] += len(derived); bad_here = [x for x in bad_here if x not in derived]
+                    from_price = [(n, u) for n, u in bad_here if any(abs(abs(n) - abs(m)) <= 10 ** (-decimals(n)) / 2 + 1e-6 and (u == mu or not u) for m, mu in price_nums)]
+                    if from_price: concl["price"] += len(from_price); bad_here = [x for x in bad_here if x not in from_price]
                     if not bad_here: concl["correct"] += 1
-                    elif all(any(grounds(n, u, t) for t in all_texts.values()) for n, u in bad_here):
+                    elif all(any(grounds(n, u, nums_of(k)) for k in all_keys) for n, u in bad_here):
                         concl["wrong"] += 1; cite["failures"].append(dict(code="E6b", where=f"{as_of} {part}", text=it["text"][:50], what=f"数字 {[f'{n:g}{u}' for n, u in bad_here][:3]} 不在所挂证据里，在本事件别的证据里"))
                     else:
                         concl["unsupported"] += 1; cite["failures"].append(dict(code="E6c", where=f"{as_of} {part}", text=it["text"][:50], what=f"数字 {[f'{n:g}{u}' for n, u in bad_here][:3]} 在本事件任何原文里都找不到"))
@@ -441,9 +510,9 @@ def score_event(g, x, all_gold):
     P["引用挂对证据"] = dict(
         precision=round((cite["correct"] + concl["correct"]) / tot, 4) if tot else None, num=cite["correct"] + concl["correct"], den=tot,
         recall=round(recall_num / recall_den, 4) if recall_den else None, recall_num=recall_num, recall_den=recall_den,
-        wrong=cite["wrong"] + concl["wrong"], unsupported=cite["unsupported"] + concl["unsupported"], conclusions_unchecked=concl["unchecked"],
+        wrong=cite["wrong"] + concl["wrong"], unsupported=cite["unsupported"] + concl["unsupported"], conclusions_unchecked=concl["unchecked"], derived_numbers=concl["derived"], price_numbers=concl["price"],
         value=round((cite["correct"] + concl["correct"]) / tot, 4) if tot else None, failures=cite["failures"],
-        note="精确率=挂对的引用/全部引用（证据自身引用、数值版本引用、结论里带数字的句子）；召回率=金标必含的数值版本里，被抽取用正确证据和逐字引用支撑的比例。“挂错”和“无依据”分开计数；不带数字的结论句没法自动核对，单列。")
+        note="精确率=挂对的引用/全部引用（证据自身引用、数值版本引用、结论里带数字的句子）；召回率=金标必含的数值版本里，被抽取用正确证据和逐字引用支撑的比例。“挂错”和“无依据”分开计数；不带数字的结论句没法自动核对，单列。结论里的差值、合计如果能由本句或本事件指标里的两个数相减或相加得到，算有依据，计入 derived_numbers；涨跌幅、收盘价能在本地日 K 线里找到的，计入 price_numbers。")
     P["回放未用到未来证据"] = finish(future)
 
     # 过程对 4：冲突
@@ -462,6 +531,10 @@ def score_event(g, x, all_gold):
             cf["den"] += 1; cf["num"] += bool(found)
             if not found: cf["failures"].append(dict(code="E8a", conflict=gc["id"], what="冲突没找出来", expect=gc["text"]))
         elif found: hit_opt.append(gc["id"])
+    for rc in g.get("rejected_conflicts", []):
+        for n, c in enumerate(pconf):
+            if n not in matched_pred and (conf_keys(c) & set(rc["evidence"])) and any(norm(s_) in conf_text(c) for s_ in rc["match_any"]):
+                matched_pred.add(n); cf["failures"].append(dict(code="E8b", conflict=c.get("id"), what="误报：不算冲突", reason=rc["reason"]))
     extra = [c.get("id") for n, c in enumerate(pconf) if n not in matched_pred]
     cf["note"] = "；".join(filter(None, [f"另找到金标的可选冲突 {hit_opt}" if hit_opt else None, f"金标没列的冲突 {extra}，待裁决" if extra else None])) or None
     R_conf = finish(cf)
@@ -798,6 +871,10 @@ def main():
         events_scored=sum(1 for e in events if "results" in e), events_total=len(events),
         events=events, unmatched_extractions=stray,
         gold_check=dict(passed=sum(r["ok"] for r in gc), total=len(gc), failures=[r for r in gc if not r["ok"]]),
+        gold_reviews={gid: dict(review_note=g.get("review_note"), added_after_adjudication=sum(1 for sec in ("evidence", "conflicts") for it in g.get(sec, []) if it.get("added_after_adjudication"))
+                                + sum(1 for c in g.get("claims", []) for v in c["versions"] if v.get("added_after_adjudication")),
+                                rejected_conflicts=len(g.get("rejected_conflicts", [])))
+                      for gid, g in gold.items() if g.get("review_note") or g.get("rejected_conflicts")},
         traps=traps)
     update_history(report)
     json.dump(report, open("eval/report.json", "w"), ensure_ascii=False, indent=1)
@@ -855,6 +932,11 @@ def render_md(r):
                 n0, d0 = first["events"][i].get(k, (None, None))
                 if (n0, d0) != (n, d): L.append(f"| {k} | {n0}/{d0} | {n}/{d} |")
             L.append("")
+    if r.get("gold_reviews"):
+        L += ["## 金标的复核改动", "", "下面这些金标在评测窗口复核时、或看到抽取结果之后改过，带 `added_after_adjudication` 的条目不算盲标。哪些改动影响了分数、按盲标原样计分是多少，见 `eval/adjudication.md` 的“盲标原样计分”一节。", ""]
+        for gid, v in r["gold_reviews"].items():
+            L.append(f"- `{gid}`：{v['review_note'] or ''}（裁决后补入 {v['added_after_adjudication']} 条，裁定不算冲突的说法 {v['rejected_conflicts']} 条）")
+        L.append("")
     for e in r["events"]:
         if "results" not in e: continue
         L += ["", f"## 事件 {e['no']}：{e['name']}（{e['split']}）", "", f"抽取文件：`{e['extracted_file']}`；标准答案：`eval/gold/{e['id']}.json`", ""]
@@ -864,7 +946,7 @@ def render_md(r):
                 line = f"- **{k}**：{pct(m)}"
                 if k == "引用挂对证据":
                     line += f"；召回 {m['recall'] * 100:.1f}%（{m['recall_num']}/{m['recall_den']}）" if m.get("recall") is not None else ""
-                    line += f"；挂错 {m['wrong']}，无依据 {m['unsupported']}，不带数字没法自动核对的结论句 {m['conclusions_unchecked']}"
+                    line += f"；挂错 {m['wrong']}，无依据 {m['unsupported']}，不带数字没法自动核对的结论句 {m['conclusions_unchecked']}，由两数相减或相加得出的数 {m.get('derived_numbers', 0)}，出自行情数据的数 {m.get('price_numbers', 0)}"
                 L.append(line)
                 if m.get("note"): L.append(f"  - 说明：{m['note']}")
                 for f in m["failures"][:12]: L.append(f"  - {fmt_fail(f)}")

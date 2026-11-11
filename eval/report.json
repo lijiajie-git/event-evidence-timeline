@@ -1,6 +1,6 @@
 {
  "schema_version": 1,
- "generated_at": "2026-11-11T19:39:00+00:00",
+ "generated_at": "2026-11-11T19:51:41+00:00",
  "command": "python3 eval/score.py",
  "gold_note": "标准答案由 Claude Opus 5.5 标注，不是人工标注。数值、单位、引用可以靠原文逐字匹配复核（见 gold_check）；证据类型、是否同一事件、状态这类判断字段没有人工复核，可靠性有限。",
  "groups": {
@@ -23,136 +23,145 @@
  },
  "summary": {
   "数值抽取精确匹配": {
-   "num": 0,
-   "den": 0,
-   "value": null
+   "num": 70,
+   "den": 74,
+   "value": 0.9459
   },
   "版本链": {
-   "num": 0,
-   "den": 0,
-   "value": null
+   "num": 42,
+   "den": 45,
+   "value": 0.9333
   },
   "事件状态": {
-   "num": 0,
-   "den": 0,
-   "value": null
+   "num": 35,
+   "den": 35,
+   "value": 1.0
   },
   "证据类型准确率": {
-   "num": 0,
-   "den": 0,
-   "value": null
+   "num": 84,
+   "den": 84,
+   "value": 1.0
   },
   "来源级别准确率": {
-   "num": 0,
-   "den": 0,
-   "value": null
+   "num": 84,
+   "den": 84,
+   "value": 1.0
   },
   "该合并的合并了": {
-   "num": 0,
-   "den": 0,
-   "value": null
+   "num": 34,
+   "den": 36,
+   "value": 0.9444
   },
   "不该合并的分开了": {
-   "num": 0,
-   "den": 0,
-   "value": null
+   "num": 80,
+   "den": 80,
+   "value": 1.0
   },
   "引用逐字匹配": {
-   "num": 0,
-   "den": 0,
-   "value": null
+   "num": 186,
+   "den": 186,
+   "value": 1.0
   },
   "引用挂对证据": {
-   "num": 0,
-   "den": 0,
-   "value": null,
-   "recall": null,
-   "recall_num": 0,
-   "recall_den": 0
+   "num": 212,
+   "den": 212,
+   "value": 1.0,
+   "recall": 0.9459,
+   "recall_num": 35,
+   "recall_den": 37
   },
   "回放未用到未来证据": {
-   "num": 0,
-   "den": 0,
-   "value": null
+   "num": 242,
+   "den": 242,
+   "value": 1.0
   },
   "冲突找出来了": {
-   "num": 0,
-   "den": 0,
-   "value": null
+   "num": 3,
+   "den": 3,
+   "value": 1.0
   },
   "事实和推断没混": {
-   "num": 0,
-   "den": 0,
-   "value": null
+   "num": 107,
+   "den": 107,
+   "value": 1.0
   }
  },
  "summary_note": "summary 只汇总测试集（抽取时没有参考过评测结果的事件）；开发集单列在 summary_by_split。",
  "summary_by_split": {
   "测试集": {
-   "events": [],
+   "events": [
+    "600187-2026H1-forecast",
+    "600499-2026-tefu-restructuring",
+    "605081-2025A-delisting",
+    "600889-2026H1-forecast",
+    "920685-2026-restructuring",
+    "600499-2026H1-forecast",
+    "02672-2026-11-11-clarification",
+    "01122-2026-11-11-clarification"
+   ],
    "summary": {
     "数值抽取精确匹配": {
-     "num": 0,
-     "den": 0,
-     "value": null
+     "num": 70,
+     "den": 74,
+     "value": 0.9459
     },
     "版本链": {
-     "num": 0,
-     "den": 0,
-     "value": null
+     "num": 42,
+     "den": 45,
+     "value": 0.9333
     },
     "事件状态": {
-     "num": 0,
-     "den": 0,
-     "value": null
+     "num": 35,
+     "den": 35,
+     "value": 1.0
     },
     "证据类型准确率": {
-     "num": 0,
-     "den": 0,
-     "value": null
+     "num": 84,
+     "den": 84,
+     "value": 1.0
     },
     "来源级别准确率": {
-     "num": 0,
-     "den": 0,
-     "value": null
+     "num": 84,
+     "den": 84,
+     "value": 1.0
     },
     "该合并的合并了": {
-     "num": 0,
-     "den": 0,
-     "value": null
+     "num": 34,
+     "den": 36,
+     "value": 0.9444
     },
     "不该合并的分开了": {
-     "num": 0,
-     "den": 0,
-     "value": null
+     "num": 80,
+     "den": 80,
+     "value": 1.0
     },
     "引用逐字匹配": {
-     "num": 0,
-     "den": 0,
-     "value": null
+     "num": 186,
+     "den": 186,
+     "value": 1.0
     },
     "引用挂对证据": {
-     "num": 0,
-     "den": 0,
-     "value": null,
-     "recall": null,
-     "recall_num": 0,
-     "recall_den": 0
+     "num": 212,
+     "den": 212,
+     "value": 1.0,
+     "recall": 0.9459,
+     "recall_num": 35,
+     "recall_den": 37
     },
     "回放未用到未来证据": {
-     "num": 0,
-     "den": 0,
-     "value": null
+     "num": 242,
+     "den": 242,
+     "value": 1.0
     },
     "冲突找出来了": {
-     "num": 0,
-     "den": 0,
-     "value": null
+     "num": 3,
+     "den": 3,
+     "value": 1.0
     },
     "事实和推断没混": {
-     "num": 0,
-     "den": 0,
-     "value": null
+     "num": 107,
+     "den": 107,
+     "value": 1.0
     }
    }
   },
@@ -228,13 +237,13 @@
   }
  },
  "inputs": {
-  "pipeline_commit": "07f9433",
-  "pipeline_dirty": true,
-  "extracted_commit": "5dab53d",
+  "pipeline_commit": "75cb91a",
+  "pipeline_dirty": false,
+  "extracted_commit": "8254dba",
   "gold_commit": "3d10074",
-  "gold_dirty": false
+  "gold_dirty": true
  },
- "events_scored": 1,
+ "events_scored": 9,
  "events_total": 9,
  "events": [
   {
@@ -315,9 +324,11 @@
      "wrong": 0,
      "unsupported": 0,
      "conclusions_unchecked": 7,
+     "derived_numbers": 0,
+     "price_numbers": 0,
      "value": 1.0,
      "failures": [],
-     "note": "精确率=挂对的引用/全部引用（证据自身引用、数值版本引用、结论里带数字的句子）；召回率=金标必含的数值版本里，被抽取用正确证据和逐字引用支撑的比例。“挂错”和“无依据”分开计数；不带数字的结论句没法自动核对，单列。"
+     "note": "精确率=挂对的引用/全部引用（证据自身引用、数值版本引用、结论里带数字的句子）；召回率=金标必含的数值版本里，被抽取用正确证据和逐字引用支撑的比例。“挂错”和“无依据”分开计数；不带数字的结论句没法自动核对，单列。结论里的差值、合计如果能由本句或本事件指标里的两个数相减或相加得到，算有依据，计入 derived_numbers；涨跌幅、收盘价能在本地日 K 线里找到的，计入 price_numbers。"
     },
     "回放未用到未来证据": {
      "num": 34,
@@ -348,93 +359,997 @@
    "id": "600187-2026H1-forecast",
    "no": "2",
    "name": "*ST国中 2026 年半年度业绩预告及更正",
-   "gold": "未标注",
+   "gold": "已标注",
    "extraction": "已抽取",
    "split": "测试集",
    "split_note": null,
-   "note": "标准答案还没标，暂不计分",
-   "extracted_file": "pipeline/extracted/600187-2026H1-forecast.json"
+   "extracted_file": "pipeline/extracted/600187-2026H1-forecast.json",
+   "results": {
+    "数值抽取精确匹配": {
+     "num": 12,
+     "den": 12,
+     "value": 1.0,
+     "failures": [],
+     "note": null
+    },
+    "版本链": {
+     "num": 6,
+     "den": 6,
+     "value": 1.0,
+     "failures": [],
+     "note": "其中指标相邻版本 4 条边，证据取代关系 2 条"
+    },
+    "事件状态": {
+     "num": 4,
+     "den": 4,
+     "value": 1.0,
+     "failures": [],
+     "note": "每个检查点：取截至该日最后一个披露日的状态（同一天有几条都看），有标准状态码 code 就直接用，没有才按关键字归类；状态要和金标一致，且触发它的证据要和金标相同或同一天披露。"
+    },
+    "证据类型准确率": {
+     "num": 8,
+     "den": 8,
+     "value": 1.0,
+     "failures": [],
+     "note": null
+    },
+    "来源级别准确率": {
+     "num": 8,
+     "den": 8,
+     "value": 1.0,
+     "failures": [],
+     "note": null
+    },
+    "该合并的合并了": {
+     "num": 3,
+     "den": 3,
+     "value": 1.0,
+     "failures": [],
+     "note": null
+    },
+    "不该合并的分开了": {
+     "num": 7,
+     "den": 7,
+     "value": 1.0,
+     "failures": [],
+     "note": null
+    }
+   },
+   "process": {
+    "引用逐字匹配": {
+     "num": 16,
+     "den": 16,
+     "value": 1.0,
+     "failures": [],
+     "note": null
+    },
+    "引用挂对证据": {
+     "precision": 1.0,
+     "num": 25,
+     "den": 25,
+     "recall": 1.0,
+     "recall_num": 6,
+     "recall_den": 6,
+     "wrong": 0,
+     "unsupported": 0,
+     "conclusions_unchecked": 9,
+     "derived_numbers": 0,
+     "price_numbers": 0,
+     "value": 1.0,
+     "failures": [],
+     "note": "精确率=挂对的引用/全部引用（证据自身引用、数值版本引用、结论里带数字的句子）；召回率=金标必含的数值版本里，被抽取用正确证据和逐字引用支撑的比例。“挂错”和“无依据”分开计数；不带数字的结论句没法自动核对，单列。结论里的差值、合计如果能由本句或本事件指标里的两个数相减或相加得到，算有依据，计入 derived_numbers；涨跌幅、收盘价能在本地日 K 线里找到的，计入 price_numbers。"
+    },
+    "回放未用到未来证据": {
+     "num": 31,
+     "den": 31,
+     "value": 1.0,
+     "failures": [],
+     "note": null
+    },
+    "冲突找出来了": {
+     "num": 0,
+     "den": 0,
+     "value": null,
+     "failures": [],
+     "note": null
+    },
+    "事实和推断没混": {
+     "num": 10,
+     "den": 10,
+     "value": 1.0,
+     "failures": [],
+     "note": "规则：“事实”里不能有推断用语（所挂证据原文里本来就有这个词的除外，算转述），也不能只挂观点、推测、传闻类证据。只查事实段。"
+    }
+   },
+   "compliance": [],
+   "injection": []
   },
   {
    "id": "600499-2026-tefu-restructuring",
    "no": "3",
    "name": "科达制造 收购特福国际 51.55% 股权的重组，从筹划到终止",
-   "gold": "未标注",
+   "gold": "已标注",
    "extraction": "已抽取",
    "split": "测试集",
    "split_note": null,
-   "note": "标准答案还没标，暂不计分",
-   "extracted_file": "pipeline/extracted/600499-2026-tefu-restructuring.json"
+   "extracted_file": "pipeline/extracted/600499-2026-tefu-restructuring.json",
+   "results": {
+    "数值抽取精确匹配": {
+     "num": 2,
+     "den": 6,
+     "value": 0.3333,
+     "failures": [
+      {
+       "code": "E2c",
+       "claim": "transaction_price",
+       "what": "金标没有的版本",
+       "got": "747500~747500 万元（news:1_675878467）"
+      },
+      {
+       "code": "E2a",
+       "claim": "issue_price",
+       "version": 1,
+       "what": "漏版本",
+       "expect": "10.8~10.8 元/股（ann:1224954525）"
+      },
+      {
+       "code": "E2a",
+       "claim": "issue_price",
+       "version": 2,
+       "what": "漏版本",
+       "expect": "10.5~10.5 元/股（ann:1225424347）"
+      },
+      {
+       "code": "E2a",
+       "claim": "issue_price",
+       "what": "整项指标没有抽取"
+      }
+     ],
+     "note": null
+    },
+    "版本链": {
+     "num": 6,
+     "den": 9,
+     "value": 0.6667,
+     "failures": [
+      {
+       "code": "E2b",
+       "claim": "issue_price",
+       "edge": "v1→v2",
+       "what": "缺版本"
+      },
+      {
+       "code": "E2d",
+       "to": "ann:1225236594",
+       "expect": "关系指向 ann:1225091532",
+       "got": "证据未纳入"
+      },
+      {
+       "code": "E2d",
+       "to": "ann:1225424347",
+       "expect": "关系指向 ann:1225091532",
+       "got": "证据未纳入"
+      }
+     ],
+     "note": "其中指标相邻版本 1 条边，证据取代关系 8 条"
+    },
+    "事件状态": {
+     "num": 8,
+     "den": 8,
+     "value": 1.0,
+     "failures": [],
+     "note": "每个检查点：取截至该日最后一个披露日的状态（同一天有几条都看），有标准状态码 code 就直接用，没有才按关键字归类；状态要和金标一致，且触发它的证据要和金标相同或同一天披露。"
+    },
+    "证据类型准确率": {
+     "num": 17,
+     "den": 17,
+     "value": 1.0,
+     "failures": [],
+     "note": null
+    },
+    "来源级别准确率": {
+     "num": 17,
+     "den": 17,
+     "value": 1.0,
+     "failures": [],
+     "note": null
+    },
+    "该合并的合并了": {
+     "num": 7,
+     "den": 9,
+     "value": 0.7778,
+     "failures": [
+      {
+       "code": "E5a",
+       "evidence": "ann:1225236594",
+       "what": "该并入的没并入",
+       "role": "推进"
+      },
+      {
+       "code": "E5a",
+       "evidence": "ann:1225424347",
+       "what": "该并入的没并入",
+       "role": "方案调整"
+      }
+     ],
+     "note": null
+    },
+    "不该合并的分开了": {
+     "num": 17,
+     "den": 17,
+     "value": 1.0,
+     "failures": [],
+     "note": null
+    }
+   },
+   "process": {
+    "引用逐字匹配": {
+     "num": 27,
+     "den": 27,
+     "value": 1.0,
+     "failures": [],
+     "note": null
+    },
+    "引用挂对证据": {
+     "precision": 1.0,
+     "num": 26,
+     "den": 26,
+     "recall": 0.3333,
+     "recall_num": 1,
+     "recall_den": 3,
+     "wrong": 0,
+     "unsupported": 0,
+     "conclusions_unchecked": 16,
+     "derived_numbers": 0,
+     "price_numbers": 1,
+     "value": 1.0,
+     "failures": [],
+     "note": "精确率=挂对的引用/全部引用（证据自身引用、数值版本引用、结论里带数字的句子）；召回率=金标必含的数值版本里，被抽取用正确证据和逐字引用支撑的比例。“挂错”和“无依据”分开计数；不带数字的结论句没法自动核对，单列。结论里的差值、合计如果能由本句或本事件指标里的两个数相减或相加得到，算有依据，计入 derived_numbers；涨跌幅、收盘价能在本地日 K 线里找到的，计入 price_numbers。"
+    },
+    "回放未用到未来证据": {
+     "num": 26,
+     "den": 26,
+     "value": 1.0,
+     "failures": [],
+     "note": null
+    },
+    "冲突找出来了": {
+     "num": 0,
+     "den": 0,
+     "value": null,
+     "failures": [
+      {
+       "code": "E8b",
+       "conflict": "c1",
+       "what": "误报：不算冲突",
+       "reason": "重组委“否决”和公告“未获审核通过”是同一件事，媒体没有说终止，不算冲突"
+      },
+      {
+       "code": "E8b",
+       "conflict": "c2",
+       "what": "误报：不算冲突",
+       "reason": "74.75 亿元是 747,475.00 万元四舍五入，不是两个数"
+      }
+     ],
+     "note": null
+    },
+    "事实和推断没混": {
+     "num": 13,
+     "den": 13,
+     "value": 1.0,
+     "failures": [],
+     "note": "规则：“事实”里不能有推断用语（所挂证据原文里本来就有这个词的除外，算转述），也不能只挂观点、推测、传闻类证据。只查事实段。"
+    }
+   },
+   "compliance": [],
+   "injection": []
   },
   {
    "id": "605081-2025A-delisting",
    "no": "4",
    "name": "*ST太和 2025 年度预亏、监管、立案、预告更正、终止上市",
-   "gold": "未标注",
-   "extraction": "未抽取",
+   "gold": "已标注",
+   "extraction": "已抽取",
    "split": "测试集",
    "split_note": null,
-   "note": "标准答案还没标"
+   "extracted_file": "pipeline/extracted/605081-2025A-delisting.json",
+   "results": {
+    "数值抽取精确匹配": {
+     "num": 30,
+     "den": 30,
+     "value": 1.0,
+     "failures": [],
+     "note": "抽取另建了金标没有的指标 ['母公司销售商品、提供劳务收到的现金', '市政工程项目回款']，不计分，待裁决"
+    },
+    "版本链": {
+     "num": 16,
+     "den": 16,
+     "value": 1.0,
+     "failures": [],
+     "note": "其中指标相邻版本 10 条边，证据取代关系 6 条"
+    },
+    "事件状态": {
+     "num": 9,
+     "den": 9,
+     "value": 1.0,
+     "failures": [],
+     "note": "每个检查点：取截至该日最后一个披露日的状态（同一天有几条都看），有标准状态码 code 就直接用，没有才按关键字归类；状态要和金标一致，且触发它的证据要和金标相同或同一天披露。"
+    },
+    "证据类型准确率": {
+     "num": 25,
+     "den": 25,
+     "value": 1.0,
+     "failures": [],
+     "note": null
+    },
+    "来源级别准确率": {
+     "num": 25,
+     "den": 25,
+     "value": 1.0,
+     "failures": [],
+     "note": null
+    },
+    "该合并的合并了": {
+     "num": 12,
+     "den": 12,
+     "value": 1.0,
+     "failures": [],
+     "note": null
+    },
+    "不该合并的分开了": {
+     "num": 24,
+     "den": 24,
+     "value": 1.0,
+     "failures": [],
+     "note": null
+    }
+   },
+   "process": {
+    "引用逐字匹配": {
+     "num": 70,
+     "den": 70,
+     "value": 1.0,
+     "failures": [],
+     "note": null
+    },
+    "引用挂对证据": {
+     "precision": 1.0,
+     "num": 68,
+     "den": 68,
+     "recall": 1.0,
+     "recall_num": 15,
+     "recall_den": 15,
+     "wrong": 0,
+     "unsupported": 0,
+     "conclusions_unchecked": 25,
+     "derived_numbers": 3,
+     "price_numbers": 0,
+     "value": 1.0,
+     "failures": [],
+     "note": "精确率=挂对的引用/全部引用（证据自身引用、数值版本引用、结论里带数字的句子）；召回率=金标必含的数值版本里，被抽取用正确证据和逐字引用支撑的比例。“挂错”和“无依据”分开计数；不带数字的结论句没法自动核对，单列。结论里的差值、合计如果能由本句或本事件指标里的两个数相减或相加得到，算有依据，计入 derived_numbers；涨跌幅、收盘价能在本地日 K 线里找到的，计入 price_numbers。"
+    },
+    "回放未用到未来证据": {
+     "num": 74,
+     "den": 74,
+     "value": 1.0,
+     "failures": [],
+     "note": null
+    },
+    "冲突找出来了": {
+     "num": 1,
+     "den": 1,
+     "value": 1.0,
+     "failures": [
+      {
+       "code": "E8b",
+       "conflict": "c7",
+       "what": "误报：不算冲突",
+       "reason": "年报 4-29 晚上网、巨潮记 4-30，是披露时间精度不同，不算冲突（抽取说明第 18 条）"
+      }
+     ],
+     "note": "另找到金标的可选冲突 ['G5', 'G6', 'G7', 'G8', 'G9']"
+    },
+    "事实和推断没混": {
+     "num": 36,
+     "den": 36,
+     "value": 1.0,
+     "failures": [],
+     "note": "规则：“事实”里不能有推断用语（所挂证据原文里本来就有这个词的除外，算转述），也不能只挂观点、推测、传闻类证据。只查事实段。"
+    }
+   },
+   "compliance": [],
+   "injection": []
   },
   {
    "id": "600889-2026H1-forecast",
    "no": "5",
    "name": "*ST京化 2026 年半年度业绩预告及更正",
-   "gold": "未标注",
-   "extraction": "未抽取",
+   "gold": "已标注",
+   "extraction": "已抽取",
    "split": "测试集",
    "split_note": null,
-   "note": "标准答案还没标"
+   "extracted_file": "pipeline/extracted/600889-2026H1-forecast.json",
+   "results": {
+    "数值抽取精确匹配": {
+     "num": 10,
+     "den": 10,
+     "value": 1.0,
+     "failures": [],
+     "note": null,
+     "repeats": [
+      {
+       "claim": "subsidiary_revenue_njgy",
+       "got": "33946.27~33946.27 万元（ann:1225476643）",
+       "what": "原样重述已有版本的数，不计错"
+      }
+     ]
+    },
+    "版本链": {
+     "num": 5,
+     "den": 5,
+     "value": 1.0,
+     "failures": [],
+     "note": "其中指标相邻版本 3 条边，证据取代关系 2 条"
+    },
+    "事件状态": {
+     "num": 4,
+     "den": 4,
+     "value": 1.0,
+     "failures": [],
+     "note": "每个检查点：取截至该日最后一个披露日的状态（同一天有几条都看），有标准状态码 code 就直接用，没有才按关键字归类；状态要和金标一致，且触发它的证据要和金标相同或同一天披露。"
+    },
+    "证据类型准确率": {
+     "num": 9,
+     "den": 9,
+     "value": 1.0,
+     "failures": [],
+     "note": null
+    },
+    "来源级别准确率": {
+     "num": 9,
+     "den": 9,
+     "value": 1.0,
+     "failures": [],
+     "note": null
+    },
+    "该合并的合并了": {
+     "num": 3,
+     "den": 3,
+     "value": 1.0,
+     "failures": [],
+     "note": null
+    },
+    "不该合并的分开了": {
+     "num": 8,
+     "den": 8,
+     "value": 1.0,
+     "failures": [],
+     "note": null
+    }
+   },
+   "process": {
+    "引用逐字匹配": {
+     "num": 28,
+     "den": 28,
+     "value": 1.0,
+     "failures": [],
+     "note": null
+    },
+    "引用挂对证据": {
+     "precision": 1.0,
+     "num": 32,
+     "den": 32,
+     "recall": 1.0,
+     "recall_num": 5,
+     "recall_den": 5,
+     "wrong": 0,
+     "unsupported": 0,
+     "conclusions_unchecked": 9,
+     "derived_numbers": 3,
+     "price_numbers": 0,
+     "value": 1.0,
+     "failures": [],
+     "note": "精确率=挂对的引用/全部引用（证据自身引用、数值版本引用、结论里带数字的句子）；召回率=金标必含的数值版本里，被抽取用正确证据和逐字引用支撑的比例。“挂错”和“无依据”分开计数；不带数字的结论句没法自动核对，单列。结论里的差值、合计如果能由本句或本事件指标里的两个数相减或相加得到，算有依据，计入 derived_numbers；涨跌幅、收盘价能在本地日 K 线里找到的，计入 price_numbers。"
+    },
+    "回放未用到未来证据": {
+     "num": 33,
+     "den": 33,
+     "value": 1.0,
+     "failures": [],
+     "note": null
+    },
+    "冲突找出来了": {
+     "num": 0,
+     "den": 0,
+     "value": null,
+     "failures": [],
+     "note": "另找到金标的可选冲突 ['G1', 'G2']"
+    },
+    "事实和推断没混": {
+     "num": 11,
+     "den": 11,
+     "value": 1.0,
+     "failures": [],
+     "note": "规则：“事实”里不能有推断用语（所挂证据原文里本来就有这个词的除外，算转述），也不能只挂观点、推测、传闻类证据。只查事实段。"
+    }
+   },
+   "compliance": [],
+   "injection": []
   },
   {
    "id": "920685-2026-restructuring",
    "no": "6",
    "name": "新芝生物 重组预案到终止",
-   "gold": "未标注",
-   "extraction": "未抽取",
+   "gold": "已标注",
+   "extraction": "已抽取",
    "split": "测试集",
    "split_note": null,
-   "note": "标准答案还没标"
+   "extracted_file": "pipeline/extracted/920685-2026-restructuring.json",
+   "results": {
+    "数值抽取精确匹配": {
+     "num": 0,
+     "den": 0,
+     "value": null,
+     "failures": [],
+     "note": null
+    },
+    "版本链": {
+     "num": 3,
+     "den": 3,
+     "value": 1.0,
+     "failures": [],
+     "note": "其中指标相邻版本 0 条边，证据取代关系 3 条"
+    },
+    "事件状态": {
+     "num": 5,
+     "den": 5,
+     "value": 1.0,
+     "failures": [],
+     "note": "每个检查点：取截至该日最后一个披露日的状态（同一天有几条都看），有标准状态码 code 就直接用，没有才按关键字归类；状态要和金标一致，且触发它的证据要和金标相同或同一天披露。"
+    },
+    "证据类型准确率": {
+     "num": 14,
+     "den": 14,
+     "value": 1.0,
+     "failures": [],
+     "note": null
+    },
+    "来源级别准确率": {
+     "num": 14,
+     "den": 14,
+     "value": 1.0,
+     "failures": [],
+     "note": null
+    },
+    "该合并的合并了": {
+     "num": 4,
+     "den": 4,
+     "value": 1.0,
+     "failures": [],
+     "note": null
+    },
+    "不该合并的分开了": {
+     "num": 14,
+     "den": 14,
+     "value": 1.0,
+     "failures": [],
+     "note": null
+    }
+   },
+   "process": {
+    "引用逐字匹配": {
+     "num": 18,
+     "den": 18,
+     "value": 1.0,
+     "failures": [],
+     "note": null
+    },
+    "引用挂对证据": {
+     "precision": 1.0,
+     "num": 25,
+     "den": 25,
+     "recall": null,
+     "recall_num": 0,
+     "recall_den": 0,
+     "wrong": 0,
+     "unsupported": 0,
+     "conclusions_unchecked": 14,
+     "derived_numbers": 0,
+     "price_numbers": 0,
+     "value": 1.0,
+     "failures": [],
+     "note": "精确率=挂对的引用/全部引用（证据自身引用、数值版本引用、结论里带数字的句子）；召回率=金标必含的数值版本里，被抽取用正确证据和逐字引用支撑的比例。“挂错”和“无依据”分开计数；不带数字的结论句没法自动核对，单列。结论里的差值、合计如果能由本句或本事件指标里的两个数相减或相加得到，算有依据，计入 derived_numbers；涨跌幅、收盘价能在本地日 K 线里找到的，计入 price_numbers。"
+    },
+    "回放未用到未来证据": {
+     "num": 32,
+     "den": 32,
+     "value": 1.0,
+     "failures": [],
+     "note": null
+    },
+    "冲突找出来了": {
+     "num": 0,
+     "den": 0,
+     "value": null,
+     "failures": [],
+     "note": null
+    },
+    "事实和推断没混": {
+     "num": 16,
+     "den": 16,
+     "value": 1.0,
+     "failures": [],
+     "note": "规则：“事实”里不能有推断用语（所挂证据原文里本来就有这个词的除外，算转述），也不能只挂观点、推测、传闻类证据。只查事实段。"
+    }
+   },
+   "compliance": [],
+   "injection": []
   },
   {
    "id": "600499-2026H1-forecast",
    "no": "7",
    "name": "科达制造 2026 年半年度业绩预增到半年报（无更正，对照组）",
-   "gold": "未标注",
-   "extraction": "未抽取",
+   "gold": "已标注",
+   "extraction": "已抽取",
    "split": "测试集",
    "split_note": null,
-   "note": "标准答案还没标"
+   "extracted_file": "pipeline/extracted/600499-2026H1-forecast.json",
+   "results": {
+    "数值抽取精确匹配": {
+     "num": 8,
+     "den": 8,
+     "value": 1.0,
+     "failures": [],
+     "note": null
+    },
+    "版本链": {
+     "num": 3,
+     "den": 3,
+     "value": 1.0,
+     "failures": [],
+     "note": "其中指标相邻版本 2 条边，证据取代关系 1 条"
+    },
+    "事件状态": {
+     "num": 3,
+     "den": 3,
+     "value": 1.0,
+     "failures": [],
+     "note": "每个检查点：取截至该日最后一个披露日的状态（同一天有几条都看），有标准状态码 code 就直接用，没有才按关键字归类；状态要和金标一致，且触发它的证据要和金标相同或同一天披露。"
+    },
+    "证据类型准确率": {
+     "num": 8,
+     "den": 8,
+     "value": 1.0,
+     "failures": [],
+     "note": null
+    },
+    "来源级别准确率": {
+     "num": 8,
+     "den": 8,
+     "value": 1.0,
+     "failures": [],
+     "note": null
+    },
+    "该合并的合并了": {
+     "num": 2,
+     "den": 2,
+     "value": 1.0,
+     "failures": [],
+     "note": null
+    },
+    "不该合并的分开了": {
+     "num": 7,
+     "den": 7,
+     "value": 1.0,
+     "failures": [],
+     "note": null
+    }
+   },
+   "process": {
+    "引用逐字匹配": {
+     "num": 14,
+     "den": 14,
+     "value": 1.0,
+     "failures": [],
+     "note": null
+    },
+    "引用挂对证据": {
+     "precision": 1.0,
+     "num": 23,
+     "den": 23,
+     "recall": 1.0,
+     "recall_num": 4,
+     "recall_den": 4,
+     "wrong": 0,
+     "unsupported": 0,
+     "conclusions_unchecked": 6,
+     "derived_numbers": 1,
+     "price_numbers": 0,
+     "value": 1.0,
+     "failures": [],
+     "note": "精确率=挂对的引用/全部引用（证据自身引用、数值版本引用、结论里带数字的句子）；召回率=金标必含的数值版本里，被抽取用正确证据和逐字引用支撑的比例。“挂错”和“无依据”分开计数；不带数字的结论句没法自动核对，单列。结论里的差值、合计如果能由本句或本事件指标里的两个数相减或相加得到，算有依据，计入 derived_numbers；涨跌幅、收盘价能在本地日 K 线里找到的，计入 price_numbers。"
+    },
+    "回放未用到未来证据": {
+     "num": 24,
+     "den": 24,
+     "value": 1.0,
+     "failures": [],
+     "note": null
+    },
+    "冲突找出来了": {
+     "num": 0,
+     "den": 0,
+     "value": null,
+     "failures": [],
+     "note": null
+    },
+    "事实和推断没混": {
+     "num": 8,
+     "den": 8,
+     "value": 1.0,
+     "failures": [],
+     "note": "规则：“事实”里不能有推断用语（所挂证据原文里本来就有这个词的除外，算转述），也不能只挂观点、推测、传闻类证据。只查事实段。"
+    }
+   },
+   "compliance": [],
+   "injection": []
   },
   {
    "id": "02672-2026-11-11-clarification",
    "no": "8a",
    "name": "白鸽在线 11-11 澄清公告",
-   "gold": "未标注",
-   "extraction": "未抽取",
+   "gold": "已标注",
+   "extraction": "已抽取",
    "split": "测试集",
    "split_note": null,
-   "note": "标准答案还没标"
+   "extracted_file": "pipeline/extracted/02672-2026-11-11-clarification.json",
+   "results": {
+    "数值抽取精确匹配": {
+     "num": 0,
+     "den": 0,
+     "value": null,
+     "failures": [],
+     "note": null
+    },
+    "版本链": {
+     "num": 0,
+     "den": 0,
+     "value": null,
+     "failures": [],
+     "note": "其中指标相邻版本 0 条边，证据取代关系 0 条"
+    },
+    "事件状态": {
+     "num": 1,
+     "den": 1,
+     "value": 1.0,
+     "failures": [],
+     "note": "每个检查点：取截至该日最后一个披露日的状态（同一天有几条都看），有标准状态码 code 就直接用，没有才按关键字归类；状态要和金标一致，且触发它的证据要和金标相同或同一天披露。"
+    },
+    "证据类型准确率": {
+     "num": 1,
+     "den": 1,
+     "value": 1.0,
+     "failures": [],
+     "note": null
+    },
+    "来源级别准确率": {
+     "num": 1,
+     "den": 1,
+     "value": 1.0,
+     "failures": [],
+     "note": null
+    },
+    "该合并的合并了": {
+     "num": 1,
+     "den": 1,
+     "value": 1.0,
+     "failures": [],
+     "note": null
+    },
+    "不该合并的分开了": {
+     "num": 1,
+     "den": 1,
+     "value": 1.0,
+     "failures": [],
+     "note": null
+    }
+   },
+   "process": {
+    "引用逐字匹配": {
+     "num": 1,
+     "den": 1,
+     "value": 1.0,
+     "failures": [],
+     "note": null
+    },
+    "引用挂对证据": {
+     "precision": 1.0,
+     "num": 1,
+     "den": 1,
+     "recall": null,
+     "recall_num": 0,
+     "recall_den": 0,
+     "wrong": 0,
+     "unsupported": 0,
+     "conclusions_unchecked": 6,
+     "derived_numbers": 0,
+     "price_numbers": 0,
+     "value": 1.0,
+     "failures": [],
+     "note": "精确率=挂对的引用/全部引用（证据自身引用、数值版本引用、结论里带数字的句子）；召回率=金标必含的数值版本里，被抽取用正确证据和逐字引用支撑的比例。“挂错”和“无依据”分开计数；不带数字的结论句没法自动核对，单列。结论里的差值、合计如果能由本句或本事件指标里的两个数相减或相加得到，算有依据，计入 derived_numbers；涨跌幅、收盘价能在本地日 K 线里找到的，计入 price_numbers。"
+    },
+    "回放未用到未来证据": {
+     "num": 6,
+     "den": 6,
+     "value": 1.0,
+     "failures": [],
+     "note": null
+    },
+    "冲突找出来了": {
+     "num": 0,
+     "den": 0,
+     "value": null,
+     "failures": [],
+     "note": null
+    },
+    "事实和推断没混": {
+     "num": 5,
+     "den": 5,
+     "value": 1.0,
+     "failures": [],
+     "note": "规则：“事实”里不能有推断用语（所挂证据原文里本来就有这个词的除外，算转述），也不能只挂观点、推测、传闻类证据。只查事实段。"
+    }
+   },
+   "compliance": [],
+   "injection": []
   },
   {
    "id": "01122-2026-11-11-clarification",
    "no": "8b",
    "name": "庆铃汽车股份 11-11 澄清公告",
-   "gold": "未标注",
-   "extraction": "未抽取",
+   "gold": "已标注",
+   "extraction": "已抽取",
    "split": "测试集",
    "split_note": null,
-   "note": "标准答案还没标"
+   "extracted_file": "pipeline/extracted/01122-2026-11-11-clarification.json",
+   "results": {
+    "数值抽取精确匹配": {
+     "num": 8,
+     "den": 8,
+     "value": 1.0,
+     "failures": [],
+     "note": null
+    },
+    "版本链": {
+     "num": 3,
+     "den": 3,
+     "value": 1.0,
+     "failures": [],
+     "note": "其中指标相邻版本 2 条边，证据取代关系 1 条"
+    },
+    "事件状态": {
+     "num": 1,
+     "den": 1,
+     "value": 1.0,
+     "failures": [],
+     "note": "每个检查点：取截至该日最后一个披露日的状态（同一天有几条都看），有标准状态码 code 就直接用，没有才按关键字归类；状态要和金标一致，且触发它的证据要和金标相同或同一天披露。"
+    },
+    "证据类型准确率": {
+     "num": 2,
+     "den": 2,
+     "value": 1.0,
+     "failures": [],
+     "note": null
+    },
+    "来源级别准确率": {
+     "num": 2,
+     "den": 2,
+     "value": 1.0,
+     "failures": [],
+     "note": null
+    },
+    "该合并的合并了": {
+     "num": 2,
+     "den": 2,
+     "value": 1.0,
+     "failures": [],
+     "note": null
+    },
+    "不该合并的分开了": {
+     "num": 2,
+     "den": 2,
+     "value": 1.0,
+     "failures": [],
+     "note": null
+    }
+   },
+   "process": {
+    "引用逐字匹配": {
+     "num": 12,
+     "den": 12,
+     "value": 1.0,
+     "failures": [],
+     "note": null
+    },
+    "引用挂对证据": {
+     "precision": 1.0,
+     "num": 12,
+     "den": 12,
+     "recall": 1.0,
+     "recall_num": 4,
+     "recall_den": 4,
+     "wrong": 0,
+     "unsupported": 0,
+     "conclusions_unchecked": 4,
+     "derived_numbers": 4,
+     "price_numbers": 0,
+     "value": 1.0,
+     "failures": [],
+     "note": "精确率=挂对的引用/全部引用（证据自身引用、数值版本引用、结论里带数字的句子）；召回率=金标必含的数值版本里，被抽取用正确证据和逐字引用支撑的比例。“挂错”和“无依据”分开计数；不带数字的结论句没法自动核对，单列。结论里的差值、合计如果能由本句或本事件指标里的两个数相减或相加得到，算有依据，计入 derived_numbers；涨跌幅、收盘价能在本地日 K 线里找到的，计入 price_numbers。"
+    },
+    "回放未用到未来证据": {
+     "num": 16,
+     "den": 16,
+     "value": 1.0,
+     "failures": [],
+     "note": null
+    },
+    "冲突找出来了": {
+     "num": 2,
+     "den": 2,
+     "value": 1.0,
+     "failures": [],
+     "note": "另找到金标的可选冲突 ['G3']"
+    },
+    "事实和推断没混": {
+     "num": 8,
+     "den": 8,
+     "value": 1.0,
+     "failures": [],
+     "note": "规则：“事实”里不能有推断用语（所挂证据原文里本来就有这个词的除外，算转述），也不能只挂观点、推测、传闻类证据。只查事实段。"
+    }
+   },
+   "compliance": [],
+   "injection": []
   }
  ],
- "unmatched_extractions": [
-  "pipeline/extracted/600187-2026H1-forecast.json",
-  "pipeline/extracted/600499-2026-tefu-restructuring.json"
- ],
+ "unmatched_extractions": [],
  "gold_check": {
-  "passed": 127,
-  "total": 127,
+  "passed": 606,
+  "total": 606,
   "failures": []
+ },
+ "gold_reviews": {
+  "600187-2026H1-forecast": {
+   "review_note": "评测窗口复核（2026-11-11）：删除子任务标的可选冲突 G1（扣非下调幅度和更正原因对不上），那是按数字推出的疑点，原文没有两处直接矛盾，不符合“只记真正对不上的地方”。其余照子任务原样。",
+   "added_after_adjudication": 0,
+   "rejected_conflicts": 0
+  },
+  "600499-2026-tefu-restructuring": {
+   "review_note": "评测窗口复核（2026-11-11）：看到抽取后改了三处——news:1_680141736 从 exclude 改为可含背景；8-15 终止公告的关系目标放宽到筹划、预案、草案、未通过、终止审核；记两条误报规则（否决 vs 未获通过、74.75 亿 vs 747,475 万）。指标加别名。",
+   "added_after_adjudication": 1,
+   "rejected_conflicts": 2
+  },
+  "600499-2026H1-forecast": {
+   "review_note": "评测窗口复核（2026-11-11）：补入 7-29 异动解读为可含。",
+   "added_after_adjudication": 1,
+   "rejected_conflicts": 0
+  },
+  "600889-2026H1-forecast": {
+   "review_note": "评测窗口复核（2026-11-11）：看到抽取后补入可选冲突 G1、G2 和两条行业综述新闻，见 adjudication.md；给子公司和上年同期指标加了别名。 子公司净利润补半年报实际数 6,928.20 万元（盲标漏了）。",
+   "added_after_adjudication": 5,
+   "rejected_conflicts": 0
+  },
+  "605081-2025A-delisting": {
+   "review_note": "评测窗口复核（2026-11-11）：G2、G3 降为可选（涉及的异动解读是可选证据，抽取没收就不该要求找出冲突）；看到抽取后补入 G6–G9（3-20 回复与 5-16 更正、4-28 声明与 4-29 更正），记一条误报规则（4-29 对 4-30）；期末净资产加别名。",
+   "added_after_adjudication": 4,
+   "rejected_conflicts": 1
+  },
+  "920685-2026-restructuring": {
+   "review_note": "评测窗口复核（2026-11-11）：G1（新闻时间戳 7-07 而正文和链接是 7-21）改为可选：这是数据源的时间戳错误，不是两条证据的说法冲突；但它会让回放提前看到停牌消息，写进了给主窗口的建议。 交易作价“不超过 4 亿元”改为只有上限（low 为 null）；各指标加别名。",
+   "added_after_adjudication": 0,
+   "rejected_conflicts": 0
+  }
  },
  "traps": {
   "status": "已运行",
@@ -443,8 +1358,8 @@
    "build_exit": 0,
    "compliance_exit": 0,
    "output": [
-    "OK 3 个事件; 36 条证据",
-    "合规检查通过：3 个事件，未发现买卖建议或涨跌预测用语"
+    "OK 9 个事件; 95 条证据",
+    "合规检查通过：9 个事件，未发现买卖建议或涨跌预测用语"
    ]
   },
   "cases": [
@@ -530,13 +1445,6 @@
       "what": "漏版本"
      },
      {
-      "_m": "数值抽取精确匹配",
-      "claim": "net_profit_parent",
-      "code": "E2c",
-      "got": "-13000~-10400 万元（ann:1225230061）",
-      "what": "金标没有的版本"
-     },
-     {
       "_m": "版本链",
       "claim": "net_profit_parent",
       "code": "E2b",
@@ -555,8 +1463,8 @@
     "expected": "应判为挂错：首次披露的数字出处应是首次公告，不是更正公告",
     "pipeline": "组装退出码 0，合规检查退出码 0（放行）",
     "pipeline_output": [
-     "OK 3 个事件; 36 条证据",
-     "合规检查通过：3 个事件，未发现买卖建议或涨跌预测用语"
+     "OK 9 个事件; 95 条证据",
+     "合规检查通过：9 个事件，未发现买卖建议或涨跌预测用语"
     ],
     "eval_detects": true,
     "eval_new_failures": [
@@ -577,13 +1485,6 @@
       "expect": "-13000~-10400 万元（ann:1224956497）",
       "version": 1,
       "what": "漏版本"
-     },
-     {
-      "_m": "数值抽取精确匹配",
-      "claim": "net_profit_parent",
-      "code": "E2c",
-      "got": "-13000~-10400 万元（ann:1225121518）",
-      "what": "金标没有的版本"
      },
      {
       "_m": "版本链",
@@ -653,8 +1554,8 @@
      }
     ],
     "verdict": "管线拦住",
-    "previous_verdict": "管线放行，评测发现（已知缺口）",
-    "change": "之前放行、现在拦住"
+    "previous_verdict": "管线拦住",
+    "change": "没变"
    },
    {
     "id": "T05",
@@ -697,8 +1598,8 @@
      }
     ],
     "verdict": "管线拦住",
-    "previous_verdict": "管线放行，评测发现（已知缺口）",
-    "change": "之前放行、现在拦住"
+    "previous_verdict": "管线拦住",
+    "change": "没变"
    },
    {
     "id": "T06",
@@ -707,8 +1608,8 @@
     "expected": "应拦住：结论里的年份在所挂证据里找不到；报告期和金标不符",
     "pipeline": "组装退出码 0，合规检查退出码 0（放行）",
     "pipeline_output": [
-     "OK 3 个事件; 36 条证据",
-     "合规检查通过：3 个事件，未发现买卖建议或涨跌预测用语"
+     "OK 9 个事件; 95 条证据",
+     "合规检查通过：9 个事件，未发现买卖建议或涨跌预测用语"
     ],
     "eval_detects": true,
     "eval_new_failures": [
@@ -764,8 +1665,8 @@
      }
     ],
     "verdict": "管线拦住",
-    "previous_verdict": "管线放行，评测发现（已知缺口）",
-    "change": "之前放行、现在拦住"
+    "previous_verdict": "管线拦住",
+    "change": "没变"
    },
    {
     "id": "T08",
@@ -799,8 +1700,8 @@
     "expected": "应拦住：报告期不同，不该合并",
     "pipeline": "组装退出码 0，合规检查退出码 0（放行）",
     "pipeline_output": [
-     "OK 3 个事件; 37 条证据",
-     "合规检查通过：3 个事件，未发现买卖建议或涨跌预测用语"
+     "OK 9 个事件; 96 条证据",
+     "合规检查通过：9 个事件，未发现买卖建议或涨跌预测用语"
     ],
     "eval_detects": true,
     "eval_new_failures": [
@@ -885,8 +1786,8 @@
      }
     ],
     "verdict": "管线拦住",
-    "previous_verdict": "管线放行，评测发现（已知缺口）",
-    "change": "之前放行、现在拦住"
+    "previous_verdict": "管线拦住",
+    "change": "没变"
    },
    {
     "id": "T12",
@@ -895,8 +1796,8 @@
     "expected": "规则部分不受影响：输出应与基线一致",
     "pipeline": "除正文指纹外，输出与基线一致（规则未受影响）；被改正文的证据 ['e1'] 指纹变了，重抓比对能发现正文被动过",
     "pipeline_output": [
-     "OK 3 个事件; 36 条证据",
-     "合规检查通过：3 个事件，未发现买卖建议或涨跌预测用语"
+     "OK 9 个事件; 95 条证据",
+     "合规检查通过：9 个事件，未发现买卖建议或涨跌预测用语"
     ],
     "eval_detects": false,
     "eval_new_failures": [],
@@ -923,8 +1824,8 @@
      }
     ],
     "verdict": "管线拦住",
-    "previous_verdict": "管线放行，评测发现（已知缺口）",
-    "change": "之前放行、现在拦住"
+    "previous_verdict": "管线拦住",
+    "change": "没变"
    },
    {
     "id": "T14",
@@ -933,7 +1834,7 @@
     "expected": "合规检查拒绝",
     "pipeline": "组装退出码 0，合规检查退出码 1（拒绝）",
     "pipeline_output": [
-     "OK 3 个事件; 36 条证据",
+     "OK 9 个事件; 95 条证据",
      "600187-2025A-forecast 2026-08-20 inferences: 出现「买入」→ 建议买入，等待摘帽。"
     ],
     "eval_detects": true,
@@ -956,7 +1857,7 @@
     "expected": "合规检查拒绝",
     "pipeline": "组装退出码 0，合规检查退出码 1（拒绝）",
     "pipeline_output": [
-     "OK 3 个事件; 36 条证据",
+     "OK 9 个事件; 95 条证据",
      "600187-2025A-forecast 2026-08-20 inferences: 出现「逢低」→ 短期利空出尽，可逢低布局。",
      "600187-2025A-forecast 2026-08-20 inferences: 出现「布局」→ 短期利空出尽，可逢低布局。"
     ],
@@ -976,8 +1877,8 @@
      }
     ],
     "verdict": "管线拦住",
-    "previous_verdict": "管线放行，评测发现（已知缺口）",
-    "change": "之前放行、现在拦住"
+    "previous_verdict": "管线拦住",
+    "change": "没变"
    },
    {
     "id": "T16",
@@ -1024,8 +1925,8 @@
      }
     ],
     "verdict": "管线拦住",
-    "previous_verdict": "管线放行，评测发现（已知缺口）",
-    "change": "之前放行、现在拦住"
+    "previous_verdict": "管线拦住",
+    "change": "没变"
    },
    {
     "id": "T18",
@@ -1055,8 +1956,8 @@
      }
     ],
     "verdict": "管线拦住",
-    "previous_verdict": "管线放行，评测发现（已知缺口）",
-    "change": "之前放行、现在拦住"
+    "previous_verdict": "管线拦住",
+    "change": "没变"
    },
    {
     "id": "T19",
@@ -1065,8 +1966,8 @@
     "expected": "应拦住：版本链缺一环",
     "pipeline": "组装退出码 0，合规检查退出码 0（放行）",
     "pipeline_output": [
-     "OK 3 个事件; 36 条证据",
-     "合规检查通过：3 个事件，未发现买卖建议或涨跌预测用语"
+     "OK 9 个事件; 95 条证据",
+     "合规检查通过：9 个事件，未发现买卖建议或涨跌预测用语"
     ],
     "eval_detects": true,
     "eval_new_failures": [
@@ -1098,8 +1999,8 @@
     "change": "没变"
    }
   ],
-  "pipeline_commit": "07f9433",
-  "previous_pipeline_commit": "c186a06",
+  "pipeline_commit": "75cb91a",
+  "previous_pipeline_commit": "8254dba",
   "note": "T12 只测规则部分；抽取模型读到注入文本会不会被带偏，需要主窗口用注入后的文本重跑一次抽取才知道，本评测没有测。"
  }
 }

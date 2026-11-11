@@ -1,0 +1,552 @@
+{
+ "id": "600499-2026H1-forecast",
+ "name": "科达制造 2026 年半年度业绩：预增、半年报兑现（无更正）",
+ "code": "600499",
+ "period": "2026H1",
+ "event_type": "业绩预告",
+ "labeled_by": "Claude Opus 5.5（模型标注，不是人工标注）",
+ "labeled_at": "2026-11-11",
+ "blind": "标注时没有打开 pipeline/extracted/ 下任何文件、data/events.json、data/qa.json、data/audit*.json、eval/report.*、eval/history.json、eval/traps/、eval/adjudication.md、web/、workbench.html；只读了 eval/README.md、eval/gold/600187-2025A-forecast.json（对齐格式）、公告原文和本地新闻原始数据。",
+ "sources_read": [
+  "data/raw/text/1225415455.txt",
+  "data/raw/text/1225498055.txt",
+  "data/raw/text/1225498065.txt",
+  "data/raw/text/1225498027.txt",
+  "data/raw/text/1225637147.txt",
+  "data/raw/news/600499.SH.json（timeline 标题和摘要、anomaly 解读正文）"
+ ],
+ "scope_note": "对照组。把 2026 年以来全部公告标题过了一遍：7-09 预增公告之后，没有任何半年度业绩预告更正公告；8-25 半年报的归母净利润 128,442.02 万元、扣非归母净利润 129,972.85 万元都落在预告区间内；半年报全文“前期会计差错更正”两项都是不适用；10-29 三季报的年初至报告期末数（191,097.50 万元）和半年报加第三季度（62,655.49 万元）对得上，也没有追溯调整半年数。所以没有更正，conflicts 为空。预告只给了归母和扣非两项，营业收入和利润总额只在半年报里出现一次，建成单版本 required=false。",
+ "evidence": [
+  {
+   "key": "ann:1225415455",
+   "membership": "required",
+   "kind": "事实",
+   "tier": "A",
+   "role": "首次披露",
+   "disclosed": "2026-07-09",
+   "quote": "预计 2026 年半年度实现归属于上市公司股东的净利润为 12.60 亿元到 13.60 亿元",
+   "note": "公告落款 7-09，媒体 7-08 晚已报道"
+  },
+  {
+   "key": "ann:1225498055",
+   "membership": "required",
+   "kind": "事实",
+   "tier": "A",
+   "role": "兑现",
+   "disclosed": "2026-08-25",
+   "equivalent": [
+    "ann:1225498065"
+   ],
+   "quote": "归属于上市公司股东的净利润            128,442.02",
+   "note": "半年报摘要；半年报全文 1225498065 视为同一条。未经审计；董事会 8-24 批准，当晚上网"
+  },
+  {
+   "key": "ann:1225498027",
+   "membership": "optional",
+   "kind": "事实",
+   "tier": "A",
+   "role": "配套文件",
+   "disclosed": "2026-08-25",
+   "quote": null,
+   "note": "第九届董事会第二十二次会议决议（审议半年报）"
+  },
+  {
+   "key": "ann:1225498078",
+   "membership": "optional",
+   "kind": "事实",
+   "tier": "A",
+   "role": "其他",
+   "disclosed": "2026-08-25",
+   "quote": null,
+   "note": "半年度业绩说明会公告"
+  },
+  {
+   "key": "news:100_59415269",
+   "membership": "optional",
+   "kind": "事实",
+   "tier": "A",
+   "role": "兑现",
+   "disclosed": "2026-08-25",
+   "quote": null,
+   "note": "上交所网站半年报全文镜像"
+  },
+  {
+   "key": "news:100_59415271",
+   "membership": "optional",
+   "kind": "事实",
+   "tier": "A",
+   "role": "兑现",
+   "disclosed": "2026-08-25",
+   "quote": null,
+   "note": "半年报摘要镜像"
+  },
+  {
+   "key": "news:100_59415275",
+   "membership": "optional",
+   "kind": "事实",
+   "tier": "A",
+   "role": "其他",
+   "disclosed": "2026-08-25",
+   "quote": null
+  },
+  {
+   "key": "news:100_59666053",
+   "membership": "optional",
+   "kind": "事实",
+   "tier": "A",
+   "role": "其他",
+   "disclosed": "2026-09-04",
+   "quote": null,
+   "note": "半年度业绩说明会投资者关系活动记录表"
+  },
+  {
+   "key": "news:100_59884159",
+   "membership": "optional",
+   "kind": "事实",
+   "tier": "A",
+   "role": "其他",
+   "disclosed": "2026-09-15",
+   "quote": null
+  },
+  {
+   "key": "news:1_678042010",
+   "membership": "optional",
+   "kind": "事实",
+   "tier": "B",
+   "role": "转述",
+   "disclosed": "2026-07-08",
+   "quote": "预计2026年半年度实现归属于上市公司股东的净利润为12.6亿元到13.6亿元"
+  },
+  {
+   "key": "news:2_58827605",
+   "membership": "optional",
+   "kind": "观点",
+   "tier": "C",
+   "accept_kind": [
+    "观点",
+    "事实"
+   ],
+   "role": "评论",
+   "disclosed": "2026-07-09",
+   "quote": "取业绩预告中值，26H1公司归母净利润13.1亿元",
+   "note": "国金研报；中值和 Q2 推算是研报自己算的，与预告一致（(12.60+13.60)/2=13.10；扣非中值 13.28）"
+  },
+  {
+   "key": "news:1_678061603",
+   "membership": "optional",
+   "kind": "观点",
+   "tier": "C",
+   "role": "评论",
+   "disclosed": "2026-07-09",
+   "quote": "国金证券：给予科达制造买入评级",
+   "note": "转述国金预增点评研报"
+  },
+  {
+   "key": "news:1_678080897",
+   "membership": "optional",
+   "kind": "事实",
+   "tier": "B",
+   "role": "转述",
+   "disclosed": "2026-07-10",
+   "quote": "科达制造半年预盈超12.6亿增69%",
+   "note": "写“7月8日，科达制造公告”，是公告前一晚上网，不算冲突；后半篇讲 74.75 亿并购，两个事件都可收"
+  },
+  {
+   "key": "news:1_678130190",
+   "membership": "optional",
+   "kind": "事实",
+   "tier": "B",
+   "accept_tier": [
+    "B",
+    "C"
+   ],
+   "role": "综述",
+   "disclosed": "2026-07-13",
+   "quote": "多家负极材料产业链企业上半年业绩预喜",
+   "note": "行业综述，摘要里没出现科达"
+  },
+  {
+   "key": "news:1_678130592",
+   "membership": "optional",
+   "kind": "事实",
+   "tier": "B",
+   "accept_tier": [
+    "B",
+    "C"
+   ],
+   "role": "综述",
+   "disclosed": "2026-07-13",
+   "quote": "杉杉股份、科达制造、信德新材半年报大幅预喜"
+  },
+  {
+   "key": "news:1_678484716",
+   "membership": "optional",
+   "kind": "事实",
+   "tier": "B",
+   "role": "转述",
+   "disclosed": "2026-07-28",
+   "quote": "科达制造：上半年净利同比预增69.11%至82.53%"
+  },
+  {
+   "key": "news:1_678597573",
+   "membership": "optional",
+   "kind": "事实",
+   "tier": "B",
+   "role": "转述",
+   "disclosed": "2026-07-31",
+   "quote": "海外建材业务受益于前期投产项目产能持续释放",
+   "note": "公司调研答复，和预增公告的原因说明一致"
+  },
+  {
+   "key": "news:1_679229704",
+   "membership": "optional",
+   "kind": "事实",
+   "tier": "B",
+   "role": "转述",
+   "disclosed": "2026-08-24",
+   "quote": "科达制造半年度营业收入103.92亿元，同比增长26.92%"
+  },
+  {
+   "key": "news:1_679230470",
+   "membership": "optional",
+   "kind": "事实",
+   "tier": "B",
+   "accept_kind": [
+    "事实",
+    "观点"
+   ],
+   "accept_tier": [
+    "B",
+    "C",
+    "D"
+   ],
+   "role": "转述",
+   "disclosed": "2026-08-24",
+   "quote": "净利润12.84亿元，同比增长72.39%",
+   "note": "后半句“近五年总体财务状况尚可”是接口方模型的评价，混合体"
+  },
+  {
+   "key": "news:1_679237979",
+   "membership": "optional",
+   "kind": "事实",
+   "tier": "B",
+   "role": "转述",
+   "disclosed": "2026-08-24",
+   "quote": "归母净利润12.84亿元，同比大增72.39%"
+  },
+  {
+   "key": "news:1_679238288",
+   "membership": "optional",
+   "kind": "事实",
+   "tier": "B",
+   "role": "转述",
+   "disclosed": "2026-08-24",
+   "quote": "科达制造：上半年净利润12.84亿元，同比增长72.39%"
+  },
+  {
+   "key": "news:2_59426269",
+   "membership": "optional",
+   "kind": "观点",
+   "tier": "C",
+   "accept_kind": [
+    "观点",
+    "事实"
+   ],
+   "role": "评论",
+   "disclosed": "2026-08-25",
+   "quote": "半年报业绩点评：非洲投资加速，机械实现同增"
+  },
+  {
+   "key": "news:2_59427695",
+   "membership": "optional",
+   "kind": "观点",
+   "tier": "C",
+   "accept_kind": [
+    "观点",
+    "事实"
+   ],
+   "role": "评论",
+   "disclosed": "2026-08-25",
+   "quote": "各项主业经营向好，投资收益大幅增厚"
+  },
+  {
+   "key": "news:1_679257181",
+   "membership": "optional",
+   "kind": "观点",
+   "tier": "C",
+   "role": "评论",
+   "disclosed": "2026-08-25",
+   "quote": "国金证券：给予科达制造买入评级"
+  },
+  {
+   "key": "news:2_59493793",
+   "membership": "optional",
+   "kind": "观点",
+   "tier": "C",
+   "accept_kind": [
+    "观点",
+    "事实"
+   ],
+   "role": "评论",
+   "disclosed": "2026-08-27",
+   "quote": "业绩稳健增长，非洲出海大战略进一步强化"
+  },
+  {
+   "key": "news:2_59494223",
+   "membership": "optional",
+   "kind": "观点",
+   "tier": "C",
+   "accept_kind": [
+    "观点",
+    "事实"
+   ],
+   "role": "评论",
+   "disclosed": "2026-08-27",
+   "quote": "海外建材与碳酸锂业务盈利如预期高增",
+   "note": "“如预期”指与预告一致"
+  },
+  {
+   "key": "news:2_59757833",
+   "membership": "optional",
+   "kind": "观点",
+   "tier": "C",
+   "accept_kind": [
+    "观点",
+    "事实"
+   ],
+   "role": "评论",
+   "disclosed": "2026-09-11",
+   "quote": "海外建材延续景气，碳酸锂涨价贡献增量"
+  },
+  {
+   "key": "anomaly:2026-07-29|涨停",
+   "membership": "optional",
+   "kind": "推测",
+   "tier": "D",
+   "role": "异动归因",
+   "disclosed": "2026-07-29",
+   "quote": "公司预计2026年半年度实现归母净利润12.60亿元至13.60亿元",
+   "added_after_adjudication": true,
+   "note": "异动解读列了几条原因，其中一条是半年度预增；看到抽取后回原文补入"
+  }
+ ],
+ "exclude": [
+  {
+   "key": "ann:1224934284",
+   "reason": "特福国际重组停牌公告（事件 3）"
+  },
+  {
+   "key": "ann:1224954525",
+   "reason": "特福国际重组预案（事件 3）"
+  },
+  {
+   "key": "ann:1224954528",
+   "reason": "特福国际重组预案全文（事件 3）"
+  },
+  {
+   "key": "ann:1225091532",
+   "reason": "特福国际重组草案（事件 3）"
+  },
+  {
+   "key": "ann:1225236594",
+   "reason": "2025 年年度股东会决议，审议重组方案（事件 3）"
+  },
+  {
+   "key": "ann:1225304470",
+   "reason": "重组申请受理（事件 3）"
+  },
+  {
+   "key": "ann:1225424347",
+   "reason": "重组方案调整（事件 3），7-15 与预增公告时间相近但无关"
+  },
+  {
+   "key": "ann:1225424363",
+   "reason": "重组问询函回复（事件 3）"
+  },
+  {
+   "key": "ann:1225458608",
+   "reason": "重组未获重组委通过（事件 3）"
+  },
+  {
+   "key": "ann:1225466467",
+   "reason": "重组终止审核（事件 3）"
+  },
+  {
+   "key": "ann:1225475032",
+   "reason": "终止重大资产重组（事件 3）"
+  },
+  {
+   "key": "ann:1225046387",
+   "reason": "2025 年年度报告，报告期不同"
+  },
+  {
+   "key": "ann:1225047748",
+   "reason": "2025 年年度报告摘要，报告期不同"
+  },
+  {
+   "key": "ann:1225159683",
+   "reason": "2026 年第一季度报告，报告期不同"
+  },
+  {
+   "key": "ann:1225637147",
+   "reason": "2026 年第三季度报告，报告期不同"
+  },
+  {
+   "key": "news:1_676226166",
+   "reason": "2026 年一季报快讯"
+  },
+  {
+   "key": "news:1_675603092",
+   "reason": "2025 年年报快讯"
+  },
+  {
+   "key": "news:1_681200408",
+   "reason": "2026 年三季报快讯"
+  },
+  {
+   "key": "news:1_678669661",
+   "reason": "重组未获审核通过报道（事件 3）"
+  },
+  {
+   "key": "news:1_678971166",
+   "reason": "重组终止快讯（事件 3）"
+  }
+ ],
+ "claims": [
+  {
+   "key": "net_profit_parent",
+   "label": "归母净利润",
+   "required": true,
+   "unit": "亿元",
+   "versions": [
+    {
+     "evidence": "ann:1225415455",
+     "low": 12.6,
+     "high": 13.6,
+     "unit": "亿元",
+     "basis": "预告",
+     "quote": "预计 2026 年半年度实现归属于上市公司股东的净利润为 12.60 亿元到 13.60 亿元"
+    },
+    {
+     "evidence": "ann:1225498055",
+     "alt_evidence": [
+      "ann:1225498065"
+     ],
+     "low": 128442.02,
+     "high": 128442.02,
+     "unit": "万元",
+     "basis": "半年报（未经审计）",
+     "quote": "归属于上市公司股东的净利润            128,442.02"
+    }
+   ]
+  },
+  {
+   "key": "net_profit_deducted",
+   "label": "扣非归母净利润",
+   "required": true,
+   "unit": "亿元",
+   "versions": [
+    {
+     "evidence": "ann:1225415455",
+     "low": 12.78,
+     "high": 13.78,
+     "unit": "亿元",
+     "basis": "预告",
+     "quote": "归属于上市公司股东的扣除非经常性损益的净利润为12.78亿元到13.78亿元"
+    },
+    {
+     "evidence": "ann:1225498055",
+     "alt_evidence": [
+      "ann:1225498065"
+     ],
+     "low": 129972.85,
+     "high": 129972.85,
+     "unit": "万元",
+     "basis": "半年报（未经审计）",
+     "quote": "归属于上市公司股东的扣除非经常\n 129,972.85"
+    }
+   ]
+  },
+  {
+   "key": "revenue",
+   "label": "营业收入",
+   "required": false,
+   "unit": "万元",
+   "note": "预告没有给营业收入",
+   "versions": [
+    {
+     "evidence": "ann:1225498055",
+     "alt_evidence": [
+      "ann:1225498065"
+     ],
+     "low": 1039240.9,
+     "high": 1039240.9,
+     "unit": "万元",
+     "basis": "半年报（未经审计）",
+     "quote": "营业收入                           1,039,240.90"
+    }
+   ]
+  },
+  {
+   "key": "total_profit",
+   "label": "利润总额",
+   "required": false,
+   "unit": "万元",
+   "note": "预告只给了上年同期利润总额 13.29 亿元，没给本期",
+   "versions": [
+    {
+     "evidence": "ann:1225498055",
+     "alt_evidence": [
+      "ann:1225498065"
+     ],
+     "low": 233605.62,
+     "high": 233605.62,
+     "unit": "万元",
+     "basis": "半年报（未经审计）",
+     "quote": "利润总额                     233,605.62"
+    }
+   ]
+  }
+ ],
+ "supersessions": [
+  {
+   "from": "ann:1225415455",
+   "to": "ann:1225498055",
+   "type": "兑现",
+   "quote": "归属于上市公司股东的净利润            128,442.02",
+   "accept_targets": [
+    "ann:1225415455"
+   ]
+  }
+ ],
+ "status_checkpoints": [
+  {
+   "as_of": "2026-07-09",
+   "state": "已预告",
+   "evidence": "ann:1225415455",
+   "quote": "2026 年半年度业绩预增公告"
+  },
+  {
+   "as_of": "2026-08-24",
+   "state": "已预告",
+   "evidence": "ann:1225415455",
+   "quote": "预计 2026 年半年度实现归属于上市公司股东的净利润为 12.60 亿元到 13.60 亿元",
+   "note": "兑现前一天。半年报 8-24 晚已上网、媒体当晚报道，但巨潮披露日是 8-25"
+  },
+  {
+   "as_of": "2026-08-25",
+   "state": "已兑现",
+   "evidence": "ann:1225498055",
+   "quote": "归属于上市公司股东的净利润            128,442.02"
+  }
+ ],
+ "conflicts": [],
+ "notes": [
+  "对照组：没有更正。实际数都在预告区间内：归母 12.84 亿元（预告 12.60–13.60 亿元），扣非 13.00 亿元（预告 12.78–13.78 亿元）；同比 72.39% 在 69.11%–82.53% 内，扣非同比 85.70% 在 82.60%–96.89% 内。",
+  "预告里的上年同期数（利润总额 13.29 亿元、归母 7.45 亿元、扣非 7.00 亿元、每股收益 0.401 元）和半年报上年同期列（132,911.58、74,506.70、69,989.08 万元，0.401 元）一致。",
+  "半年报摘要“重要事项”一节写了特福国际重组被否和终止，这是事件 3 的内容，不并进来。",
+  "新闻里“7月8日公告”“8月25日发布”这类与巨潮日期差一天的写法，是公告前一晚上网，不算冲突。",
+  "公告正文里没有看到对模型说话的指令式文字。"
+ ],
+ "review_note": "评测窗口复核（2026-11-11）：补入 7-29 异动解读为可含。"
+}

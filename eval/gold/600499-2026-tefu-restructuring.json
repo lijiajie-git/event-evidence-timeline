@@ -1,0 +1,1914 @@
+{
+ "id": "600499-2026-tefu-restructuring",
+ "name": "科达制造发行股份及支付现金收购特福国际 51.55% 股权（重大资产重组）：停牌筹划、预案、草案、股东会、受理、问询与方案调整、重组委未通过、终止审核、终止",
+ "code": "600499",
+ "period": null,
+ "event_type": "重大资产重组",
+ "labeled_by": "Claude Opus 5.5（模型标注，不是人工标注）",
+ "labeled_at": "2026-11-11",
+ "blind": "标注时没有打开 pipeline/extracted/ 下任何文件、data/events.json、data/qa.json、data/audit*.json、eval/report.*、eval/history.json、eval/traps/、eval/adjudication.md、web/、workbench.html；只读了 eval/README.md、eval/gold/600187-2025A-forecast.json（对齐格式）、公告原文和本地新闻原始数据。",
+ "sources_read": [
+  "data/raw/text/1224934284.txt",
+  "data/raw/text/1224943729.txt",
+  "data/raw/text/1224954529.txt",
+  "data/raw/text/1224954525.txt",
+  "data/raw/text/1224954498.txt",
+  "data/raw/text/1224954526.txt",
+  "data/raw/text/1224959787.txt",
+  "data/raw/text/1224988138.txt",
+  "data/raw/text/1225046857.txt",
+  "data/raw/text/1225091538.txt",
+  "data/raw/text/1225091532.txt",
+  "data/raw/text/1225091531.txt",
+  "data/raw/text/1225091523.txt",
+  "data/raw/text/1225091506.txt",
+  "data/raw/text/1225091541.txt",
+  "data/raw/text/1225110769.txt",
+  "data/raw/text/1225182328.txt",
+  "data/raw/text/1225236594.txt",
+  "data/raw/text/1225304470.txt",
+  "data/raw/text/1225424347.txt",
+  "data/raw/text/1225424368.txt",
+  "data/raw/text/1225424363.txt",
+  "data/raw/text/1225424359.txt",
+  "data/raw/text/1225424376.txt",
+  "data/raw/text/1225424381.txt",
+  "data/raw/text/1225445551.txt",
+  "data/raw/text/1225446806.txt",
+  "data/raw/text/1225458608.txt",
+  "data/raw/text/1225466467.txt",
+  "data/raw/text/1225475032.txt",
+  "data/raw/text/1225475035.txt",
+  "data/raw/text/1225475036.txt",
+  "data/raw/text/1225510693.txt",
+  "data/raw/text/1225498055.txt",
+  "data/raw/text/1225575032.txt",
+  "data/raw/text/1225657841.txt",
+  "data/raw/news/600499.SH.json（timeline 标题和摘要、anomaly 解读正文）"
+ ],
+ "scope_note": "任务给的时间窗大约 1-15 至 8-15。把 2026 年以来全部公告标题过了一遍：8-15 终止之后只有 8-27 终止后的内幕信息知情人自查报告属于这件事（列为可含）；没有发现终止后又恢复或重新筹划。7-15 公司因 2025 年度分红（每股 0.30 元）把发行价格从 10.80 元/股调为 10.50 元/股、发行股数从 498,195,551 股调为 512,429,711 股，交易价格 747,475.00 万元和标的比例 51.55% 始终没变。预案阶段（1-29）交易价格和预估值都“尚未确定”，第一个交易价格出现在 4-10 草案。5-18 公司收到审核问询函，巨潮上没有单独公告，7-15 才在问询函回复提示性公告里说明，所以状态检查点不在 5-18 设点。",
+ "evidence": [
+  {
+   "key": "ann:1224934284",
+   "membership": "required",
+   "kind": "事实",
+   "tier": "A",
+   "role": "首次披露",
+   "disclosed": "2026-01-15",
+   "quote": "正在筹划以发行股份及支付现金的方式收购公司控股子公司广东特福国际控股有限公司（以下简称“标的公司”）的少数股权",
+   "note": "停牌公告，只说“少数股权”，没有比例；媒体 1-14 晚已报道"
+  },
+  {
+   "key": "ann:1224954525",
+   "membership": "required",
+   "kind": "事实",
+   "tier": "A",
+   "role": "状态变化",
+   "disclosed": "2026-01-29",
+   "equivalent": [
+    "ann:1224954528",
+    "ann:1224954529"
+   ],
+   "quote": "上市公司拟通过发行股份及支付现金的方式购买特福国际 51.55%股权，同时拟向不超过 35 名特定投资者发行股份募集配套资金",
+   "note": "预案摘要；预案全文 1224954528、预案暨复牌提示性公告 1224954529 视为同一条。首次给出 51.55% 和发行价 10.80 元/股，交易价格尚未确定"
+  },
+  {
+   "key": "ann:1225091532",
+   "membership": "required",
+   "kind": "事实",
+   "tier": "A",
+   "role": "状态变化",
+   "disclosed": "2026-04-10",
+   "equivalent": [
+    "ann:1225091511",
+    "ann:1225091538"
+   ],
+   "quote": "特福国际 51.55%股权的交易价格为 747,475.00 万元",
+   "note": "草案摘要；草案全文 1225091511、草案暨一般风险提示性公告 1225091538 视为同一条。首次给出交易价格"
+  },
+  {
+   "key": "ann:1225236594",
+   "membership": "required",
+   "kind": "事实",
+   "tier": "A",
+   "role": "推进",
+   "disclosed": "2026-04-29",
+   "quote": "联交易方案的议案》 8.01、议案名称：本次交易的整体方案 审议结果：通过",
+   "note": "2025 年年度股东会（4-28 召开）逐项审议通过本次交易方案；状态仍算草案阶段"
+  },
+  {
+   "key": "ann:1225304470",
+   "membership": "required",
+   "kind": "事实",
+   "tier": "A",
+   "role": "状态变化",
+   "disclosed": "2026-05-14",
+   "quote": "认为该项申请文件齐备，符合法定形式，决定予以受理并依法进行审核",
+   "note": "5-12 收到受理通知（上证上审（并购重组）〔2026〕25 号）"
+  },
+  {
+   "key": "ann:1225424347",
+   "membership": "required",
+   "kind": "事实",
+   "tier": "A",
+   "role": "方案调整",
+   "disclosed": "2026-07-15",
+   "quote": "按照本次交易的发行价格 10.50 元/股计算，公司本次发行的股票数量总计为 512,429,711 股",
+   "note": "因 2025 年度分红调整发行价格和股数，同时调整锁定期、业绩补偿（取消 90% 豁免线）；公司认定不构成重大调整"
+  },
+  {
+   "key": "ann:1225458608",
+   "membership": "required",
+   "kind": "事实",
+   "tier": "A",
+   "role": "状态变化",
+   "disclosed": "2026-08-05",
+   "quote": "本次会议的审议结果为：本次交易不符合重组条件或信息披露要求",
+   "note": "8-04 重组委 2026 年第 14 次会议；公告当晚上网，媒体 8-04 晚已报道"
+  },
+  {
+   "key": "ann:1225466467",
+   "membership": "required",
+   "kind": "事实",
+   "tier": "A",
+   "role": "状态变化",
+   "disclosed": "2026-08-11",
+   "equivalent": [
+    "news:100_59181227"
+   ],
+   "quote": "本所决定对你公司发行股份及支付现金购买资产并募集配套资金暨关联交易申请予以终止审核",
+   "note": "8-10 收到上交所终止审核决定（[2026]74 号），理由是未充分说明标的收入增长合理性和交易作价公允性；上交所网站 8-10 已挂出决定原件（news:100_59181227）"
+  },
+  {
+   "key": "ann:1225475032",
+   "membership": "required",
+   "kind": "事实",
+   "tier": "A",
+   "role": "终止",
+   "disclosed": "2026-08-15",
+   "quote": "决定终止通过发行股份及支付现金的方式购买广东特福国际控股有限公司",
+   "note": "8-14 第九届董事会第二十一次会议决议终止，签终止协议，承诺 1 个月内不再筹划重大资产重组"
+  },
+  {
+   "key": "ann:1224943729",
+   "membership": "optional",
+   "kind": "事实",
+   "tier": "A",
+   "role": "进展",
+   "disclosed": "2026-01-22",
+   "quote": "根据上海证券交易所的相关规定，公司股票将继续停牌"
+  },
+  {
+   "key": "ann:1224954503",
+   "membership": "optional",
+   "kind": "事实",
+   "tier": "A",
+   "role": "配套文件",
+   "disclosed": "2026-01-29",
+   "quote": null,
+   "note": "第九届董事会第十五次会议决议（审议预案）"
+  },
+  {
+   "key": "ann:1224954498",
+   "membership": "optional",
+   "kind": "事实",
+   "tier": "A",
+   "role": "配套文件",
+   "disclosed": "2026-01-29",
+   "quote": "公司董事会决定暂不召开股东会审议本次交易相关事项"
+  },
+  {
+   "key": "ann:1224954515",
+   "membership": "optional",
+   "kind": "事实",
+   "tier": "A",
+   "role": "风险提示",
+   "disclosed": "2026-01-29",
+   "quote": null
+  },
+  {
+   "key": "ann:1224954499",
+   "membership": "optional",
+   "kind": "事实",
+   "tier": "A",
+   "role": "配套文件",
+   "disclosed": "2026-01-29",
+   "quote": null
+  },
+  {
+   "key": "ann:1224959787",
+   "membership": "optional",
+   "kind": "事实",
+   "tier": "A",
+   "role": "异动说明",
+   "disclosed": "2026-01-31",
+   "quote": "公司股票于 2026 年 1 月 29 日、30 日连续两个交易日内收盘价格涨幅偏离值累计超过 20%",
+   "note": "复牌后连续两天涨幅偏离超 20% 的异常波动公告，重申审计评估未完成"
+  },
+  {
+   "key": "ann:1224988138",
+   "membership": "optional",
+   "kind": "事实",
+   "tier": "A",
+   "role": "进展",
+   "disclosed": "2026-02-28",
+   "quote": "本次交易相关的审计、评估等工作正在有序推进中"
+  },
+  {
+   "key": "ann:1225046857",
+   "membership": "optional",
+   "kind": "事实",
+   "tier": "A",
+   "role": "进展",
+   "disclosed": "2026-03-28",
+   "quote": "本次交易涉及资产的相关审计、评估等工作正在有序推进中"
+  },
+  {
+   "key": "ann:1225091531",
+   "membership": "optional",
+   "kind": "事实",
+   "tier": "A",
+   "role": "配套文件",
+   "disclosed": "2026-04-10",
+   "quote": null,
+   "note": "第九届董事会第十七次会议决议（审议草案）"
+  },
+  {
+   "key": "ann:1225091523",
+   "membership": "optional",
+   "kind": "事实",
+   "tier": "A",
+   "role": "配套文件",
+   "disclosed": "2026-04-10",
+   "quote": "重组方案简要介绍中补充了交易价格"
+  },
+  {
+   "key": "ann:1225091525",
+   "membership": "optional",
+   "kind": "事实",
+   "tier": "A",
+   "role": "配套文件",
+   "disclosed": "2026-04-10",
+   "quote": null,
+   "note": "特福国际股东全部权益价值资产评估报告"
+  },
+  {
+   "key": "ann:1225091513",
+   "membership": "optional",
+   "kind": "事实",
+   "tier": "A",
+   "role": "配套文件",
+   "disclosed": "2026-04-10",
+   "quote": null
+  },
+  {
+   "key": "ann:1225091508",
+   "membership": "optional",
+   "kind": "事实",
+   "tier": "A",
+   "role": "配套文件",
+   "disclosed": "2026-04-10",
+   "quote": null,
+   "note": "独立财务顾问报告"
+  },
+  {
+   "key": "ann:1225091537",
+   "membership": "optional",
+   "kind": "事实",
+   "tier": "A",
+   "role": "配套文件",
+   "disclosed": "2026-04-10",
+   "quote": null
+  },
+  {
+   "key": "ann:1225091506",
+   "membership": "optional",
+   "kind": "事实",
+   "tier": "A",
+   "role": "权益变动",
+   "disclosed": "2026-04-10",
+   "quote": null,
+   "note": "沈延昌、杨艳娟、森大因本次交易的权益变动提示；以交易完成为前提"
+  },
+  {
+   "key": "ann:1225091510",
+   "membership": "optional",
+   "kind": "事实",
+   "tier": "A",
+   "role": "权益变动",
+   "disclosed": "2026-04-10",
+   "quote": null
+  },
+  {
+   "key": "ann:1225110769",
+   "membership": "optional",
+   "kind": "事实",
+   "tier": "A",
+   "role": "进展",
+   "disclosed": "2026-04-17",
+   "quote": null,
+   "note": "年度股东会增加临时提案，把本次交易议案提交股东会"
+  },
+  {
+   "key": "ann:1225109389",
+   "membership": "optional",
+   "kind": "事实",
+   "tier": "A",
+   "role": "配套文件",
+   "disclosed": "2026-04-17",
+   "quote": null
+  },
+  {
+   "key": "ann:1225182328",
+   "membership": "optional",
+   "kind": "事实",
+   "tier": "A",
+   "role": "配套文件",
+   "disclosed": "2026-04-25",
+   "quote": "上市公司对本次交易相关内幕信息知情人买卖上市公司股票的情况进行了自查"
+  },
+  {
+   "key": "ann:1225424363",
+   "membership": "optional",
+   "kind": "事实",
+   "tier": "A",
+   "role": "监管问询回复",
+   "disclosed": "2026-07-15",
+   "quote": "公司于 2026 年 5 月 18 日收到上海证券交易所（以下简称“上交所”）出具",
+   "note": "审核问询函回复提示性公告；问询属于审核流程内的一步，状态仍是审核中"
+  },
+  {
+   "key": "ann:1225424340",
+   "membership": "optional",
+   "kind": "事实",
+   "tier": "A",
+   "role": "监管问询回复",
+   "disclosed": "2026-07-15",
+   "quote": null
+  },
+  {
+   "key": "ann:1225424359",
+   "membership": "optional",
+   "kind": "事实",
+   "tier": "A",
+   "role": "方案调整",
+   "disclosed": "2026-07-15",
+   "quote": null,
+   "note": "第九届董事会第二十次会议决议（方案调整）"
+  },
+  {
+   "key": "ann:1225424368",
+   "membership": "optional",
+   "kind": "事实",
+   "tier": "A",
+   "role": "方案调整",
+   "disclosed": "2026-07-15",
+   "quote": "根据上市公司现金分红情况更新了本次交易的股份发行价格"
+  },
+  {
+   "key": "ann:1225424376",
+   "membership": "optional",
+   "kind": "事实",
+   "tier": "A",
+   "role": "方案调整",
+   "disclosed": "2026-07-15",
+   "equivalent": [
+    "ann:1225424380"
+   ],
+   "quote": null,
+   "note": "草案修订稿摘要；修订稿全文 1225424380"
+  },
+  {
+   "key": "ann:1225424358",
+   "membership": "optional",
+   "kind": "事实",
+   "tier": "A",
+   "role": "配套文件",
+   "disclosed": "2026-07-15",
+   "quote": null
+  },
+  {
+   "key": "ann:1225424381",
+   "membership": "optional",
+   "kind": "事实",
+   "tier": "A",
+   "role": "权益变动",
+   "disclosed": "2026-07-15",
+   "quote": "本次权益变动以上述资产重组成功实施为前提",
+   "note": "沈延昌与 20 名交易对方签一致行动协议；重组终止后一致行动关系解除"
+  },
+  {
+   "key": "ann:1225424356",
+   "membership": "optional",
+   "kind": "事实",
+   "tier": "A",
+   "role": "权益变动",
+   "disclosed": "2026-07-15",
+   "quote": null
+  },
+  {
+   "key": "ann:1225445551",
+   "membership": "optional",
+   "kind": "事实",
+   "tier": "A",
+   "role": "进展",
+   "disclosed": "2026-07-29",
+   "quote": "要求公司及时提交重组报告书",
+   "note": "审核中心意见落实函，审核流程内的一步"
+  },
+  {
+   "key": "ann:1225445553",
+   "membership": "optional",
+   "kind": "事实",
+   "tier": "A",
+   "role": "进展",
+   "disclosed": "2026-07-29",
+   "equivalent": [
+    "ann:1225445550"
+   ],
+   "quote": null,
+   "note": "重组报告书（上会稿）"
+  },
+  {
+   "key": "ann:1225446806",
+   "membership": "optional",
+   "kind": "事实",
+   "tier": "A",
+   "role": "进展",
+   "disclosed": "2026-07-30",
+   "quote": "上交所并购重组审核委员会定于 2026 年 8 月 4 日召开 2026 年第 14 次并购重组审核委员会审议会议"
+  },
+  {
+   "key": "ann:1225475035",
+   "membership": "optional",
+   "kind": "事实",
+   "tier": "A",
+   "role": "配套文件",
+   "disclosed": "2026-08-15",
+   "quote": "公司计划于 2026 年 8 月 21 日（星期五）下午 15:00-16:00 召开终止重大资产重组的投资者说明会"
+  },
+  {
+   "key": "ann:1225475036",
+   "membership": "optional",
+   "kind": "事实",
+   "tier": "A",
+   "role": "配套文件",
+   "disclosed": "2026-08-15",
+   "quote": null,
+   "note": "独立财务顾问关于终止的核查意见"
+  },
+  {
+   "key": "ann:1225510693",
+   "membership": "optional",
+   "kind": "事实",
+   "tier": "A",
+   "role": "后续",
+   "disclosed": "2026-08-27",
+   "quote": "上市公司对终止本次交易相关内幕信息知情人买卖上市公司股票的情况进行了自",
+   "note": "终止后的内幕信息知情人自查报告（同日另有财务顾问、律师核查意见 1225510707、1225510697）"
+  },
+  {
+   "key": "news:100_55939081",
+   "membership": "optional",
+   "kind": "事实",
+   "tier": "A",
+   "role": "状态变化",
+   "disclosed": "2026-01-29",
+   "quote": null,
+   "note": "上交所网站公告原件镜像：预案暨复牌提示性公告"
+  },
+  {
+   "key": "news:100_55939099",
+   "membership": "optional",
+   "kind": "事实",
+   "tier": "A",
+   "role": "状态变化",
+   "disclosed": "2026-01-29",
+   "quote": null,
+   "note": "预案全文镜像"
+  },
+  {
+   "key": "news:100_55939085",
+   "membership": "optional",
+   "kind": "事实",
+   "tier": "A",
+   "role": "状态变化",
+   "disclosed": "2026-01-29",
+   "quote": null,
+   "note": "预案摘要镜像"
+  },
+  {
+   "key": "news:100_55939091",
+   "membership": "optional",
+   "kind": "事实",
+   "tier": "A",
+   "role": "风险提示",
+   "disclosed": "2026-01-29",
+   "quote": null
+  },
+  {
+   "key": "news:100_56465601",
+   "membership": "optional",
+   "kind": "事实",
+   "tier": "A",
+   "role": "进展",
+   "disclosed": "2026-02-28",
+   "quote": null
+  },
+  {
+   "key": "news:100_56930397",
+   "membership": "optional",
+   "kind": "事实",
+   "tier": "A",
+   "role": "进展",
+   "disclosed": "2026-03-28",
+   "quote": null
+  },
+  {
+   "key": "news:100_57235257",
+   "membership": "optional",
+   "kind": "事实",
+   "tier": "A",
+   "role": "状态变化",
+   "disclosed": "2026-04-10",
+   "quote": null,
+   "note": "草案摘要镜像"
+  },
+  {
+   "key": "news:100_57235295",
+   "membership": "optional",
+   "kind": "事实",
+   "tier": "A",
+   "role": "配套文件",
+   "disclosed": "2026-04-10",
+   "quote": null
+  },
+  {
+   "key": "news:100_57235265",
+   "membership": "optional",
+   "kind": "事实",
+   "tier": "A",
+   "role": "权益变动",
+   "disclosed": "2026-04-10",
+   "quote": null
+  },
+  {
+   "key": "news:100_58040721",
+   "membership": "optional",
+   "kind": "事实",
+   "tier": "A",
+   "role": "进展",
+   "disclosed": "2026-05-12",
+   "quote": null,
+   "note": "申报材料（评估报告）在上交所网站挂出，说明 5-12 已受理"
+  },
+  {
+   "key": "news:100_58064599",
+   "membership": "optional",
+   "kind": "事实",
+   "tier": "A",
+   "role": "状态变化",
+   "disclosed": "2026-05-14",
+   "quote": null
+  },
+  {
+   "key": "news:100_58879727",
+   "membership": "optional",
+   "kind": "事实",
+   "tier": "A",
+   "role": "监管问询回复",
+   "disclosed": "2026-07-15",
+   "quote": null
+  },
+  {
+   "key": "news:100_58879787",
+   "membership": "optional",
+   "kind": "事实",
+   "tier": "A",
+   "role": "监管问询回复",
+   "disclosed": "2026-07-15",
+   "quote": null
+  },
+  {
+   "key": "news:100_58879737",
+   "membership": "optional",
+   "kind": "事实",
+   "tier": "A",
+   "role": "权益变动",
+   "disclosed": "2026-07-15",
+   "quote": null
+  },
+  {
+   "key": "news:100_58954971",
+   "membership": "optional",
+   "kind": "事实",
+   "tier": "A",
+   "role": "监管问询回复",
+   "disclosed": "2026-07-21",
+   "quote": null,
+   "note": "上交所审核系统挂出的问询函回复（编号 6-1），巨潮没有对应公告"
+  },
+  {
+   "key": "news:100_59034917",
+   "membership": "optional",
+   "kind": "事实",
+   "tier": "A",
+   "role": "进展",
+   "disclosed": "2026-07-30",
+   "quote": null
+  },
+  {
+   "key": "news:100_59115581",
+   "membership": "optional",
+   "kind": "事实",
+   "tier": "A",
+   "role": "状态变化",
+   "disclosed": "2026-08-05",
+   "quote": null
+  },
+  {
+   "key": "news:100_59181227",
+   "membership": "optional",
+   "kind": "事实",
+   "tier": "A",
+   "role": "状态变化",
+   "disclosed": "2026-08-10",
+   "quote": "关于终止对科达制造股份有限公司发行股份及支付现金购买资产",
+   "note": "上交所终止审核决定原件，比公司公告（巨潮 8-11）早一天；按交易所文件也可认定 8-10 起终止审核"
+  },
+  {
+   "key": "news:100_59182699",
+   "membership": "optional",
+   "kind": "事实",
+   "tier": "A",
+   "role": "状态变化",
+   "disclosed": "2026-08-11",
+   "quote": null
+  },
+  {
+   "key": "news:100_59472839",
+   "membership": "optional",
+   "kind": "事实",
+   "tier": "A",
+   "role": "后续",
+   "disclosed": "2026-08-27",
+   "quote": null
+  },
+  {
+   "key": "news:1_674011314",
+   "membership": "optional",
+   "kind": "事实",
+   "tier": "B",
+   "role": "转述",
+   "disclosed": "2026-01-14",
+   "quote": "科达制造：筹划重大资产重组，股票停牌"
+  },
+  {
+   "key": "news:1_674011476",
+   "membership": "optional",
+   "kind": "事实",
+   "tier": "B",
+   "role": "转述",
+   "disclosed": "2026-01-14",
+   "quote": "筹划收购控股子公司特福国际控股少数股权 15日起停牌"
+  },
+  {
+   "key": "news:1_674022545",
+   "membership": "optional",
+   "kind": "事实",
+   "tier": "B",
+   "role": "转述",
+   "disclosed": "2026-01-14",
+   "quote": "科达制造拟收购控股子公司少数股权，自1月15日起停牌"
+  },
+  {
+   "key": "news:1_674031331",
+   "membership": "optional",
+   "kind": "事实",
+   "tier": "B",
+   "role": "转述",
+   "disclosed": "2026-01-15",
+   "quote": "停牌原因为筹划重大资产重组"
+  },
+  {
+   "key": "news:1_674373713",
+   "membership": "optional",
+   "kind": "事实",
+   "tier": "B",
+   "role": "转述",
+   "disclosed": "2026-01-28",
+   "quote": "拟购买广东特福国际控股有限公司51.55%股份 股票复牌"
+  },
+  {
+   "key": "news:1_674376718",
+   "membership": "optional",
+   "kind": "事实",
+   "tier": "B",
+   "role": "转述",
+   "disclosed": "2026-01-28",
+   "quote": "披露重组预案，科达制造1月29日起复牌"
+  },
+  {
+   "key": "news:1_674387166",
+   "membership": "optional",
+   "kind": "事实",
+   "tier": "B",
+   "role": "转述",
+   "disclosed": "2026-01-29",
+   "quote": "600499，披露重大资产重组预案，今天复牌"
+  },
+  {
+   "key": "news:1_674391337",
+   "membership": "optional",
+   "kind": "事实",
+   "tier": "B",
+   "role": "转述",
+   "disclosed": "2026-01-29",
+   "quote": "1家公司复牌：科达制造"
+  },
+  {
+   "key": "news:1_674395149",
+   "membership": "optional",
+   "kind": "事实",
+   "tier": "B",
+   "accept_kind": [
+    "事实",
+    "观点"
+   ],
+   "accept_tier": [
+    "B",
+    "C"
+   ],
+   "role": "转述",
+   "disclosed": "2026-01-29",
+   "quote": "科达制造净利连降拟买子公司剩余股权 近8年A股募23亿",
+   "note": "正文转述预案和复牌涨停；标题把“净利连降”和募资史拼在一起，有评论色彩"
+  },
+  {
+   "key": "news:2_55954875",
+   "membership": "optional",
+   "kind": "观点",
+   "tier": "C",
+   "role": "评论",
+   "disclosed": "2026-01-29",
+   "quote": "核心资产全资化，业绩弹性有望显著释放",
+   "note": "招商证券研报。“业绩弹性释放”以交易完成为前提，交易 8-15 已终止，这个判断没有兑现"
+  },
+  {
+   "key": "news:2_55964951",
+   "membership": "optional",
+   "kind": "观点",
+   "tier": "C",
+   "accept_kind": [
+    "观点",
+    "推测"
+   ],
+   "role": "评论",
+   "disclosed": "2026-01-29",
+   "quote": "重组箭在弦上，玻璃再下一城",
+   "note": "国金证券研报。“箭在弦上”默认重组会推进完成，后来重组委未通过、交易终止"
+  },
+  {
+   "key": "news:1_674409969",
+   "membership": "optional",
+   "kind": "观点",
+   "tier": "C",
+   "role": "评论",
+   "disclosed": "2026-01-29",
+   "quote": "科达制造双重利好共振 投资价值再升级",
+   "note": "媒体评论，“利好”“投资价值再升级”是判断，以交易完成为前提；交易后来终止"
+  },
+  {
+   "key": "news:1_674411578",
+   "membership": "optional",
+   "kind": "事实",
+   "tier": "B",
+   "role": "转述",
+   "disclosed": "2026-01-29",
+   "quote": "公司重组预案已披露，公司股票亦已于今日复牌",
+   "note": "互动平台答复"
+  },
+  {
+   "key": "news:1_674420130",
+   "membership": "optional",
+   "kind": "观点",
+   "tier": "C",
+   "role": "评论",
+   "disclosed": "2026-01-30",
+   "quote": "国金证券：给予科达制造买入评级",
+   "note": "转述国金 1-29 研报《重组箭在弦上》，以交易完成为前提"
+  },
+  {
+   "key": "news:1_674429110",
+   "membership": "optional",
+   "kind": "事实",
+   "tier": "B",
+   "accept_tier": [
+    "B",
+    "C"
+   ],
+   "role": "转述",
+   "disclosed": "2026-01-30",
+   "quote": "拟全资控股特福国际并投建加纳玻璃项目"
+  },
+  {
+   "key": "news:2_56017533",
+   "membership": "optional",
+   "kind": "观点",
+   "tier": "C",
+   "role": "评论",
+   "disclosed": "2026-02-02",
+   "quote": "加码特福国际股权，以重组推动海外建材业务再升级",
+   "note": "光大证券研报，以交易完成为前提；交易后来终止"
+  },
+  {
+   "key": "news:1_675878467",
+   "membership": "optional",
+   "kind": "事实",
+   "tier": "B",
+   "role": "转述",
+   "disclosed": "2026-04-09",
+   "quote": "拟74.75亿元收购特福国际51.55%股权"
+  },
+  {
+   "key": "news:1_675878588",
+   "membership": "optional",
+   "kind": "事实",
+   "tier": "B",
+   "role": "转述",
+   "disclosed": "2026-04-09",
+   "quote": "沈延昌、杨艳娟、森大集团有限公司持股比例已升至16.89%",
+   "note": "标题写“已升至”，实际 16.89% 含交易完成后认购的新股，是以交易完成为前提的测算数；交易终止后不成立"
+  },
+  {
+   "key": "news:2_57245229",
+   "membership": "optional",
+   "kind": "观点",
+   "tier": "C",
+   "role": "评论",
+   "disclosed": "2026-04-10",
+   "quote": "重组推进，携手森大共享出海红利",
+   "note": "国金证券研报，“共享出海红利”以交易完成为前提；交易后来终止"
+  },
+  {
+   "key": "news:1_675901121",
+   "membership": "optional",
+   "kind": "观点",
+   "tier": "C",
+   "accept_tier": [
+    "C",
+    "B"
+   ],
+   "role": "评论",
+   "disclosed": "2026-04-10",
+   "quote": "国金证券给予科达制造“买入”评级",
+   "note": "对应国金 4-10 研报《重组推进，携手森大共享出海红利》"
+  },
+  {
+   "key": "news:1_675909740",
+   "membership": "optional",
+   "kind": "事实",
+   "tier": "B",
+   "role": "转述",
+   "disclosed": "2026-04-10",
+   "quote": "相关事项尚需经公司股东会审议以及有关主管部门批准"
+  },
+  {
+   "key": "news:1_675923580",
+   "membership": "optional",
+   "kind": "事实",
+   "tier": "B",
+   "accept_tier": [
+    "B",
+    "C"
+   ],
+   "role": "综述",
+   "disclosed": "2026-04-12",
+   "quote": "A股并购重组活跃 多股走强"
+  },
+  {
+   "key": "news:1_676656191",
+   "membership": "optional",
+   "kind": "事实",
+   "tier": "B",
+   "role": "转述",
+   "disclosed": "2026-05-13",
+   "quote": "科达制造并购重组被受理 拟购买特福国际51.55%股权",
+   "note": "比公司受理公告（巨潮 5-14）早一天，依据是上交所网站 5-12 挂出申报稿"
+  },
+  {
+   "key": "news:1_676694175",
+   "membership": "optional",
+   "kind": "事实",
+   "tier": "B",
+   "accept_kind": [
+    "事实",
+    "观点"
+   ],
+   "role": "转述",
+   "disclosed": "2026-05-14",
+   "quote": "待本次交易标的股权完成交割后，其对应的净利润将计入归属于上市公司股东的净利润",
+   "note": "公司互动答复，条件句；交易后来终止，没有交割"
+  },
+  {
+   "key": "news:1_676728051",
+   "membership": "optional",
+   "kind": "事实",
+   "tier": "B",
+   "role": "转述",
+   "disclosed": "2026-05-15",
+   "quote": "上述资产重组事项能否获批及获批时间均存在不确定性"
+  },
+  {
+   "key": "news:1_677069273",
+   "membership": "optional",
+   "kind": "观点",
+   "tier": "C",
+   "accept_tier": [
+    "C",
+    "D"
+   ],
+   "role": "评论",
+   "disclosed": "2026-05-29",
+   "quote": "海外主业可以变简单，但得加钱！",
+   "note": "市值风云评论，讨论收购少数股权的代价"
+  },
+  {
+   "key": "news:1_677294838",
+   "membership": "optional",
+   "kind": "事实",
+   "tier": "B",
+   "role": "转述",
+   "disclosed": "2026-06-08",
+   "quote": "特福重组事项正处于上交所的问询阶段",
+   "note": "互动答复；摘要为空"
+  },
+  {
+   "key": "news:1_678080897",
+   "membership": "optional",
+   "kind": "事实",
+   "tier": "B",
+   "role": "转述",
+   "disclosed": "2026-07-10",
+   "quote": "抛74.75亿并购深化海外建材布局",
+   "note": "主要讲半年度预增，顺带讲并购；两个事件都可收"
+  },
+  {
+   "key": "news:1_678512527",
+   "membership": "optional",
+   "kind": "事实",
+   "tier": "B",
+   "role": "转述",
+   "disclosed": "2026-07-29",
+   "quote": "科达制造8月4日并购重组上会"
+  },
+  {
+   "key": "news:1_678523756",
+   "membership": "optional",
+   "kind": "事实",
+   "tier": "B",
+   "role": "转述",
+   "disclosed": "2026-07-29",
+   "quote": "8月4日上会审核"
+  },
+  {
+   "key": "news:1_678597287",
+   "membership": "optional",
+   "kind": "事实",
+   "tier": "B",
+   "role": "转述",
+   "disclosed": "2026-07-31",
+   "quote": "现已进入上交所并购重组委审核阶段"
+  },
+  {
+   "key": "news:1_678669661",
+   "membership": "optional",
+   "kind": "事实",
+   "tier": "B",
+   "role": "转述",
+   "disclosed": "2026-08-04",
+   "quote": "发行股份及支付现金购买资产事项未获审核通过"
+  },
+  {
+   "key": "news:1_678680969",
+   "membership": "optional",
+   "kind": "事实",
+   "tier": "B",
+   "role": "转述",
+   "disclosed": "2026-08-05",
+   "quote": "开盘跌停！600499，重大资产重组遇阻"
+  },
+  {
+   "key": "news:1_678682077",
+   "membership": "optional",
+   "kind": "事实",
+   "tier": "B",
+   "accept_kind": [
+    "事实",
+    "观点"
+   ],
+   "accept_tier": [
+    "B",
+    "C"
+   ],
+   "role": "转述",
+   "disclosed": "2026-08-05",
+   "quote": "科达制造近75亿元并购案遭上交所否决",
+   "note": "标题“近年罕见”“灵魂拷问”带评论色彩"
+  },
+  {
+   "key": "news:1_678682503",
+   "membership": "optional",
+   "kind": "事实",
+   "tier": "B",
+   "role": "转述",
+   "disclosed": "2026-08-05",
+   "quote": "科达制造74.7亿关联收购被否"
+  },
+  {
+   "key": "news:1_678683712",
+   "membership": "optional",
+   "kind": "事实",
+   "tier": "B",
+   "accept_tier": [
+    "B",
+    "C"
+   ],
+   "role": "转述",
+   "disclosed": "2026-08-05",
+   "quote": "年内首例并购重组被否诞生！科达制造中枪",
+   "note": "“年内首例”是媒体自己的统计判断"
+  },
+  {
+   "key": "news:1_678693045",
+   "membership": "optional",
+   "kind": "事实",
+   "tier": "B",
+   "accept_tier": [
+    "B",
+    "C"
+   ],
+   "role": "转述",
+   "disclosed": "2026-08-05",
+   "quote": "科达制造近75亿元重组被否"
+  },
+  {
+   "key": "news:1_678695536",
+   "membership": "optional",
+   "kind": "事实",
+   "tier": "B",
+   "role": "转述",
+   "disclosed": "2026-08-05",
+   "quote": "重组委问询聚焦控制权与收入合理性"
+  },
+  {
+   "key": "news:1_678703717",
+   "membership": "optional",
+   "kind": "事实",
+   "tier": "B",
+   "role": "转述",
+   "disclosed": "2026-08-05",
+   "quote": "科达制造近75亿元重组被否"
+  },
+  {
+   "key": "news:1_678733315",
+   "membership": "optional",
+   "kind": "事实",
+   "tier": "B",
+   "role": "转述",
+   "disclosed": "2026-08-06",
+   "quote": "8月6日，科达制造股份有限公司(以下简称“科达制造”)发布关于",
+   "note": "日期写错：未通过公告是 8-04 晚发的（巨潮 8-05），见冲突 G2"
+  },
+  {
+   "key": "news:1_678765287",
+   "membership": "optional",
+   "kind": "观点",
+   "tier": "C",
+   "role": "评论",
+   "disclosed": "2026-08-07",
+   "quote": "也为其他筹划重大资产重组的上市公司敲响了警钟"
+  },
+  {
+   "key": "news:1_678830980",
+   "membership": "optional",
+   "kind": "事实",
+   "tier": "B",
+   "role": "转述",
+   "disclosed": "2026-08-10",
+   "quote": "发行股份购买资产申请被上交所终止审核"
+  },
+  {
+   "key": "news:1_678836885",
+   "membership": "optional",
+   "kind": "事实",
+   "tier": "B",
+   "role": "转述",
+   "disclosed": "2026-08-10",
+   "quote": "600499，近75亿元重大资产重组被否",
+   "note": "8-10 报道的是终止审核决定，标题仍写“被否”"
+  },
+  {
+   "key": "news:1_678871791",
+   "membership": "optional",
+   "kind": "观点",
+   "tier": "C",
+   "role": "评论",
+   "disclosed": "2026-08-12",
+   "quote": "上市公司并购重组方案必须经得起审视"
+  },
+  {
+   "key": "news:1_678905919",
+   "membership": "optional",
+   "kind": "观点",
+   "tier": "C",
+   "accept_tier": [
+    "C",
+    "B"
+   ],
+   "role": "评论",
+   "disclosed": "2026-08-12",
+   "quote": "支持并购信号频出，科达制造75亿关联收购缘何被否？"
+  },
+  {
+   "key": "news:1_678971166",
+   "membership": "optional",
+   "kind": "事实",
+   "tier": "B",
+   "role": "转述",
+   "disclosed": "2026-08-14",
+   "quote": "终止收购特福国际51.55%股权重大资产重组"
+  },
+  {
+   "key": "news:1_678972022",
+   "membership": "optional",
+   "kind": "事实",
+   "tier": "B",
+   "role": "转述",
+   "disclosed": "2026-08-14",
+   "quote": "300368、600499，重大资产重组终止！"
+  },
+  {
+   "key": "news:1_678974091",
+   "membership": "optional",
+   "kind": "事实",
+   "tier": "B",
+   "role": "转述",
+   "disclosed": "2026-08-14",
+   "quote": "两A股公司，终止重大资产重组"
+  },
+  {
+   "key": "news:1_678976798",
+   "membership": "optional",
+   "kind": "事实",
+   "tier": "B",
+   "accept_kind": [
+    "事实",
+    "观点"
+   ],
+   "accept_tier": [
+    "B",
+    "C"
+   ],
+   "role": "转述",
+   "disclosed": "2026-08-14",
+   "quote": "今晚，5家公司发布利空！",
+   "note": "摘要截断，没看到科达那一段；“利空”是定性判断"
+  },
+  {
+   "key": "news:1_678977278",
+   "membership": "optional",
+   "kind": "事实",
+   "tier": "B",
+   "role": "转述",
+   "disclosed": "2026-08-14",
+   "quote": "74.75亿元收购被否后 科达制造正式终止重大资产重组"
+  },
+  {
+   "key": "news:1_678977923",
+   "membership": "optional",
+   "kind": "事实",
+   "tier": "B",
+   "accept_tier": [
+    "B",
+    "C"
+   ],
+   "role": "转述",
+   "disclosed": "2026-08-14",
+   "quote": "科达制造宣布终止收购特福国际51.55%股权"
+  },
+  {
+   "key": "news:1_678985821",
+   "membership": "optional",
+   "kind": "事实",
+   "tier": "B",
+   "accept_tier": [
+    "B",
+    "C"
+   ],
+   "role": "转述",
+   "disclosed": "2026-08-16",
+   "quote": "作价75亿、增值近220%！历时7个月被终止",
+   "note": "增值率 219.51% 出自草案评估"
+  },
+  {
+   "key": "news:1_679035986",
+   "membership": "optional",
+   "kind": "事实",
+   "tier": "B",
+   "role": "转述",
+   "disclosed": "2026-08-18",
+   "quote": "两家上市公司重大资产重组同日终止"
+  },
+  {
+   "key": "news:1_679280132",
+   "membership": "optional",
+   "kind": "观点",
+   "tier": "C",
+   "accept_kind": [
+    "观点",
+    "事实"
+   ],
+   "accept_tier": [
+    "C",
+    "B"
+   ],
+   "role": "背景",
+   "disclosed": "2026-08-26",
+   "quote": "并购潮进入“冷静期” A股重组终止案例频现",
+   "note": "行业综述，摘要没提到科达"
+  },
+  {
+   "key": "news:1_679310565",
+   "membership": "optional",
+   "kind": "事实",
+   "tier": "B",
+   "accept_kind": [
+    "事实",
+    "观点"
+   ],
+   "accept_tier": [
+    "B",
+    "C"
+   ],
+   "role": "评论",
+   "disclosed": "2026-08-26",
+   "quote": "科达制造75亿元并购折戟，“并购六条”后首例否决"
+  },
+  {
+   "key": "anomaly:2026-01-29|涨停",
+   "membership": "optional",
+   "kind": "推测",
+   "tier": "D",
+   "role": "异动归因",
+   "disclosed": "2026-01-29",
+   "quote": "收购控股子公司广东特福国际控股有限公司51.55%股权，并配套募资"
+  },
+  {
+   "key": "anomaly:2026-01-30|大涨",
+   "membership": "optional",
+   "kind": "推测",
+   "tier": "D",
+   "role": "异动归因",
+   "disclosed": "2026-01-30",
+   "quote": "交易将显著增厚业绩",
+   "note": "“显著增厚业绩”以交易完成为前提；交易后来终止"
+  },
+  {
+   "key": "anomaly:2026-02-03|大涨",
+   "membership": "optional",
+   "kind": "推测",
+   "tier": "D",
+   "role": "异动归因",
+   "disclosed": "2026-02-03",
+   "quote": "公司拟发行股份及支付现金收购广东特福国际51.55%股权",
+   "note": "同时归因于特斯拉机器人消息，混合归因；同样写了“交易将显著增厚业绩”"
+  },
+  {
+   "key": "anomaly:2026-04-10|大涨",
+   "membership": "optional",
+   "kind": "推测",
+   "tier": "D",
+   "role": "异动归因",
+   "disclosed": "2026-04-10",
+   "quote": "公司拟以74.75亿元收购广东特福国际51.55%股权",
+   "note": "把特福 2025 年实际营收净利写成“东北证券研报预测数据”，出处标注混乱"
+  },
+  {
+   "key": "anomaly:2026-06-26|大跌",
+   "membership": "optional",
+   "kind": "推测",
+   "tier": "D",
+   "role": "异动归因",
+   "disclosed": "2026-06-26",
+   "quote": "重组方案标的估值争议或对市场信心产生扰动"
+  },
+  {
+   "key": "anomaly:2026-07-29|涨停",
+   "membership": "optional",
+   "kind": "推测",
+   "tier": "D",
+   "role": "异动归因",
+   "disclosed": "2026-07-29",
+   "quote": "公司于7月28日收到上交所出具的审核中心意见落实函"
+  },
+  {
+   "key": "anomaly:2026-08-05|大跌",
+   "membership": "optional",
+   "kind": "推测",
+   "tier": "D",
+   "accept_kind": [
+    "推测",
+    "事实"
+   ],
+   "role": "异动归因",
+   "disclosed": "2026-08-05",
+   "quote": "未获得上交所重组委审核通过",
+   "note": "归因只有一条，就是转述未通过公告"
+  },
+  {
+   "key": "news:1_680141736",
+   "membership": "optional",
+   "kind": "推测",
+   "tier": "D",
+   "accept_kind": [
+    "推测",
+    "观点"
+   ],
+   "accept_tier": [
+    "C",
+    "D"
+   ],
+   "role": "背景",
+   "disclosed": "2026-09-21",
+   "quote": "重组被否后的一场重资产押注",
+   "added_after_adjudication": true,
+   "note": "原列 exclude；媒体自己把 9-21 扩产和重组被否联系起来，按事件 1 n0 的先例改为可含的背景"
+  }
+ ],
+ "exclude": [
+  {
+   "key": "ann:1225415455",
+   "reason": "2026 年半年度业绩预增公告（事件 7）"
+  },
+  {
+   "key": "ann:1225498055",
+   "reason": "2026 年半年度报告摘要（事件 7）；重要事项里提到本次重组终止，但它是半年报，不是重组证据"
+  },
+  {
+   "key": "ann:1225498065",
+   "reason": "2026 年半年度报告全文（事件 7）"
+  },
+  {
+   "key": "ann:1225498027",
+   "reason": "审议半年报的董事会决议（事件 7）"
+  },
+  {
+   "key": "ann:1224954526",
+   "reason": "同日的对外投资公告（加纳浮法玻璃项目），另一件事"
+  },
+  {
+   "key": "ann:1225091541",
+   "reason": "同日的受让福建科达新能源 14.94% 股权公告，另一笔交易"
+  },
+  {
+   "key": "ann:1225569050",
+   "reason": "9-17 受让控股子公司部分股权，另一笔交易"
+  },
+  {
+   "key": "ann:1225575032",
+   "reason": "9-22 对外投资（石墨负极项目），另一件事"
+  },
+  {
+   "key": "ann:1225657841",
+   "reason": "11-05 沈延昌等二级市场增持至 5% 的权益变动，和重组无关"
+  },
+  {
+   "key": "ann:1225046387",
+   "reason": "2025 年年度报告，别的报告期"
+  },
+  {
+   "key": "ann:1225159683",
+   "reason": "2026 年第一季度报告"
+  },
+  {
+   "key": "ann:1225637147",
+   "reason": "2026 年第三季度报告"
+  },
+  {
+   "key": "news:1_678042010",
+   "reason": "半年度业绩预增快讯（事件 7）"
+  },
+  {
+   "key": "news:1_679230470",
+   "reason": "半年报快讯（事件 7）"
+  },
+  {
+   "key": "news:1_680179315",
+   "reason": "石墨负极扩产报道，另一件事"
+  },
+  {
+   "key": "news:1_681476393",
+   "reason": "11 月沈延昌等增持至 5%，和重组无关"
+  }
+ ],
+ "claims": [
+  {
+   "key": "transaction_price",
+   "label": "标的资产（特福国际 51.55% 股权）交易价格",
+   "required": true,
+   "unit": "万元",
+   "note": "预案（1-29）写交易价格尚未确定；草案首次给出，之后修订稿、终止公告都没变",
+   "versions": [
+    {
+     "evidence": "ann:1225091532",
+     "alt_evidence": [
+      "ann:1225091511",
+      "ann:1225091538",
+      "ann:1225424376",
+      "ann:1225475032"
+     ],
+     "low": 747475.0,
+     "high": 747475.0,
+     "unit": "万元",
+     "basis": "草案",
+     "quote": "特福国际 51.55%股权的交易价格为 747,475.00 万元"
+    }
+   ],
+   "aliases": [
+    "交易作价",
+    "交易价格",
+    "标的作价",
+    "作价"
+   ]
+  },
+  {
+   "key": "issue_price",
+   "label": "发行股份购买资产的发行价格",
+   "required": true,
+   "unit": "元/股",
+   "versions": [
+    {
+     "evidence": "ann:1224954525",
+     "alt_evidence": [
+      "ann:1224954528",
+      "ann:1224954503",
+      "ann:1225091532",
+      "ann:1225091531"
+     ],
+     "low": 10.8,
+     "high": 10.8,
+     "unit": "元/股",
+     "basis": "预案",
+     "quote": "本次发行股份购买资产的发行价格为 10.80 元/股"
+    },
+    {
+     "evidence": "ann:1225424347",
+     "alt_evidence": [
+      "ann:1225424359",
+      "ann:1225424376",
+      "ann:1225424380",
+      "ann:1225424381"
+     ],
+     "low": 10.5,
+     "high": 10.5,
+     "unit": "元/股",
+     "basis": "方案调整（2025 年度每股派 0.30 元后除息调整）",
+     "quote": "按照本次交易的发行价格 10.50 元/股计算"
+    }
+   ],
+   "aliases": [
+    "发行价"
+   ]
+  },
+  {
+   "key": "shares_issued",
+   "label": "发行股份购买资产发行股数",
+   "required": false,
+   "unit": "万股",
+   "note": "原文单位是股（498,195,551 股 → 512,429,711 股）。score.py 的单位换算只认 元/万/亿/%，写“股”自检过不了，抽取写“股”也永远判不对，所以这里折成万股记、设为 required=false；数值本身没改",
+   "versions": [
+    {
+     "evidence": "ann:1225091532",
+     "alt_evidence": [
+      "ann:1225091511",
+      "ann:1225091531"
+     ],
+     "low": 49819.5551,
+     "high": 49819.5551,
+     "unit": "万股",
+     "basis": "草案",
+     "quote": "股份购买资产拟发行数量为 498,195,551 股"
+    },
+    {
+     "evidence": "ann:1225424347",
+     "alt_evidence": [
+      "ann:1225424359",
+      "ann:1225424376",
+      "ann:1225424381"
+     ],
+     "low": 51242.9711,
+     "high": 51242.9711,
+     "unit": "万股",
+     "basis": "方案调整",
+     "quote": "公司本次发行的股票数量总计为 512,429,711 股"
+    }
+   ],
+   "aliases": [
+    "发行股数",
+    "发行数量"
+   ]
+  },
+  {
+   "key": "target_stake",
+   "label": "拟购买特福国际股权比例",
+   "required": false,
+   "unit": "%",
+   "note": "1-15 停牌公告只说“少数股权”；1-29 起一直是 51.55%，没变",
+   "versions": [
+    {
+     "evidence": "ann:1224954525",
+     "alt_evidence": [
+      "ann:1224954528",
+      "ann:1224954529"
+     ],
+     "low": 51.55,
+     "high": 51.55,
+     "unit": "%",
+     "basis": "预案",
+     "quote": "上市公司拟通过发行股份及支付现金的方式购买特福国际 51.55%股权"
+    }
+   ],
+   "aliases": [
+    "股权比例",
+    "收购比例",
+    "收购股权"
+   ]
+  },
+  {
+   "key": "issued_share_ratio",
+   "label": "发行股份占发行后总股本比例（不考虑配套募资）",
+   "required": false,
+   "unit": "%",
+   "versions": [
+    {
+     "evidence": "ann:1225091532",
+     "low": 20.62,
+     "high": 20.62,
+     "unit": "%",
+     "basis": "草案",
+     "quote": "498,195,551股，占发行后上市公司总股本的比例为20.62%"
+    },
+    {
+     "evidence": "ann:1225424347",
+     "alt_evidence": [
+      "ann:1225424376"
+     ],
+     "low": 21.09,
+     "high": 21.09,
+     "unit": "%",
+     "basis": "方案调整",
+     "quote": "占发行后上市公司总股本的比例为 21.09%"
+    }
+   ]
+  },
+  {
+   "key": "target_valuation",
+   "label": "特福国际股东全部权益评估值（收益法）",
+   "required": false,
+   "unit": "万元",
+   "versions": [
+    {
+     "evidence": "ann:1225091532",
+     "alt_evidence": [
+      "ann:1225091525",
+      "ann:1225091511"
+     ],
+     "low": 1453000.0,
+     "high": 1453000.0,
+     "unit": "万元",
+     "basis": "草案",
+     "quote": "权益的评估价值为 1,453,000.00 万元"
+    }
+   ]
+  },
+  {
+   "key": "target_full_price",
+   "label": "特福国际 100% 股权作价",
+   "required": false,
+   "unit": "万元",
+   "versions": [
+    {
+     "evidence": "ann:1225091532",
+     "alt_evidence": [
+      "ann:1225091511"
+     ],
+     "low": 1450000.0,
+     "high": 1450000.0,
+     "unit": "万元",
+     "basis": "草案",
+     "quote": "协商后确定特福国际股东持有的全部股权作价为 1,450,000.00 万元"
+    }
+   ]
+  },
+  {
+   "key": "cash_consideration",
+   "label": "现金对价",
+   "required": false,
+   "unit": "万元",
+   "versions": [
+    {
+     "evidence": "ann:1225091532",
+     "alt_evidence": [
+      "ann:1225475032"
+     ],
+     "low": 209423.79,
+     "high": 209423.79,
+     "unit": "万元",
+     "basis": "草案",
+     "quote": "本次交易的现金对价              209,423.79"
+    }
+   ]
+  },
+  {
+   "key": "matching_funds",
+   "label": "募集配套资金总额",
+   "required": false,
+   "unit": "万元",
+   "versions": [
+    {
+     "evidence": "ann:1225091532",
+     "alt_evidence": [
+      "ann:1225091511"
+     ],
+     "low": 300000.0,
+     "high": 300000.0,
+     "unit": "万元",
+     "basis": "草案",
+     "quote": "合计               300,000.00          100.00%"
+    }
+   ]
+  },
+  {
+   "key": "performance_commitment",
+   "label": "业绩承诺期（2026–2028）累计承诺净利润",
+   "required": false,
+   "unit": "万元",
+   "versions": [
+    {
+     "evidence": "ann:1225091532",
+     "alt_evidence": [
+      "ann:1225091511"
+     ],
+     "low": 492000.0,
+     "high": 492000.0,
+     "unit": "万元",
+     "basis": "草案",
+     "quote": "实现净利润不低于 492,000.00 万元"
+    }
+   ]
+  },
+  {
+   "key": "compensation_trigger",
+   "label": "触发业绩补偿的累计净利润门槛",
+   "required": false,
+   "unit": "万元",
+   "note": "草案：低于承诺 90%（442,800 万元）才补偿；7-15 补充协议改为低于承诺数（492,000 万元）就补偿",
+   "versions": [
+    {
+     "evidence": "ann:1225091532",
+     "alt_evidence": [
+      "ann:1225091511"
+     ],
+     "low": 442800,
+     "high": 442800,
+     "unit": "万元",
+     "basis": "草案（业绩承诺及补偿协议）",
+     "quote": "业绩承诺期累计实现净利润达到 442,800 万元，含本数"
+    },
+    {
+     "evidence": "ann:1225424347",
+     "alt_evidence": [
+      "ann:1225424376"
+     ],
+     "low": 492000,
+     "high": 492000,
+     "unit": "万元",
+     "basis": "方案调整（补充协议）",
+     "quote": "业绩承诺期累计实现净利润未达到 492,000"
+    }
+   ]
+  }
+ ],
+ "supersessions": [
+  {
+   "from": "ann:1224934284",
+   "to": "ann:1224954525",
+   "type": "推进",
+   "quote": "本公司向上海证券交易所申请股票停牌，披露了《关于筹划重大资产重组停牌公告》（公告编号：2026-001）"
+  },
+  {
+   "from": "ann:1224954525",
+   "to": "ann:1225091532",
+   "type": "推进",
+   "quote": "本次交易方案已经上市公司第九届董事会第十五次会议、第九届董事会"
+  },
+  {
+   "from": "ann:1225091532",
+   "to": "ann:1225236594",
+   "type": "推进",
+   "quote": "联交易方案的议案》 8.01、议案名称：本次交易的整体方案 审议结果：通过"
+  },
+  {
+   "from": "ann:1225236594",
+   "to": "ann:1225304470",
+   "type": "推进",
+   "quote": "认为该项申请文件齐备，符合法定形式，决定予以受理并依法进行审核",
+   "accept_targets": [
+    "ann:1225236594",
+    "ann:1225091532"
+   ]
+  },
+  {
+   "from": "ann:1225091532",
+   "to": "ann:1225424347",
+   "type": "调整",
+   "quote": "本次发行股份购买资产的发行价格及发行数量、锁定期安排、业绩补偿及业绩奖励等事项进行了调整",
+   "accept_targets": [
+    "ann:1225091532",
+    "ann:1224954525",
+    "ann:1225236594"
+   ]
+  },
+  {
+   "from": "ann:1225304470",
+   "to": "ann:1225458608",
+   "type": "未通过",
+   "quote": "本次会议的审议结果为：本次交易不符合重组条件或信息披露要求",
+   "accept_targets": [
+    "ann:1225304470",
+    "ann:1225446806",
+    "ann:1225424347",
+    "ann:1225091532"
+   ]
+  },
+  {
+   "from": "ann:1225458608",
+   "to": "ann:1225466467",
+   "type": "终止审核",
+   "quote": "本所决定对你公司发行股份及支付现金购买资产并募集配套资金暨关联交易申请予以终止审核"
+  },
+  {
+   "from": "ann:1225466467",
+   "to": "ann:1225475032",
+   "type": "终止",
+   "quote": "鉴于本次交易未获得上交所重组委审核通过",
+   "accept_targets": [
+    "ann:1225466467",
+    "ann:1225458608",
+    "ann:1224934284",
+    "ann:1224954525",
+    "ann:1225091532"
+   ]
+  }
+ ],
+ "status_checkpoints": [
+  {
+   "as_of": "2026-01-15",
+   "state": "筹划",
+   "evidence": "ann:1224934284",
+   "quote": "关于筹划重大资产重组的停牌公告"
+  },
+  {
+   "as_of": "2026-01-28",
+   "state": "筹划",
+   "evidence": "ann:1224934284",
+   "accept_evidence": [
+    "ann:1224943729"
+   ],
+   "quote": "因本次交易尚处于筹划阶段，有关事项存在不确定性",
+   "note": "第一次状态变化（预案）前一天。董事会 1-28 开、媒体 1-28 晚已报道预案，但公告巨潮披露日是 1-29；1-22 停牌进展公告也还是筹划"
+  },
+  {
+   "as_of": "2026-01-29",
+   "state": "预案",
+   "evidence": "ann:1224954525",
+   "quote": "发行股份及支付现金购买资产并募集配套资金暨关联交易预案（摘要）"
+  },
+  {
+   "as_of": "2026-04-10",
+   "state": "草案",
+   "evidence": "ann:1225091532",
+   "quote": "发行股份及支付现金购买资产并募集配套资金暨关联交易报告书（草案）摘要"
+  },
+  {
+   "as_of": "2026-05-14",
+   "state": "审核中",
+   "evidence": "ann:1225304470",
+   "quote": "决定予以受理并依法进行审核",
+   "note": "5-18 问询、7-15 问询回复和方案调整、7-29 落实函、7-30 上会安排都在审核中阶段内，不另设点"
+  },
+  {
+   "as_of": "2026-08-05",
+   "state": "未通过",
+   "evidence": "ann:1225458608",
+   "quote": "本次会议的审议结果为：本次交易不符合重组条件或信息披露要求"
+  },
+  {
+   "as_of": "2026-08-11",
+   "state": "终止审核",
+   "evidence": "ann:1225466467",
+   "accept_evidence": [
+    "news:100_59181227"
+   ],
+   "quote": "本所决定对你公司发行股份及支付现金购买资产并募集配套资金暨关联交易申请予以终止审核",
+   "note": "上交所决定原件 8-10 已在交易所网站挂出（news:100_59181227），用它在 8-10 认定终止审核也对"
+  },
+  {
+   "as_of": "2026-08-15",
+   "state": "终止",
+   "evidence": "ann:1225475032",
+   "quote": "决定终止通过发行股份及支付现金的方式购买广东特福国际控股有限公司"
+  }
+ ],
+ "conflicts": [
+  {
+   "id": "G1",
+   "required": false,
+   "evidence": [
+    "ann:1225475032",
+    "ann:1225424347"
+   ],
+   "match_any": [
+    "佛山福锦",
+    "佛山福豪"
+   ],
+   "text": "终止公告说一致行动协议的例外是“李跃进、佛山福锦、佛山福豪”，但交易对方里叫福锦、福豪的是泰安的两家员工持股平台（泰安福锦、泰安福豪），佛山的六家平台是福团、福诚、福奋、福进、福衷、福精。按 7-15 权益变动公告，签一致行动协议的是佛山六家平台和 14 名自然人，不含李跃进和泰安两家，所以终止公告里的“佛山”应为“泰安”。另外泰安两家的全称也不统一：草案释义写“泰安福锦投资合伙企业”，7-15 方案调整公告的表格写“泰安福锦投资服务合伙企业”。",
+   "resolved_by": null,
+   "resolution": "系统推断：按草案、方案调整公告和 7-15 权益变动公告判断是终止公告的名称笔误；公司未更正，影响小",
+   "quotes": [
+    [
+     "ann:1225475032",
+     "除李跃进、佛山福锦企业管理合伙企业（有限合伙）、佛山福豪企业管理合伙企业（有限合伙）之外的其余交易对"
+    ],
+    [
+     "ann:1225424347",
+     "泰安福锦投资服务合伙"
+    ]
+   ]
+  },
+  {
+   "id": "G2",
+   "required": false,
+   "evidence": [
+    "news:1_678733315",
+    "ann:1225458608"
+   ],
+   "match_any": [
+    "8月6日"
+   ],
+   "text": "北京商报 8-06 报道说科达制造“8月6日”发布未获重组委审核通过的公告；公告实际 8-04 晚上网，巨潮披露日 8-05，落款二〇二六年八月五日。",
+   "resolved_by": "ann:1225458608",
+   "resolution": "以公告为准，媒体日期写错",
+   "quotes": [
+    [
+     "news:1_678733315",
+     "8月6日，科达制造股份有限公司(以下简称“科达制造”)发布关于"
+    ],
+    [
+     "ann:1225458608",
+     "二〇二六年八月五日"
+    ]
+   ]
+  }
+ ],
+ "notes": [
+  "研报和媒体观点里以“交易会完成”为前提的：招商 1-29（业绩弹性有望显著释放）、国金 1-29（重组箭在弦上）及证券之星 1-30 转述、证券时报网 1-29（双重利好共振）、光大 2-02（以重组推动海外建材业务再升级）、国金 4-10（携手森大共享出海红利）、每经 4-09（持股比例“已升至”16.89%，含尚未发行的新股）、异动解读 1-30 / 2-03（交易将显著增厚业绩）。交易 8-15 终止，这些判断都没有兑现。",
+  "公告正文里没有看到对模型说话的指令式文字。",
+  "原文小毛病（不算冲突）：1-31 异常波动公告把《上海证券交易所交易规则》简称成“《股票上市规则》”；3-28 进展公告引用 2-28 公告标题时漏了“配套”二字（写成“购买资产并募集资金暨关联交易事项的进展公告”）；公告里“51.55%股份”和“51.55%股权”混用。"
+ ],
+ "rejected_conflicts": [
+  {
+   "match_any": [
+    "遭否决",
+    "否决"
+   ],
+   "evidence": [
+    "news:1_678682077",
+    "ann:1225458608"
+   ],
+   "reason": "重组委“否决”和公告“未获审核通过”是同一件事，媒体没有说终止，不算冲突"
+  },
+  {
+   "match_any": [
+    "74.75"
+   ],
+   "evidence": [
+    "news:1_675878467",
+    "ann:1225475032"
+   ],
+   "reason": "74.75 亿元是 747,475.00 万元四舍五入，不是两个数"
+  }
+ ],
+ "review_note": "评测窗口复核（2026-11-11）：看到抽取后改了三处——news:1_680141736 从 exclude 改为可含背景；8-15 终止公告的关系目标放宽到筹划、预案、草案、未通过、终止审核；记两条误报规则（否决 vs 未获通过、74.75 亿 vs 747,475 万）。指标加别名。"
+}

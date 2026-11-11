@@ -5,68 +5,95 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>事件证据时间线</title>
 <meta name="description" content="同一件事在公告和报道里怎么变的：最早怎么说，后来改了什么，现在算数的是哪一版。">
+<link rel="stylesheet" href="vendor/devices-macbook-pro.css?v=dev">
 <link rel="stylesheet" href="web/stage.css?v=dev">
 </head>
 <body>
 <header class="bar">
-  <b>事件证据时间线</b>
+  <b>事件证据时间线<small>同花顺 AI 产品笔试作品</small></b>
   <nav>
+    <a href="#demo"><i>01</i>演示</a>
+    <a href="#highlights"><i>02</i>怎么做的</a>
+    <a href="#eval"><i>03</i>评测</a>
+    <a href="#ai"><i>04</i>怎么用 AI</a>
+  </nav>
+  <div class="bar-ext">
     <a href="workbench.html">工作台</a>
     <a href="https://github.com/lijiajie-git/event-evidence-timeline" target="_blank" rel="noopener">GitHub</a>
-  </nav>
+  </div>
 </header>
 
 <main>
-  <section class="hero">
-    <div class="hero-l">
-      <h1>你看到的那条消息，<br>现在还算数吗？</h1>
-      <p id="hero-sub">同一件事会被公告、快讯、评论反复说，数字还会被公司自己改。</p>
-      <a class="go" href="#demo">看它怎么解决 ↓</a>
+  <section class="brief" id="brief">
+    <div class="paper" id="paper" aria-label="一条旧消息和后来的改动"></div>
+    <div class="sum">
+      <h1 id="sum-h">消息会过期。</h1>
+      <p class="sum-sub" id="sum-sub">同一件事，公司会改好几次数字；转载过的旧消息不会跟着改。</p>
+      <div class="sols" id="sols"></div>
+      <h4>亮点</h4>
+      <div id="hls"></div>
+      <h4>不做</h4>
+      <div class="scp"><b>边界</b><span>不预测涨跌，不给买卖建议，网页不实时调用模型。</span></div>
+      <div class="cta">
+        <button class="cta-1" id="go-demo" type="button">开始演示</button>
+        <a class="cta-2" href="workbench.html">自己点点看</a>
+        <small id="dur"></small>
+      </div>
     </div>
-    <div class="hero-r" id="hero-table"></div>
   </section>
 
   <section class="stage" id="demo">
-    <div id="stage" class="st-grid">
-      <div class="dev-col">
-        <div class="ipad-box" id="ipad-box">
-          <div class="ipad" id="ipad"><div class="screen"><iframe id="ipad-frame" src="workbench.html?embed" title="工作台"></iframe></div></div>
+    <div class="st-main" id="st-main">
+      <button class="play" id="play" type="button"><span class="play-t"><span id="mode">进入演示区后自动播放</span><span id="remain"></span></span><em id="play-act">开始</em><i class="play-bar"><u id="play-fill"></u></i></button>
+      <div class="dev-wrap" id="dev-wrap">
+        <div class="dev-box" id="dev-box">
+          <div class="device device-macbook-pro-2018 device-spacegray" id="dev">
+            <div class="device-frame">
+              <div class="device-screen" id="screen">
+                <iframe id="frame" src="workbench.html?embed=full" title="工作台"></iframe>
+                <div class="spot" id="spot"></div>
+                <div class="tap" id="tap"></div>
+              </div>
+            </div>
+            <div class="device-power"></div>
+          </div>
         </div>
       </div>
-      <aside class="ai" aria-live="polite">
-        <p class="ch" id="ch"></p>
-        <h2 id="ai-title"></h2>
-        <dl class="three" id="three"></dl>
-        <p class="hint" id="hint"></p>
+      <aside class="st-side" id="side" aria-live="polite">
+        <div class="eyebrow" id="s-tag"></div>
+        <h2 id="s-h"></h2>
+        <div class="st-rule" id="s-rule"></div>
+        <p class="st-note" id="s-note"></p>
       </aside>
     </div>
     <div class="rail">
-      <div class="prog"><i id="prog"></i></div>
-      <div class="rail-row">
-        <span class="cur" id="ch-name"></span>
-        <span class="sp"></span>
+      <div class="rail-steps" id="rail-steps"></div>
+      <div class="rail-ctl">
         <button id="prev" type="button">上一段</button>
         <button id="next" type="button">下一段</button>
-        <button id="play" type="button">暂停</button>
+        <button id="replay" type="button">重播</button>
+        <button id="end-btn" type="button">结束演示</button>
       </div>
     </div>
   </section>
 
-  <section class="sec" id="highlights">
-    <h2>怎么做出来的</h2>
-    <p class="lede">模型只做读不懂就做不准的那一步，其余都是规则。</p>
+  <section class="sec later" id="highlights">
+    <div class="sec-no">02 / 怎么做的</div>
+    <h2>模型只做读不懂就做不准的那一步</h2>
     <ol class="flow" id="flow"></ol>
-    <details class="more"><summary>看逐条核查记录</summary><div id="audit-body"></div></details>
+    <details class="more"><summary>逐条核查记录</summary><div id="audit-body"></div></details>
   </section>
 
-  <section class="sec" id="eval">
+  <section class="sec later" id="eval">
+    <div class="sec-no">03 / 评测</div>
     <h2>抽得准不准</h2>
-    <div id="eval-body"><p class="lede">读取中…</p></div>
+    <div id="eval-body"></div>
   </section>
 
-  <section class="sec" id="ai">
-    <h2>我怎么用 AI 做的</h2>
-    <div id="ai-body"><p class="lede">读取中…</p></div>
+  <section class="sec later" id="ai">
+    <div class="sec-no">04 / 怎么用 AI</div>
+    <h2>一个主窗口协调，几个窗口同时做</h2>
+    <div id="ai-body"></div>
   </section>
 </main>
 
@@ -74,11 +101,10 @@
   <p>标准答案是另一个模型独立标注的，不是人工标注。</p>
   <p>网页不实时调用模型，问答是离线生成的。</p>
   <p>只整理公开信息，不构成投资建议。</p>
-  <p class="links"><a href="workbench.html">工作台</a><a href="https://github.com/lijiajie-git/event-evidence-timeline" target="_blank" rel="noopener">GitHub</a><button id="theme" type="button"></button></p>
+  <p class="links"><a href="workbench.html">工作台</a><a href="https://github.com/lijiajie-git/event-evidence-timeline" target="_blank" rel="noopener">GitHub</a><span>电脑外框来自 devices.css（MIT）</span></p>
 </footer>
 <noscript><p style="padding:20px">这个页面需要 JavaScript 才能读取数据文件。</p></noscript>
-<!-- 版本号：仓库里是 v=dev，发布时由 .github/workflows/pages.yml 换成提交号，浏览器就不会拿旧脚本配新页面。
-     模块之间的 import 也走这张表，所以被引用的模块同样带版本号。 -->
+<!-- 版本号：仓库里是 v=dev，发布时由 .github/workflows/pages.yml 换成提交号。模块之间的 import 也走这张表。 -->
 <script type="importmap">{"imports": {
   "./web/core.js": "./web/core.js?v=dev",
   "./web/verify.js": "./web/verify.js?v=dev",

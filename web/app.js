@@ -10,7 +10,10 @@ import { loadText, locate, diffDocs, charDiff } from './source.js';
 const $ = (s, r = document) => r.querySelector(s);
 const $$ = (s, r = document) => [...r.querySelectorAll(s)];
 const embedded = new URLSearchParams(location.search).has('embed');
+// embed=full：演示页电脑屏幕里放的整页（带顶栏和左栏）
+const embedFull = new URLSearchParams(location.search).get('embed') === 'full';
 if (embedded) document.documentElement.classList.add('embedded');
+if (embedFull) document.documentElement.classList.add('embed-full');
 
 let DATA = null, QA = null, QA_RES = null, RECHECK = null;
 const S = { only: null, tableOpen: false, mergeOpen: false, view: 'event', eventId: null, D: null, claimMode: 'line', tiers: null, focus: null, qaId: null, ask: '', verifyText: '', openTrace: false, revOpen: false, revView: null };
@@ -205,8 +208,11 @@ function chart(e, a) {
   </section>`;
 }
 
+const LANE_MEM = { ev: null, seg: new Map(), cx: null };
 function drawLanes(e, a) {
   const box = $('#lanes'); if (!box) return;
+  if (LANE_MEM.ev !== e.id) { LANE_MEM.ev = e.id; LANE_MEM.seg = new Map(); LANE_MEM.cx = null; }
+  const seen = new Map();
   const { T, start, end } = chartRange(e);
   const lanes = a.claims.filter((c) => c.all.some((v) => v.low != null || v.high != null)).slice(0, 6);
   const hist = e.status_history || [];
@@ -245,13 +251,18 @@ function drawLanes(e, a) {
       const isCur = v === c.current, isVoid = isCur && c.voided, has = v.low != null || v.high != null;
       const label = has ? rangeText(v, c.unit) : '没给数字';
       const fits = x1 - x0 > label.length * 7 + 14;
-      g.push(`<g class="seg ${isVoid ? 'void' : isCur ? 'cur' : 'old'}" data-src="${esc(v.evidence_id)}" data-q="${esc(v.quote || '')}"><title>${esc(`${v.valid_from} ${label}：${v.quote || ''}`)}</title>
+      const key = c.key + '|' + (v.v ?? v.valid_from), was = LANE_MEM.seg.get(key), w = x1 - x0;
+      seen.set(key, w);
+      const grow = was === undefined || Math.abs(was - w) > 0.5;
+      g.push(`<g class="seg ${isVoid ? 'void' : isCur ? 'cur' : 'old'} ${grow ? 'grow' : ''}" style="--from:${was === undefined ? 0 : Math.min(1, was / w).toFixed(3)}" data-src="${esc(v.evidence_id)}" data-q="${esc(v.quote || '')}"><title>${esc(`${v.valid_from} ${label}：${v.quote || ''}`)}</title>
         <rect x="${x0}" y="${y + 7}" width="${x1 - x0}" height="${bh}" rx="1"/>${fits ? `<text x="${x0 + 7}" y="${ty}">${esc(label)}</text>` : isCur && x1 + label.length * 7 + 10 < L + PW ? `<text x="${x1 + 6}" y="${ty}" class="curlbl">${esc(label)}</text>` : ''}</g>`);
     });
   });
   // 截至线
   const cx = a.D >= T ? x(end) : x(a.D);
-  g.push(`<line x1="${cx}" x2="${cx}" y1="${top - 20}" y2="${H}" class="cursor"/><text x="${cx}" y="${top - 12}" class="cl" text-anchor="${cx > L + PW - 40 ? 'end' : 'middle'}">${a.D >= T ? '今天' : md(a.D)}</text>`);
+  const dx = LANE_MEM.cx == null ? 0 : LANE_MEM.cx - cx;
+  g.push(`<g class="cur-g ${dx ? 'mv' : ''}" style="--dx:${dx.toFixed(1)}px"><line x1="${cx}" x2="${cx}" y1="${top - 20}" y2="${H}" class="cursor"/><text x="${cx}" y="${top - 12}" class="cl" text-anchor="${cx > L + PW - 40 ? 'end' : 'middle'}">${a.D >= T ? '今天' : md(a.D)}</text></g>`);
+  LANE_MEM.cx = cx; LANE_MEM.seg = seen;
   box.innerHTML = `<svg width="${W}" height="${H}" viewBox="0 0 ${W} ${H}">${g.join('')}</svg>${lanes.length ? '' : '<p class="empty">这件事没有抽取数字，变化在状态和证据里。</p>'}`;
   const svg = box.querySelector('svg');
   const pick = (ev2) => {
@@ -395,7 +406,7 @@ function answer(q) {
   const tr = Array.isArray(q.trace) ? q.trace : null;
   return `<div class="answer" id="answer" data-event="${esc(q.event_id || '')}"><p class="qq">${esc(q.question)}</p>
     <div class="meta">${e ? esc(e.name) + ' · ' : ''}截至 ${q.as_of ? esc(q.as_of) : miss('未记录')}</div>
-    ${ans.length ? `<ol class="sent">${ans.map((s) => `<li class="k-${esc(s.kind)}"><span class="kind k-${esc(s.kind)}">${s.kind ? esc(s.kind) : miss('未标')}</span><span>${tx(e, s.text)}${e ? tags(e, s.evidence_ids) : ''}</span></li>`).join('')}</ol>` : `<p>${miss('回答未生成')}</p>`}
+    ${ans.length ? `<ol class="sent">${ans.map((s, i) => `<li class="k-${esc(s.kind)}" style="--i:${i}"><span class="kind k-${esc(s.kind)}">${s.kind ? esc(s.kind) : miss('未标')}</span><span>${tx(e, s.text)}${e ? tags(e, s.evidence_ids) : ''}</span></li>`).join('')}</ol>` : `<p>${miss('回答未生成')}</p>`}
     <details class="trace" ${S.openTrace ? 'open' : ''}><summary>它是怎么得出这个回答的（${tr ? tr.length + ' 步' : '未生成'}）</summary>
       ${tr ? `<ol>${tr.map((t) => `<li><b>${esc(t.step)}</b> ${tx(e, t.detail || '')}
         ${t.used && t.used.length ? `<div class="x">用了：${t.used.map((id) => esc(nm(e, id))).join('、')}</div>` : ''}

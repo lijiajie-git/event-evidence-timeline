@@ -59,7 +59,7 @@ for path in sorted(glob.glob("pipeline/extracted/*.json")):
     for x in e["evidence"]:
         meta, texts[x["id"]] = resolve(x, th, news)
         if not meta: continue
-        occ = x.pop("occurred", None) or e["occurred"]
+        occ = x.pop("occurred", None) or (e["occurred"] if x["src"] == "ann" else dict(date="未抽取", note="报道所述事项的发生日期没有抽取"))
         x.update(title=meta["title"], url=meta["url"], source=meta["source"], channel=meta["channel"], source_tier=x.pop("tier"),
                  times=dict(occurred=occ, disclosed=meta["published_at"][:10], published_at=meta["published_at"], precision=meta["precision"],
                             signed=x.pop("signed", None), fetched=meta["fetched"], updated=None))

@@ -112,11 +112,11 @@ for path in FILES:
         c["versions"] = vs
         for a, b in zip(vs, vs[1:]):
             if b["valid_from"] < a["valid_from"]: errs.append(f"{e['id']} {c['key']}: 第 {b['v']} 版的生效日早于第 {a['v']} 版")
-        if e["type"] == "业绩预告" and len(vs) > 1 and vs[-1].get("basis", "").startswith("年报") and vs[0]["low"] is not None:
+        if e["type"] == "业绩预告" and len(vs) > 1 and vs[-1].get("basis", "").startswith(("年报", "半年报", "半年度报告", "年度报告")) and vs[0]["low"] is not None:
             a, lo, hi = vs[-1]["low"], vs[0]["low"], vs[0]["high"]
             c["forecast_gap"] = dict(first_low=lo, first_high=hi, actual=a, unit=c.get("unit"), within_first_range=lo <= a <= hi,
                                      gap_to_nearer_bound=0 if lo <= a <= hi else round(min(abs(a - lo), abs(a - hi)), 2), revisions=len(vs) - 2,
-                                     note="首次预告区间和年报数的差。只陈列已发生的事实，不代表对今后预告的判断。")
+                                     note="首次预告区间和定期报告实际数的差。只陈列已发生的事实，不代表对今后预告的判断。")
     for c in e.get("conflicts", []):
         c["quotes"] = [dict(evidence_id=i, quote=q) for i, q in c["quotes"]]
         for q in c["quotes"]: check(q["evidence_id"], q["quote"], texts, f"冲突 {c['id']}")

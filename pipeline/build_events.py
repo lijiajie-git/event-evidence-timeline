@@ -91,6 +91,8 @@ for path in FILES:
                  times=dict(occurred=occ, disclosed=meta["published_at"][:10], published_at=meta["published_at"], precision=meta["precision"],
                             signed=x.pop("signed", None), fetched=meta["fetched"], updated=None))
         x["snapshot"] = dict(sha256_16=sha(texts[x["id"]]), taken_at=meta["fetched"], of="公告正文（去空白后）" if x["src"] == "ann" else "标题加摘要（去空白后）") if texts[x["id"]] else None
+        short = re.sub(r"^.{0,24}?(股份)?有限公司", "", x["title"]).strip(" ：:-") or x["title"]
+        x["label"] = x.get("doc_no") or ((short[:15] + "…") if len(short) > 16 else short) if x["src"] == "ann" else x["source"]
         x["weight"] = WEIGHTS[x["source_tier"]]["w"]; x["tier_note"] = WEIGHTS[x["source_tier"]]["label"]
         if x.get("quote"): check(x["id"], x["quote"], texts, x["id"])
         if x["src"] == "anomaly" and x["source_tier"] != "D": errs.append(f"{x['id']}: 异动解读的来源级别只能是 D")

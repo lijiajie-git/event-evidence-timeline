@@ -12,13 +12,25 @@ def search(key, n=30):
     return post("http://www.cninfo.com.cn/new/fulltextSearch/full?" + q).get("announcements") or []
 def by_stock(code, org):
     out = []
-    for p in range(1, 6):
+    for p in range(1, 31):
         r = post("http://www.cninfo.com.cn/new/hisAnnouncement/query", dict(stock=f"{code},{org}", tabName="fulltext", pageSize=30, pageNum=p, column="", category="", plate="", seDate=f"{SD}~{ED}", searchkey="", secid="", sortName="", sortType="", isHLtitle="true"))
         out += r.get("announcements") or []
         if not r.get("hasMore"): break
         time.sleep(0.3)
     return out
+import sys
 picked = {}
+if len(sys.argv) > 1:  # 指定股票补抓: python3 pipeline/fetch.py 600499,gssh0600499,科达制造
+    old = json.load(open("data/raw/announcements.json"))
+    code, org, name = sys.argv[1].split(",")
+    now = datetime.datetime.now(datetime.timezone.utc).isoformat(timespec="seconds")
+    have = {r["id"] for r in old}
+    for a in by_stock(code, org):
+        if a["announcementId"] not in have:
+            old.append(dict(id=a["announcementId"], code=code, name=name, picked_by="补抓", title=re.sub(r"</?em>", "", a["announcementTitle"]),
+                disclosed_ms=a["announcementTime"], url="http://static.cninfo.com.cn/" + a["adjunctUrl"], fetched_at=now, source="巨潮资讯网"))
+    json.dump(old, open("data/raw/announcements.json", "w"), ensure_ascii=False, indent=1)
+    print("补抓后共", len(old), "条"); sys.exit()
 for key, k in [("业绩预告更正", 3), ("澄清公告", 3), ("终止重大资产重组", 2)]:
     c = 0
     for a in search(key):

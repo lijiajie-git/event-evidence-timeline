@@ -1,87 +1,109 @@
-"""把抽取结果组装成前端读的 data/events.json，并逐字校验每条引用。
-抽取（说法、数值、关系、类型）由大模型离线完成；本脚本只做规则部分：
-拼时间、算状态、校验引用。引用在公告原文里匹配不到的说法直接丢弃并报错。
+"""把抽取结果（pipeline/extracted/*.json）组装成前端读的 data/events.json。
+抽取结果由大模型离线产出：证据类型、关系、各版数字、分时点结论、冲突。
+本脚本只做规则部分：补来源元数据和时间、算权重和状态、截行情片段、逐字校验引用。
+任何一条引用在原文里匹配不到，或引用了不存在的证据编号，就报错退出，不生成文件。
 用法: python3 pipeline/build_events.py"""
-import json, re, datetime, sys
+import json, re, datetime, sys, glob, os
 BJ = datetime.timezone(datetime.timedelta(hours=8))
-raw = {r["id"]: r for r in json.load(open("data/raw/announcements.json"))}
-norm = lambda s: re.sub(r"\s+", "", s).replace("，", ",")
-def text(i): return norm(open(f"data/raw/text/{i}.txt").read())
-def day(ms): return datetime.datetime.fromtimestamp(ms / 1000, BJ).strftime("%Y-%m-%d")
-
-# ---- 抽取结果（大模型离线抽取，人工抽查；数值单位：万元）----
-E = [dict(
-  id="600187-2025A-forecast", code="600187", name="*ST国中", type="业绩预告", period="2025 年年度",
-  title="2025 年年度业绩预告及两次更正",
-  merge_reason="同一公司、同一报告期（2025-01-01 至 2025-12-31）的业绩预告；后两份公告在正文中点名引用前一份的公告编号（临 2026-003、临 2026-014）。",
-  occurred=dict(start="2025-01-01", end="2025-12-31", note="说法所指的报告期"),
-  evidence=[
-    dict(id="e1", ann="1224956497", doc_no="临 2026-003", signed="2026-01-30", kind="事实", relation=dict(type="首次披露")),
-    dict(id="e2", ann="1225121518", doc_no="临 2026-014", signed=None, kind="事实", relation=dict(type="更正", target="e1"),
-         reason="子公司荣县水务增补确认的污水处理费 2,207 万元询证函未回函，无法确认收入。",
-         reason_quote="询证函未得到回函，因此无法确认这部分污水处理费所形成的收入"),
-    dict(id="e3", ann="1225230061", doc_no="临 2026-015", signed=None, kind="事实", relation=dict(type="更正", target="e2"),
-         reason="对诸暨文盛汇（间接持有北京汇源 20.89%）的长期投资，2025 年度不再确认投资收益，并计提资产减值损失。",
-         reason_quote="现2025年度不再确认投资收益，同时计提资产减值损失"),
-  ],
-  claims=[
-    dict(key="归母净利润", versions=[
-      ("e1", -13000, -10400, "归属于母公司所有者的净利润-13,000万元到-10,400万元"),
-      ("e2", -15500, -13000, "归属于母公司所有者的净利润-15,500万元到-13,000万元"),
-      ("e3", -21491, -21491, "归属于母公司所有者的净利润-21,491万元")]),
-    dict(key="扣非净利润", versions=[
-      ("e1", 900, 1080, "扣除非经常性损益后的净利润为900万元到1,080万元"),
-      ("e2", -3600, -2900, "扣除非经常性损益后的净利润为-3,600万元到-2,900万元"),
-      ("e3", -5976, -5976, "扣除非经常性损益后的净利润为-5,976万元")]),
-    dict(key="利润总额", versions=[
-      ("e1", -11000, -8800, "利润总额-11,000万元到-8,800万元"),
-      ("e2", -13900, -11200, "利润总额-13,900万元到-11,200万元"),
-      ("e3", -19651, -19651, "利润总额-19,651万元")]),
-    dict(key="营业收入", versions=[
-      ("e1", 21000, 25200, "营业收入21,000万元到25,200万元"),
-      ("e2", 20000, 24000, "营业收入20,000万元到24,000万元"),
-      ("e3", 22282, 22282, "营业收入22,282万元")]),
-  ],
-  conflicts=[dict(
-    id="c1", kind="日期不一致", evidence_ids=["e2", "e1"],
-    text="更正公告称前次预告披露于 2025 年 1 月 30 日；前次公告落款和巨潮披露日均为 2026 年 1 月 30 日。",
-    quotes=[("e2", "公司于2025年1月30日在上海证券交易所网站披露了《2025年年度业绩预亏公告》"), ("e1", "2026年1月30日")],
-    resolution="以交易所披露日为准（2026-01-30），更正公告中的年份判断为笔误。这是推断，不是公司确认的事实。")],
-  pending=["2025 年年度报告实际数与 5-06 年报更正公告尚未并入本事件", "扶摇行情未接入，暂无法显示各次更正前后的股价与成交量"],
-)]
-
-out, bad = [], 0
-for e in E:
-    ev = {}
+WEIGHTS = {"A": dict(w=1.0, label="公司公告、交易所文件"), "B": dict(w=0.7, label="媒体对公告的转述"),
+           "C": dict(w=0.4, label="媒体评论、研报观点"), "D": dict(w=0.2, label="推测性报道、算法归因"), "E": dict(w=0.1, label="传闻、未署名消息")}
+norm = lambda s: re.sub(r"\s+", "", re.sub(r"<[^>]+>", "", s or "")).replace("，", ",")
+iso = lambda ms: datetime.datetime.fromtimestamp(int(ms) / 1000, BJ)
+ANN = {r["id"]: r for r in json.load(open("data/raw/announcements.json"))}
+errs = []
+def load_news(th):
+    p = f"data/raw/news/{th}.json"
+    return json.load(open(p)) if os.path.exists(p) else None
+def resolve(x, th, news):
+    """按来源补齐标题、链接、发布时间、可校验正文。"""
+    if x["src"] == "ann":
+        r = ANN[x["ref"]]; t = f"data/raw/text/{x['ref']}.txt"
+        d = iso(r["disclosed_ms"]).strftime("%Y-%m-%d")
+        return dict(title=r["title"], url=r["url"], source="巨潮资讯网", channel="巨潮资讯网公告检索", published_at=d, precision="日",
+                    fetched=r["fetched_at"]), (norm(open(t).read()) if os.path.exists(t) else None)
+    if x["src"] == "news":
+        i = next((i for i in news["timeline"]["items"] if i["id"] == x["ref"]), None)
+        if not i: errs.append(f"找不到新闻 {x['ref']}"); return {}, None
+        return dict(title=i["title"].strip(), url=i["jump_url"], source=i.get("source") or "未注明", channel="扶摇个股新闻接口",
+                    published_at=iso(i["publish_time_ms"]).strftime("%Y-%m-%d %H:%M"), precision="分钟", fetched=news["fetched_at"]), norm(i["title"] + (i.get("summary") or ""))
+    if x["src"] == "anomaly":
+        day, tag = x["ref"].split("|")
+        for i in news["anomaly"]["data"]["items"]:
+            t = iso(i["first_publish_time"])
+            if t.strftime("%Y-%m-%d") == day and i.get("tag_name") == tag:
+                return dict(title=f"异动解读：{tag}", url=i.get("link_url"), source="同花顺异动解读", channel="扶摇异动解读接口",
+                            published_at=t.strftime("%Y-%m-%d %H:%M"), precision="分钟", fetched=news["fetched_at"]), norm(i.get("analysis_content"))
+        errs.append(f"找不到异动解读 {x['ref']}"); return {}, None
+def check(eid, q, texts, where):
+    if eid not in texts: errs.append(f"{where}: 证据 {eid} 不存在"); return
+    if texts[eid] is None: errs.append(f"{where}: 证据 {eid} 没有可校验的正文"); return
+    if norm(q) not in texts[eid]: errs.append(f"{where}: 引用未在 {eid} 原文中匹配到 → {q}")
+def prices(th, dates):
+    p = f"data/prices/{th}.json"
+    if not os.path.exists(p): return dict(error="行情未抓取", bars=[], markers=[])
+    d = json.load(open(p)); bars = d["bars"]
+    if d.get("error"): return dict(source=d["source"], error=d["error"], bars=[], markers=[])
+    for a, b in zip(bars, bars[1:]): b["pct"] = round((b["close"] / a["close"] - 1) * 100, 2) if a["close"] else None
+    keep, marks = set(), []
+    for eid, day in dates:
+        k = next((n for n, b in enumerate(bars) if b["date"] >= day), None)
+        if k is None: continue
+        keep.update(range(max(0, k - 3), min(len(bars), k + 4))); marks.append(dict(evidence_id=eid, disclosed=day, first_trading_day=bars[k]["date"]))
+    return dict(source=d["source"], adjust="不复权", unit=dict(close="元", pct="%，相对前一交易日收盘", turnover="元"), fetched=d["fetched_at"], error=None,
+                note="只保留各次披露前后 3 个交易日的片段", markers=marks,
+                bars=[dict(date=b["date"], close=b["close"], pct=b.get("pct"), turnover=b.get("turnover")) for n, b in enumerate(bars) if n in keep])
+out = []
+for path in sorted(glob.glob("pipeline/extracted/*.json")):
+    e = json.load(open(path)); th = e.get("thscode"); news = load_news(th) if th else None
+    texts, ev = {}, {}
     for x in e["evidence"]:
-        r = raw[x["ann"]]
-        x.update(title=r["title"], url=r["url"], source="巨潮资讯网", source_tier="A", tier_note="交易所指定披露平台上的公司公告",
-                 times=dict(occurred=e["occurred"], disclosed=day(r["disclosed_ms"]), signed=x.pop("signed"), fetched=r["fetched_at"], updated=None))
-        if x.get("reason_quote") and norm(x["reason_quote"]) not in text(x["ann"]):
-            print("引用未匹配", x["id"], x["reason_quote"]); bad += 1
+        meta, texts[x["id"]] = resolve(x, th, news)
+        if not meta: continue
+        occ = x.pop("occurred", None) or e["occurred"]
+        x.update(title=meta["title"], url=meta["url"], source=meta["source"], channel=meta["channel"], source_tier=x.pop("tier"),
+                 times=dict(occurred=occ, disclosed=meta["published_at"][:10], published_at=meta["published_at"], precision=meta["precision"],
+                            signed=x.pop("signed", None), fetched=meta["fetched"], updated=None))
+        x["weight"] = WEIGHTS[x["source_tier"]]["w"]; x["tier_note"] = WEIGHTS[x["source_tier"]]["label"]
+        if x.get("quote"): check(x["id"], x["quote"], texts, x["id"])
         ev[x["id"]] = x
-    for c in e["claims"]:
+    e["evidence"].sort(key=lambda x: x["times"]["published_at"])
+    for x in e["evidence"]:
+        for k in ("target",):
+            if x["relation"].get(k) and x["relation"][k] not in ev: errs.append(f"{x['id']} 的关系指向不存在的 {x['relation'][k]}")
+        if x.get("outdated_by") and x["outdated_by"] not in ev: errs.append(f"{x['id']} outdated_by 不存在")
+    for c in e.get("claims", []):
         vs = []
-        for n, (eid, lo, hi, q) in enumerate(c["versions"]):
-            if norm(q) not in text(ev[eid]["ann"]):
-                print("引用未匹配", c["key"], eid, q); bad += 1; continue
-            vs.append(dict(v=n + 1, evidence_id=eid, low=lo, high=hi, unit="万元", quote=q, valid_from=ev[eid]["times"]["disclosed"], valid_to=None, status="active", superseded_by=None))
-        for a, b in zip(vs, vs[1:]):
-            a.update(valid_to=b["valid_from"], status="superseded", superseded_by=b["evidence_id"])
-        c["versions"] = vs
-    for c in e["conflicts"]:
-        qs = []
-        for eid, q in c.pop("quotes"):
-            if norm(q) not in text(ev[eid]["ann"]): print("引用未匹配 冲突", eid, q); bad += 1
-            qs.append(dict(evidence_id=eid, quote=q))
-        c["quotes"] = qs
-    last = e["evidence"][-1]
-    e["status"] = "已更正" if last["relation"]["type"] == "更正" else "进行中"
-    e["status_since"] = last["times"]["disclosed"]
-    e["notifications"] = [dict(at=x["times"]["disclosed"], type=x["relation"]["type"], evidence_id=x["id"],
-        text=f"{x['doc_no']} {x['relation']['type']}" + (f"了 {ev[x['relation']['target']]['doc_no']}" if x["relation"].get("target") else "")) for x in e["evidence"]]
+        for n, v in enumerate(c["versions"]):
+            check(v["evidence_id"], v["quote"], texts, f"{c['key']} v{n+1}")
+            v.update(v=n + 1, unit=c.get("unit"), valid_from=v.get("valid_from") or ev[v["evidence_id"]]["times"]["disclosed"], valid_to=None, status=v.get("status", "active"), superseded_by=None)
+            vs.append(v)
+        for a, b in zip(vs, vs[1:]): a.update(valid_to=b["valid_from"], status="superseded", superseded_by=b["evidence_id"])
+    for c in e.get("conflicts", []):
+        c["quotes"] = [dict(evidence_id=i, quote=q) for i, q in c["quotes"]]
+        for q in c["quotes"]: check(q["evidence_id"], q["quote"], texts, f"冲突 {c['id']}")
+        c["evidence_ids"] = [q["evidence_id"] for q in c["quotes"]]
+        c["first_seen"] = max(ev[i]["times"]["disclosed"] for i in c["evidence_ids"] if i in ev)
+    for s in e["status_history"]: s["at"] = ev[s["evidence_id"]]["times"]["disclosed"]
+    for c in e["conclusions"]:
+        c["as_of"] = ev[c["evidence_id"]]["times"]["disclosed"]
+        for part in ("facts", "inferences"):
+            for it in c.get(part, []):
+                for i in it["evidence_ids"]:
+                    if i not in ev: errs.append(f"结论引用了不存在的证据 {i}")
+                    elif ev[i]["times"]["disclosed"] > c["as_of"]: errs.append(f"{c['as_of']} 的结论引用了之后才出现的证据 {i}")
+    e["status"], e["status_since"] = e["status_history"][-1]["status"], e["status_history"][-1]["at"]
+    e["notifications"] = [dict(at=s["at"], type="状态变化", evidence_id=s["evidence_id"], text=f"状态变为「{s['status']}」：{ev[s['evidence_id']]['title'][:40]}") for s in e["status_history"]] + \
+                         [dict(at=c["first_seen"], type="证据冲突", conflict_id=c["id"], text=c["text"]) for c in e.get("conflicts", [])] + \
+                         [dict(at=ev[x["outdated_by"]]["times"]["disclosed"], type="观点过期", evidence_id=x["id"], text=f"{x['source']}的观点前提已不成立：{x['title'][:30]}") for x in e["evidence"] if x.get("outdated_by")]
+    e["notifications"].sort(key=lambda n: n["at"])
+    e["prices"] = prices(th, [(x["id"], x["times"]["disclosed"]) for x in e["evidence"] if x["src"] == "ann"]) if th else dict(error="未提供代码", bars=[], markers=[])
+    if e["prices"].get("error"): e.setdefault("pending", []).append(f"行情不可用：{e['prices']['error']}")
     out.append(e)
-if bad: sys.exit(f"{bad} 条引用未通过校验，未生成文件")
+if errs:
+    print("\n".join(errs)); sys.exit(f"{len(errs)} 处未通过校验，未生成文件")
 json.dump(dict(generated_at=datetime.datetime.now(datetime.timezone.utc).isoformat(timespec="seconds"),
-    disclaimer="仅整理公开披露信息，不构成投资建议，不预测涨跌。", events=out), open("data/events.json", "w"), ensure_ascii=False, indent=1)
-print("OK", len(out), "个事件")
+    disclaimer="只整理公开披露信息和公开报道，不预测涨跌，不构成投资建议。",
+    weights=WEIGHTS, weight_rule="低级别来源不能推翻高级别来源；同级别以后披露的为准。",
+    time_note="发生时间=说法所指的日期或报告期；披露时间=公告在巨潮的披露日或媒体发布时间；抓取时间=本系统取数时间（UTC）；更新时间=来源事后修改的时间，目前数据源不提供。",
+    events=out), open("data/events.json", "w"), ensure_ascii=False, indent=1)
+print("OK", len(out), "个事件;", sum(len(e["evidence"]) for e in out), "条证据")

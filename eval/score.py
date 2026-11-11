@@ -760,6 +760,16 @@ def run_traps(gold):
         else: verdict = "都没拦住（已知缺口）"
         out.append(dict(id=tid, title=title, changed=what, expected=expect, pipeline=pipe, pipeline_output=o,
                         eval_detects=caught_eval, eval_new_failures=[json.loads(n) if n.startswith("{") else n for n in new][:5], verdict=verdict))
+    # T20：时间戳和链接日期对不上的新闻（新芝 1_678315582，时间戳 7-07、链接 20260721）当证据
+    if "920685-2026-restructuring" in xs:
+        x6, g6 = xs["920685-2026-restructuring"]; y = copy.deepcopy(x6)
+        nid = "t20"
+        y["evidence"].append(dict(id=nid, src="news", ref="1_678315582", kind="事实", tier="B", relation=dict(type="转述"), summary="", quote="5股今日停牌"))
+        b, c, o, _ = run_pipeline([y])
+        caught = b != 0 or c not in (0, None)
+        out.append(dict(id="T20", title="时间戳错误的新闻当证据", changed="给新芝事件加一条新闻 1_678315582（时间戳 7-07，正文和链接是 7-21）", expected="组装拒绝：会让回放提前看到停牌",
+                        pipeline=f"组装退出码 {b}" + (f"，合规检查退出码 {c}" if c is not None else "") + ("（拒绝）" if caught else "（放行）"), pipeline_output=o,
+                        eval_detects=False, eval_new_failures=["评测没有专门检查时间戳；金标里这条是可选冲突 G1"], verdict="管线拦住" if caught else "都没拦住（已知缺口）"))
     prev_commit, prev = previous_trap_verdicts()
     for c in out:
         pv = prev.get(c["id"]); c["previous_verdict"] = pv
@@ -789,7 +799,9 @@ EVENT_ORDER = [
 R_ORDER = ["数值抽取精确匹配", "版本链", "事件状态", "证据类型准确率", "来源级别准确率", "该合并的合并了", "不该合并的分开了"]
 P_ORDER = ["引用逐字匹配", "引用挂对证据", "回放未用到未来证据", "冲突找出来了", "事实和推断没混"]
 
-DEV = {"600187-2025A-forecast": "主窗口按评测第一版意见改过抽取（5dab53d），之后的分数不再是独立测量，算开发集。第一版的独立分数见 eval/history.json 第一条。"}
+DEV = {"600187-2025A-forecast": "主窗口按评测第一版意见改过抽取（5dab53d），之后的分数不再是独立测量，算开发集。第一版的独立分数见 eval/history.json 第一条。",
+       "600499-2026-tefu-restructuring": "主窗口按评测第三轮裁决改过抽取（4954d75），从测试集移到开发集。改之前作为测试集的分数见 eval/history.json 里抽取提交 8254dba 那条。",
+       "605081-2025A-delisting": "主窗口按评测第三轮裁决改过抽取（4954d75），从测试集移到开发集。改之前作为测试集的分数见 eval/history.json 里抽取提交 8254dba 那条。"}
 
 def git(*a):
     try: return subprocess.run(["git", *a], capture_output=True, text=True, timeout=30).stdout.strip()
@@ -806,6 +818,8 @@ def update_history(report):
     p = "eval/history.json"
     h = json.load(open(p)) if os.path.exists(p) else []
     row = dict(at=report["generated_at"], inputs=report["inputs"],
+               splits={e["id"]: e["split"] for e in report["events"] if "results" in e},
+               split_summary={sp: {k: (m["num"], m["den"]) for k, m in b["summary"].items()} for sp, b in report["summary_by_split"].items()},
                events={e["id"]: {k: (m["num"], m["den"]) for grp in ("results", "process") for k, m in e[grp].items()} for e in report["events"] if "results" in e},
                traps={c["id"]: c["verdict"] for c in report["traps"].get("cases", [])})
     key = lambda r: json.dumps(r["inputs"], sort_keys=True)
@@ -920,6 +934,17 @@ def render_md(r):
         L += [f"包含：{', '.join(b['events'])}", ""] + table(b["summary"]) + [""]
     try: hist = json.load(open("eval/history.json"))
     except Exception: hist = []
+    cur_split = {e["id"]: e["split"] for e in r["events"] if "results" in e}
+    prev = next((h for h in reversed(hist) if h.get("splits") and h["splits"] != cur_split), None)
+    if prev:
+        moved = [i for i, sp in cur_split.items() if prev["splits"].get(i) and prev["splits"][i] != sp]
+        L += ["## 分组变化", "", f"和抽取提交 `{prev['inputs'].get('extracted_commit')}` 那次评测比，{('、'.join(f'`{i}`' for i in moved)) or '无'} 从测试集移到了开发集（主窗口看过评测裁决后改了它们的抽取）。移动前的测试集汇总是当时的独立测量，留在下面。",
+              "", "**注意选择偏差**：被移走的正是出过错、照着裁决改过的事件，剩下的测试集都是第一次就没出错的，所以“现在测试集”的分数偏高。说抽取有多准，应当引用“移动前测试集”这一列（再参考 `adjudication.md` 里按盲标原样计分的修正）。", "",
+              "| 指标 | 移动前测试集 | 现在测试集 |", "|---|---|---|"]
+        for k in r["groups"]["results"] + r["groups"]["process"]:
+            a = prev["split_summary"]["测试集"].get(k); b = r["summary_by_split"]["测试集"]["summary"][k]
+            L.append(f"| {k} | {a[0]}/{a[1]} | {b['num']}/{b['den']} |")
+        L.append("")
     if len(hist) > 1:
         L += ["## 分数变化", "", "同一事件在不同抽取版本下的分数（只列有变化的指标）。", ""]
         ids = sorted({i for h in hist for i in h["events"]})

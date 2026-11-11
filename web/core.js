@@ -186,7 +186,8 @@ export function initTheme(btn) {
   let saved = null;
   try { saved = localStorage.getItem('eet-theme'); } catch (e) { /* 隐私模式 */ }
   if (saved === 'light' || saved === 'dark') root.dataset.theme = saved;
-  const isDark = () => (root.dataset.theme ? root.dataset.theme === 'dark' : matchMedia('(prefers-color-scheme: dark)').matches);
+  // 默认浅色（纸色），深色只作为可切换项
+  const isDark = () => root.dataset.theme === 'dark';
   const label = () => { btn.textContent = isDark() ? '浅色' : '深色'; btn.setAttribute('aria-label', isDark() ? '切换到浅色' : '切换到深色'); };
   btn.addEventListener('click', () => {
     root.dataset.theme = isDark() ? 'light' : 'dark';

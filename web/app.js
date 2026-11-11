@@ -13,7 +13,7 @@ const embedded = new URLSearchParams(location.search).has('embed');
 if (embedded) document.documentElement.classList.add('embedded');
 
 let DATA = null, QA = null, QA_RES = null, RECHECK = null;
-const S = { view: 'event', eventId: null, D: null, claimMode: 'line', tiers: null, focus: null, qaId: null, ask: '', verifyText: '', openTrace: false, revOpen: false, revView: null };
+const S = { only: null, tableOpen: false, mergeOpen: false, view: 'event', eventId: null, D: null, claimMode: 'line', tiers: null, focus: null, qaId: null, ask: '', verifyText: '', openTrace: false, revOpen: false, revView: null };
 let readyResolve; const ready = new Promise((r) => (readyResolve = r));
 const listeners = [];
 // 用户在工作台里做了什么（演示页右栏据此回放对应的离线记录）
@@ -63,6 +63,7 @@ function toHash() {
 
 // ---------------- 渲染 ----------------
 function render() {
+  document.documentElement.classList.toggle('only-mode', !!(embedded && S.only));
   $$('.tabs button').forEach((b) => b.setAttribute('aria-selected', String(b.dataset.view === S.view)));
   renderSide();
   if (S.view === 'event') renderEvent();
@@ -72,221 +73,230 @@ function render() {
   listeners.forEach((f) => f({ ...S }));
 }
 
+const shortName = (e) => (e.period ? `${e.period}${e.type || ''}` : (e.type || e.title || e.id)).replace(/\s+/g, ' ');
 function renderSide() {
-  const groups = {};
-  DATA.events.forEach((e) => { (groups[e.code] = groups[e.code] || { name: e.name, list: [] }).list.push(e); });
   const T = today(DATA);
-  const watch = Object.entries(groups).map(([code, g]) => `<div class="stock"><div class="nm"><b>${esc(g.name)}</b>${esc(code)}</div>
-    ${g.list.map((e) => { const a = asOf(e, T); return `<button class="evbtn" data-ev="${esc(e.id)}" ${S.view === 'event' && e.id === S.eventId ? 'aria-current="true"' : ''}>
-      <span class="t">${esc(e.title || e.type || e.id)}</span><span class="s">${esc(statusText(e, a) || '状态未抽取')}${e.status_since ? ' · ' + md(e.status_since) : ''}</span></button>`; }).join('')}</div>`).join('');
-  const feed = DATA.events.flatMap((e) => (e.notifications || []).map((n) => ({ ...n, e }))).sort((a, b) => (a.at < b.at ? 1 : -1)).slice(0, 40);
-  $('#side').innerHTML = `<section><h3>关注</h3>${watch}</section>
-    <section class="feedsec"><h3>变化通知</h3><ul class="feed">${feed.map((n) => `<li class="${S.view === 'event' && n.e.id === S.eventId && n.at > S.D ? 'future' : ''}"><button data-note-ev="${esc(n.e.id)}" data-note-at="${esc(n.at)}" data-note-id="${esc(n.evidence_id || '')}">
-      <time>${esc(n.at)} · ${esc(n.e.name)}</time><span class="${n.type === '证据冲突' ? 'k' : ''}">${n.type === '证据冲突' ? '证据冲突：' : ''}${esc(n.text)}</span></button></li>`).join('') || '<li class="empty">暂无通知</li>'}</ul></section>`;
+  const rows = DATA.events.map((e) => {
+    const a = asOf(e, T);
+    return `<li><button class="evbtn" data-ev="${esc(e.id)}" ${S.view === 'event' && e.id === S.eventId ? 'aria-current="true"' : ''}>
+      <span class="t">${esc(e.name)} · ${esc(shortName(e))}</span><span class="s">${esc(statusText(e, a) || '状态未抽取')}${e.status_since ? ' · ' + md(e.status_since) : ''}</span></button></li>`;
+  }).join('');
+  const feed = DATA.events.flatMap((e) => (e.notifications || []).map((n) => ({ ...n, e }))).sort((a, b) => (a.at < b.at ? 1 : -1));
+  const li = (n) => `<li><button data-note-ev="${esc(n.e.id)}" data-note-at="${esc(n.at)}" data-note-id="${esc(n.evidence_id || '')}"><time>${md(n.at)} · ${esc(n.e.name)}</time>${esc(n.text.replace(/^状态变为「(.+?)」：.*$/, '$1'))}</button></li>`;
+  $('#side').innerHTML = `<h3>事件</h3><ul class="evlist">${rows}</ul>
+    <h3>最近变化</h3><ul class="feed">${feed.slice(0, 5).map(li).join('') || '<li class="empty">暂无</li>'}</ul>
+    ${feed.length > 5 ? `<details class="feedmore"><summary>更早的 ${feed.length - 5} 条</summary><ul class="feed">${feed.slice(5).map(li).join('')}</ul></details>` : ''}`;
 }
 
 // ---------- 事件页 ----------
+const HONEST = () => `<footer class="foot">
+  <p>标准答案是另一个模型独立标注的，不是人工标注。</p>
+  <p>网页不实时调用模型，问答是离线生成的。</p>
+  <p>${esc(DATA.disclaimer || '只整理公开信息，不构成投资建议。')}</p></footer>`;
+
+function chartRange(e) {
+  const T = today(DATA);
+  const dates = eventDates(e);
+  const first = dates[0] || T, last = dates[dates.length - 1] || T;
+  const start = addDays(first, -6);
+  const end = dayDiff(last, T) > 40 ? addDays(last, 24) : T;
+  return { T, dates, start, end };
+}
+
 function renderEvent() {
   const e = ev();
   if (!e) { $('#view').innerHTML = `<div class="wrap"><p class="empty">没有找到这个事件。</p></div>`; return; }
-  const T = today(DATA);
-  const dates = eventDates(e);
-  const start = addDays(dates[0] || T, -3);
+  const { T, dates, start } = chartRange(e);
   if (S.D < start) S.D = start;
   if (S.D > T) S.D = T;
   const a = asOf(e, S.D);
-  const tiersHere = [...new Set((e.evidence || []).map((x) => x.source_tier).filter(Boolean))].sort();
-  if (!S.tiers) S.tiers = new Set(tiersHere);
-
-  // 轨道只画到最后一次披露后两周；更晚的日子（直到今天）收进最右端那一格
-  const lastD = dates[dates.length - 1] || T;
-  const end = dayDiff(lastD, T) > 20 ? addDays(lastD, 14) : T;
-  const span = Math.max(1, dayDiff(start, end));
-  const pos = (d) => Math.min(100, (dayDiff(start, d) / span) * 100);
-  const prev = [...dates].reverse().find((d) => d < S.D), next = dates.find((d) => d > S.D);
-  const st = statusText(e, a);
-
-  $('#view').innerHTML = `<div class="wrap">
-    <header class="ev-head">
-      <div class="kicker">${esc(e.code || '代码未抽取')} ${esc(e.name || '')} · ${val(e.type)}${e.period ? ' · ' + esc(e.period) : ''}</div>
-      <h1>${esc(e.title || '标题未抽取')}</h1>
-      <p class="merge"><b>为什么算同一件事</b>${val(e.merge_reason)}</p>
-      ${statusTrack(e, a)}
-      ${origin(e, a)}
-    </header>
-    <div class="replay" id="replay">
-      <div class="row1"><span class="lbl">截至</span><span class="date">${cn(S.D)}</span>
-        <span class="st">${st ? `状态 <b>${esc(st)}</b>` : miss('状态未抽取')}${a.status && a.status.at ? `<span class="muted">（${md(a.status.at)} 起）</span>` : ''}</span>
-        <span class="ctl"><button data-jump="${prev || ''}" ${prev ? '' : 'disabled'} title="上一次披露（←）">← ${prev ? md(prev) : ''}</button><button data-jump="${next || ''}" ${next ? '' : 'disabled'} title="下一次披露（→）">${next ? md(next) : ''} →</button><button data-jump="${T}" ${S.D === T ? 'disabled' : ''}>最新</button></span></div>
-      <div class="track" title="拖动回放到任意一天">
-        <span class="base"></span><span class="fill" style="width:${pos(S.D)}%"></span>
-        ${dates.map((d) => { const big = (e.evidence || []).some((x) => disclosedOf(x) === d && x.source_tier === 'A'); return `<span class="tick ${big ? '' : 'low'} ${d > S.D ? 'after' : ''}" style="left:${pos(d)}%" title="${d}"></span>`; }).join('')}
-        <span class="knob" style="left:${pos(S.D)}%"></span>
-        <span class="end" style="left:0">${md(start)}</span><span class="end" style="right:0">${end < T ? `${md(end)} 之后 … 今天 ${md(T)}` : md(T) + ' 今天'}</span>
-        <input type="range" min="0" max="${span + (end < T ? 1 : 0)}" step="1" value="${S.D > end ? span + 1 : dayDiff(start, S.D)}" aria-label="回放日期">
-      </div>
-      <nav class="subnav">
-        <a href="#s-concl">结论</a><a href="#s-conflict">冲突${a.conflicts.length ? `<i>${a.conflicts.length}</i>` : ''}</a><a href="#s-claims">数字版本</a><a href="#s-evidence">证据 ${a.evidence.length}</a><a href="#s-prices">披露前后股价</a><a href="#s-pending">还没做到</a>
-      </nav>
-    </div>
-    ${brief(e, a)}
-    ${secConclusion(e, a)}
-    ${secConflicts(e, a)}
-    ${secClaims(e, a)}
-    ${secEvidence(e, a, tiersHere)}
-    ${secPrices(e, a)}
-    ${secPending(e)}
-    <footer class="foot">
-      ${DATA.weight_rule ? `<p>来源规则：${esc(DATA.weight_rule)}</p>` : ''}
-      ${DATA.time_note ? `<p>时间口径：${esc(DATA.time_note)}</p>` : ''}
-      <p>说法、数字和结论由大模型在本地离线抽取，每条引用都和原文逐字核对后才写进数据文件；网页只读这份文件，不调用模型。</p>
-      <p>${esc(DATA.disclaimer || '不构成投资建议。')}</p>
-    </footer>
+  const only = embedded && S.only ? S.only : null;
+  const part = (id, html) => (!only || only.split(',').includes(id) ? html : '');
+  $('#view').innerHTML = `<div class="wrap ${only ? 'only' : ''}">
+    ${only ? '' : head(e, a)}
+    ${part('lead', lead(e, a))}
+    ${only && only.split(',').includes('lede') ? `<section class="lead solo"><p class="lede">${narrative(e, a)}</p></section>` : ''}
+    ${part('chart', chart(e, a))}
+    ${part('conflict', secConflicts(e, a))}
+    ${part('evidence', secEvidence(e, a))}
+    ${only ? '' : secPrices(e, a) + secPending(e) + HONEST()}
   </div>`;
-  const inp = $('.track input');
-  inp.addEventListener('input', () => { S.D = +inp.value > span ? T : addDays(start, +inp.value); emit({ type: 'date', event: S.eventId, date: S.D }); renderEvent(); toHash(); $('.track input').focus(); listeners.forEach((f) => f({ ...S })); });
+  drawLanes(e, a);
 }
 
-// 证据编号换成读得懂的来源类型；同类多条合并成一个标签，点开走正文抽屉
-function tags(e, ids) {
-  if (!ids || !ids.length) return '';
-  const groups = [];
-  ids.forEach((id) => { const x = evidenceById(e, id); const t = srcType(x); let g = groups.find((k) => k.t === t); if (!g) groups.push(g = { t, ids: [] }); g.ids.push(id); });
-  return groups.map((g) => `<button class="stag" data-tag-ids="${esc(g.ids.join(','))}" data-tag-ev="${esc(e.id)}" title="${esc(g.ids.map((id) => docName(evidenceById(e, id))).join('、'))}">${esc(g.t)}${g.ids.length > 1 ? ' · ' + g.ids.length : ''} ›</button>`).join('');
-}
-const glBtn = (sec) => `<button class="gl" data-gl="${esc(sec)}" aria-label="这是什么意思：${esc(sec)}" title="这是什么意思">?</button>`;
-
-function secConclusion(e, a) {
-  const c = a.conclusion;
-  if (!a.evidence.length) return `<section class="sec" id="s-concl"><h2>截至这一天的结论</h2><p class="empty">${cn(a.D)} 之前还没有相关的公告或报道。</p></section>`;
-  if (!Array.isArray(e.conclusions)) return `<section class="sec" id="s-concl"><h2>截至这一天的结论</h2><div class="notice">分时点结论${miss('未生成')}。下面的证据和数字仍可查看。</div></section>`;
-  if (!c) return `<section class="sec" id="s-concl"><h2>截至这一天的结论</h2><div class="notice">这一天已有 ${a.evidence.length} 条证据，但还没有对应的分时点结论（${miss('未生成')}）。</div></section>`;
-  const list = (arr, cls) => (arr && arr.length ? `<ol class="${cls}">${arr.map((x) => typeof x === 'string' ? `<li>${esc(x)}</li>` : `<li>${esc(x.text)}${tags(e, x.evidence_ids)}</li>`).join('')}</ol>` : `<p class="empty" style="padding:2px 0">无</p>`);
-  const basis = evidenceById(e, c.evidence_id);
-  const body = (k) => `<h4>事实${glBtn('结论里的三种句子')}</h4>${list(k.facts, 'fact')}<h4>推断</h4>${list(k.inferences, 'inf')}<h4>还不确定</h4>${list(k.unknowns, 'unk')}`;
-  const all = e.conclusions.slice().sort((x, y) => (x.as_of < y.as_of ? -1 : 1));
-  const seen = all.filter((k) => k.as_of <= a.D);
-  const later = all.length - seen.length;
-  const n = (k, f) => (Array.isArray(k[f]) ? k[f].length : 0);
-  const rev = S.revOpen ? `<div class="revs" id="revs"><p class="note">这条结论截至这一天写过 ${seen.length} 版${later ? `，之后还会改 ${later} 次（回放到更晚可见）` : ''}。每一版只用当时已经披露的证据。</p>
-    <ol>${seen.slice().reverse().map((k, i) => { const x = evidenceById(e, k.evidence_id); const open = S.revView === k.as_of; return `<li class="${k === c ? 'now' : ''}">
-      <button class="revbtn" data-rev="${esc(k.as_of)}" aria-expanded="${open}"><span class="m">${esc(k.as_of)}</span><span>因为 ${esc(docName(x))}${x && x.title ? '：' + esc(x.title.slice(0, 24)) : ''}</span><span class="muted">事实 ${n(k, 'facts')} · 推断 ${n(k, 'inferences')} · 不确定 ${n(k, 'unknowns')}${k === c ? ' · 正在显示' : ''}</span></button>
-      ${open ? `<div class="revbody">${body(k)}<p class="act"><button data-jump="${esc(k.as_of)}">回放到 ${esc(k.as_of)}</button></p></div>` : ''}</li>`; }).join('')}</ol></div>` : '';
-  return `<section class="sec" id="s-concl"><h2>截至这一天的结论<small>写于 ${esc(c.as_of)}，依据 ${esc(docName(basis))}${ref(c.evidence_id)}</small><button class="revtoggle" data-revtoggle aria-expanded="${S.revOpen}">修订记录 · ${seen.length} 版</button></h2>
-    <div class="concl">
-      ${body(c)}
-      <div class="basis">事实只来自公告和交易所文件；推断写明了依据；不确定的地方不补全。结论只引用截至 ${esc(c.as_of)} 已经出现的证据。</div>
-    </div>${rev}</section>`;
-}
-
-// 状态轨：按标准状态码画形状，文字用给人看的短语
-const CODE_SHAPE = { 终止: 'end', 终止上市: 'end', 否认: 'end', 未通过: 'stop', 终止审核: 'stop', 已兑现: 'done' };
-// 最早出处 + 证据构成。回放时只算截至当天已出现的
-const MIX_ORDER = ['公告', '媒体转述', '评论和研报观点', '推测和归因', '传闻'];
-const mixKey = (x) => ({ 公告: '公告', 媒体转述: '媒体转述', 评论: '评论和研报观点', 推测: '推测和归因', 传闻: '传闻' }[srcType(x)] || '其他');
-function origin(e, a) {
+// 头部两行：标题；最早出处 · 证据构成 · 为什么算同一件事
+function head(e, a) {
   const f = e.first_source;
-  let line;
-  if (!f) line = `最早出处${miss('未抽取')}`;
-  else if (!f.disclosed || f.disclosed > a.D) line = `截至这一天还没有公司公告。`;
-  else {
-    const early = (f.earlier_media || []).filter((m) => (m.published_at || '').slice(0, 10) <= a.D);
-    line = `最早出处是 <button class="stag inline" data-tag-ids="${esc(f.evidence_id)}" data-tag-ev="${esc(e.id)}">${esc(f.doc_no ? (/^临/.test(f.doc_no) ? f.doc_no : '公告 ' + f.doc_no) : '公告')} ›</button>${esc(f.title || '')}，${esc(f.source || '巨潮')}记 ${esc(f.disclosed)} 披露。`
-      + (early.length ? ` 更早一点，${early.map((m) => `${esc(m.source)}在 ${esc(m.published_at)} 已经转述`).join('，')}<span class="muted">（公告通常前一晚上网，巨潮按次日记披露日）</span>。` : '');
-  }
-  const latest = a.D >= today(DATA);
-  let counts, conf, outd, last;
-  if (latest && e.evidence_mix) { counts = e.evidence_mix.counts || {}; conf = e.evidence_mix.conflicts; outd = e.evidence_mix.outdated; last = e.evidence_mix.last_evidence_at; }
-  else { counts = {}; a.evidence.forEach((x) => { const k = mixKey(x); counts[k] = (counts[k] || 0) + 1; }); conf = a.conflicts.length; outd = Object.keys(a.outdated).length; const lx = a.evidence[a.evidence.length - 1]; last = lx ? (lx.times.published_at || disclosedOf(lx)) : null; }
-  const keys = MIX_ORDER.filter((k) => counts[k]).concat(Object.keys(counts).filter((k) => !MIX_ORDER.includes(k)));
-  return `<div class="origin"><p>${line}</p>
-    <dl class="mix">${keys.map((k) => `<div><dt>${esc(k)}</dt><dd>${esc(counts[k])}</dd></div>`).join('') || `<div><dt>证据</dt><dd>0</dd></div>`}
-      <div><dt>冲突</dt><dd>${conf ?? miss('未记录')}</dd></div><div><dt>观点前提已不成立</dt><dd>${outd ?? miss('未记录')}</dd></div><div class="wide"><dt>最后一条证据</dt><dd>${last ? esc(last) : '—'}</dd></div></dl>${glBtn('证据类型')}</div>`;
+  const counts = {}; a.evidence.forEach((x) => { const k = srcType(x); counts[k] = (counts[k] || 0) + 1; });
+  const bits = [];
+  if (f && f.disclosed && f.disclosed <= a.D) bits.push(`最早出处 <button class="lnk" data-tag-ids="${esc(f.evidence_id)}" data-tag-ev="${esc(e.id)}">${esc(f.doc_no ? (/^临/.test(f.doc_no) ? f.doc_no : '公告 ' + f.doc_no) : '公告')}</button>，${md(f.disclosed)}`);
+  ['公告', '媒体转述', '评论', '推测', '传闻'].forEach((k) => counts[k] && bits.push(`${k} ${counts[k]}`));
+  if (a.conflicts.length) bits.push(`冲突 ${a.conflicts.length}`);
+  bits.push(`<button class="lnk" data-merge aria-expanded="${!!S.mergeOpen}">为什么算同一件事 ›</button>`);
+  const early = f && Array.isArray(f.earlier_media) ? f.earlier_media.filter((m) => (m.published_at || '').slice(0, 10) <= a.D) : [];
+  return `<header class="ev-head">
+    <h1>${esc(e.name)} · ${esc(e.title || shortName(e))}</h1>
+    <p class="meta">${bits.join('<span class="dot">·</span>')}</p>
+    ${S.mergeOpen ? `<div class="more-box"><p>${val(e.merge_reason)}</p>${early.length ? `<p>${early.map((m) => `${esc(m.source)}在 ${esc(m.published_at)} 已经转述，比巨潮记的披露日早。`).join('')}</p>` : ''}</div>` : ''}
+  </header>`;
 }
 
-// 时间短就看这三条：随“截至”联动
-function brief(e, a) {
-  if (!a.evidence.length) return '';
+// 叙述式结论：说清楚现在算数的是什么
+const isProfit = (k) => /利润|净利|亏|盈/.test(k);
+function money(v, unit, key) {
+  if (!v || (v.low == null && v.high == null)) return null;
+  const lo = v.low ?? v.high, hi = v.high ?? v.low;
+  if (unit === '%') return lo === hi ? `${lo}%` : `${lo}% 至 ${hi}%`;
+  const A = Math.min(Math.abs(lo), Math.abs(hi)), B = Math.max(Math.abs(lo), Math.abs(hi));
+  const f = (n) => human(n, unit) || '';
+  let body = A === B ? f(A) : `${f(A)}至 ${f(B)}`;
+  const m = body.match(/^(.*?) (亿|万)至 (.*) (亿|万)$/);
+  if (m && m[2] === m[4]) body = `${m[1]} 至 ${m[3]} ${m[4]}`;
+  if (unit === '万元') body += '元';
+  return isProfit(key) ? `${(lo + hi) / 2 < 0 ? '亏损' : '盈利'} ${body}` : body;
+}
+function narrative(e, a) {
+  if (!a.evidence.length) return `截至 ${cn(a.D)}，还没有相关的公告或报道。`;
+  const nums = a.claims.map((c) => ({ c, vs: c.seen.filter((v) => v.low != null || v.high != null) })).filter((x) => x.vs.length);
+  nums.sort((x, y) => y.vs.length - x.vs.length || (/转/.test(change(y.vs[0], y.vs[y.vs.length - 1])) ? 1 : 0) - (/转/.test(change(x.vs[0], x.vs[x.vs.length - 1])) ? 1 : 0));
+  const top = nums[0];
+  const st = a.status;
+  const when = `截至 ${cnShort(a.D)}`;
+  const b = (t) => `<b class="n">${esc(t)}</b>`;
+  if (top && top.vs.length >= 2 && !(a.hist.length >= 4 && top.vs.length <= 2)) {
+    const { c, vs } = top;
+    const cur = c.current;
+    let s = `${when}，${esc(e.name)}的${esc(c.key)}前后有 ${b(vs.length + ' 个版本')}，`;
+    s += c.voided ? `交易终止后，这个数已经${b('作废')}。` : `现在算数的是${b(money(cur, c.unit, c.key) || '未抽取')}。`;
+    if (/转/.test(change(vs[0], vs[vs.length - 1]))) s += `第一版还是${money(vs[0], c.unit, c.key)}。`;
+    return s;
+  }
+  if (st) {
+    const x = evidenceById(e, st.evidence_id);
+    const before = a.hist.slice(-3, -1).map((h) => h.status);
+    return `${when}，${esc(e.name)}这件事的状态是${b('「' + st.status + '」')}，依据 ${esc(docName(x))}（${md(st.at)}）${before.length ? `；此前是${before.map(esc).join('、')}` : ''}。`;
+  }
+  return `${when}，${esc(e.name)}共有 ${a.evidence.length} 条相关证据。`;
+}
+function lead(e, a) {
   const c = a.conclusion;
-  const fact = c && Array.isArray(c.facts) && c.facts[0] ? (typeof c.facts[0] === 'string' ? c.facts[0] : c.facts[0].text) : null;
-  const revised = a.claims.reduce((n, k) => n + Math.max(0, k.seen.filter((v) => v.low != null || v.high != null).length - 1), 0);
-  const most = a.claims.slice().sort((x, y) => y.seen.length - x.seen.length)[0];
-  const concl = (e.conclusions || []).filter((k) => k.as_of <= a.D).length;
-  const states = a.hist.length;
-  const unk = c && Array.isArray(c.unknowns) ? c.unknowns.map((u) => (typeof u === 'string' ? u : u.text)) : [];
-  return `<section class="brief" aria-label="时间短就看这三条">
-    <div><h3>现在的结论</h3><p>${fact ? esc(fact) : miss('未生成')}</p><a href="#s-concl">看全部结论</a></div>
-    <div><h3>改过几次</h3><p>${revised ? `数字改过 <b>${revised}</b> 次${most && most.seen.length > 1 ? `，${esc(most.key)}有 ${most.seen.length} 版` : ''}；` : '数字没有改过；'}状态变过 <b>${Math.max(0, states - 1)}</b> 次；结论写过 <b>${concl}</b> 版。</p><a href="#s-claims">看数字版本</a></div>
-    <div><h3>还有什么没定</h3>${unk.length ? `<ul>${unk.slice(0, 2).map((u) => `<li>${esc(u)}</li>`).join('')}</ul>${unk.length > 2 ? `<a href="#s-concl">另外 ${unk.length - 2} 条</a>` : ''}` : `<p>${c ? '结论里没有列出未定的事。' : miss('未生成')}</p>`}</div>
+  const item = (x) => (typeof x === 'string' ? `<li>${esc(x)}</li>` : `<li>${esc(x.text)}${tags(e, x.evidence_ids)}</li>`);
+  const block = (t, arr) => (Array.isArray(arr) && arr.length ? `<h4>${t}</h4><ul>${arr.map(item).join('')}</ul>` : '');
+  // 右边栏：当前数字和事实句的原文
+  const notes = [];
+  const top = a.claims.filter((k) => k.current && k.current.quote).sort((x, y) => y.seen.length - x.seen.length)[0];
+  if (top) notes.push({ q: top.current.quote, id: top.current.evidence_id });
+  (c && Array.isArray(c.facts) ? c.facts : []).forEach((f) => { const id = f.evidence_ids && f.evidence_ids[0]; const x = id && evidenceById(e, id); if (x && x.quote && notes.length < 3 && !notes.some((n) => n.id === id)) notes.push({ q: x.quote, id }); });
+  const all = (e.conclusions || []).filter((k) => k.as_of <= a.D).sort((x, y) => (x.as_of < y.as_of ? 1 : -1));
+  const revs = S.revOpen ? `<ol class="revs" id="revs">${all.map((k) => { const x = evidenceById(e, k.evidence_id); const open = S.revView === k.as_of; return `<li class="${k === c ? 'now' : ''}"><button data-rev="${esc(k.as_of)}" aria-expanded="${open}">${md(k.as_of)}　因为 ${esc(docName(x))}</button>${open ? `<div class="revbody">${block('事实', k.facts)}${block('推断', k.inferences)}${block('还不确定', k.unknowns)}<button class="lnk" data-jump="${esc(k.as_of)}">回放到这一天 ›</button></div>` : ''}</li>`; }).join('')}</ol>` : '';
+  return `<section class="lead" id="s-concl">
+    <div class="lead-main">
+      <p class="lede">${narrative(e, a)}</p>
+      ${c ? `${block('事实', c.facts)}${block('推断', c.inferences)}${block('还不确定', c.unknowns)}` : ''}
+      ${all.length > 1 ? `<p class="sub"><button class="lnk" data-revtoggle aria-expanded="${!!S.revOpen}">结论改过 ${all.length} 版 ›</button></p>${revs}` : ''}
+    </div>
+    <aside class="margin">${notes.map((n) => { const x = evidenceById(e, n.id); return `<blockquote><button data-src="${esc(n.id)}" data-q="${esc(n.q)}">“${esc(n.q)}”</button><cite>${esc(docName(x))} · ${md(disclosedOf(x))}</cite></blockquote>`; }).join('')}</aside>
   </section>`;
 }
 
-function statusTrack(e, a) {
-  const h = e.status_history;
-  if (!Array.isArray(h) || !h.length) return `<p class="strack-miss">状态变化${miss('未抽取')}</p>`;
-  const later = h.length - a.hist.length;
-  return `<ol class="strack" aria-label="状态变化"><li class="lab">状态${glBtn('事件状态')}</li>${a.hist.map((s, i) => `<li class="sh-${CODE_SHAPE[s.code] || 'step'} ${i === a.hist.length - 1 ? 'now' : ''}" title="${esc((s.code ? '状态码：' + s.code + '；' : '') + (s.at || ''))}"><i></i><span>${esc(s.status || s.code || '未命名状态')}</span><small>${md(s.at)}</small></li>`).join('') || '<li class="none">尚无状态</li>'}${later > 0 ? `<li class="more">之后还有 ${later} 步</li>` : ''}</ol>`;
+// 有效期泳道 + 回放：横轴是时间，每个指标一条带子；竖线是“截至”
+function chart(e, a) {
+  const { T, dates, end } = chartRange(e);
+  const prev = [...dates].reverse().find((d) => d < S.D), next = dates.find((d) => d > S.D);
+  return `<section class="chart" id="s-chart">
+    <div class="lanes" id="lanes" aria-label="数字版本和状态的时间轴，点击或拖动设置截至日期"></div>
+    <div class="replay" id="replay">
+      <button data-jump="${prev || ''}" ${prev ? '' : 'disabled'} aria-label="上一次披露">‹ ${prev ? md(prev) : ''}</button>
+      <span class="asof">截至 <b>${cn(S.D)}</b>${a.status ? `<span class="st">${esc(a.status.status)}</span>` : ''}</span>
+      <button data-jump="${next || ''}" ${next ? '' : 'disabled'} aria-label="下一次披露">${next ? md(next) : ''} ›</button>
+      <button data-jump="${T}" ${S.D === T ? 'disabled' : ''}>最新</button>
+      ${a.claims.some((c) => c.all.length) ? `<button class="lnk tbl" data-tabletoggle aria-expanded="${!!S.tableOpen}">每一版的原文数字 ›</button>` : ''}
+    </div>
+    ${S.tableOpen ? `<div class="vtables">${a.claims.filter((c) => c.all.length).map((c) => claimTable(e, c, a)).join('')}</div>` : ''}
+  </section>`;
+}
+
+function drawLanes(e, a) {
+  const box = $('#lanes'); if (!box) return;
+  const { T, start, end } = chartRange(e);
+  const lanes = a.claims.filter((c) => c.all.some((v) => v.low != null || v.high != null)).slice(0, 6);
+  const hist = e.status_history || [];
+  const W = Math.max(box.clientWidth, 560), L = 112, R = 12, PW = W - L - R;
+  const span = Math.max(1, dayDiff(start, end));
+  const x = (d) => L + Math.min(1, Math.max(0, dayDiff(start, d) / span)) * PW;
+  const big = embedded && S.only;
+  const top = 26, sH = hist.length ? (big ? 56 : 48) : 0, lH = big ? 46 : 34, H = top + sH + lanes.length * lH + 8;
+  box.classList.toggle('big', !!big);
+  const g = [];
+  // 月份
+  for (let m = new Date(start.slice(0, 7) + '-01T00:00:00Z'); m.toISOString().slice(0, 10) <= end; m.setUTCMonth(m.getUTCMonth() + 1)) {
+    const d = m.toISOString().slice(0, 10); if (d < start) continue;
+    g.push(`<line x1="${x(d)}" x2="${x(d)}" y1="${top - 4}" y2="${H}" class="grid"/><text x="${x(d) + 3}" y="${top - 8}" class="mo">${m.getUTCMonth() + 1} 月</text>`);
+  }
+  // 状态
+  if (hist.length) {
+    g.push(`<text x="0" y="${top + 16}" class="ln">状态</text>`);
+    hist.forEach((s, i) => {
+      if (s.at > a.D) return;
+      const X = x(s.at), now = a.status === s;
+      g.push(`<g class="sm ${now ? 'now' : ''}"><title>${esc(s.at + ' ' + s.status)}</title><rect x="${X - 4}" y="${top + 8}" width="8" height="8" transform="rotate(45 ${X} ${top + 12})"/>
+        ${now ? `<text x="${X > L + PW * .7 ? X - 10 : X + 10}" y="${top + 31}" class="sl" text-anchor="${X > L + PW * .7 ? 'end' : 'start'}">${esc(s.status)}</text>` : ''}</g>`);
+    });
+    g.push(`<line x1="${L}" x2="${L + PW}" y1="${top + sH - 6}" y2="${top + sH - 6}" class="rule"/>`);
+  }
+  // 指标带子
+  lanes.forEach((c, i) => {
+    const y = top + sH + i * lH;
+    const bh = lH - 14, ty = y + 7 + bh / 2 + 4.5;
+    g.push(`<text x="0" y="${ty}" class="ln">${esc(c.key.length > 8 ? c.key.slice(0, 8) + '…' : c.key)}<title>${esc(c.key)}</title></text>`);
+    c.all.forEach((v) => {
+      if (!v.valid_from || v.valid_from > a.D) return;
+      const stop = v.valid_to && v.valid_to <= a.D ? v.valid_to : (a.D >= T ? end : a.D);
+      const x0 = x(v.valid_from), x1 = Math.max(x(stop), x0 + 3);
+      const isCur = v === c.current, isVoid = isCur && c.voided, has = v.low != null || v.high != null;
+      const label = has ? rangeText(v, c.unit) : '没给数字';
+      const fits = x1 - x0 > label.length * 7 + 14;
+      g.push(`<g class="seg ${isVoid ? 'void' : isCur ? 'cur' : 'old'}" data-src="${esc(v.evidence_id)}" data-q="${esc(v.quote || '')}"><title>${esc(`${v.valid_from} ${label}：${v.quote || ''}`)}</title>
+        <rect x="${x0}" y="${y + 7}" width="${x1 - x0}" height="${bh}" rx="1"/>${fits ? `<text x="${x0 + 7}" y="${ty}">${esc(label)}</text>` : isCur && x1 + label.length * 7 + 10 < L + PW ? `<text x="${x1 + 6}" y="${ty}" class="curlbl">${esc(label)}</text>` : ''}</g>`);
+    });
+  });
+  // 截至线
+  const cx = a.D >= T ? x(end) : x(a.D);
+  g.push(`<line x1="${cx}" x2="${cx}" y1="${top - 20}" y2="${H}" class="cursor"/><text x="${cx}" y="${top - 12}" class="cl" text-anchor="${cx > L + PW - 40 ? 'end' : 'middle'}">${a.D >= T ? '今天' : md(a.D)}</text>`);
+  box.innerHTML = `<svg width="${W}" height="${H}" viewBox="0 0 ${W} ${H}">${g.join('')}</svg>${lanes.length ? '' : '<p class="empty">这件事没有抽取数字，变化在状态和证据里。</p>'}`;
+  const svg = box.querySelector('svg');
+  const pick = (ev2) => {
+    const r = svg.getBoundingClientRect(); const px = (ev2.clientX - r.left) * (W / r.width);
+    if (px < L) return;
+    let d = addDays(start, Math.round(((px - L) / PW) * span));
+    if (px >= L + PW - 2 || d > T) d = T;
+    if (d !== S.D) { S.D = d; emit({ type: 'date', event: S.eventId, date: S.D }); renderEvent(); toHash(); listeners.forEach((f) => f({ ...S })); }
+  };
+  let drag = false;
+  svg.addEventListener('pointerdown', (ev2) => { if (ev2.target.closest('.seg')) return; drag = true; svg.setPointerCapture(ev2.pointerId); pick(ev2); });
+  svg.addEventListener('pointermove', (ev2) => drag && pick(ev2));
+  svg.addEventListener('pointerup', () => (drag = false));
 }
 
 function secConflicts(e, a) {
-  if (!Array.isArray(e.conflicts)) return `<section class="sec" id="s-conflict"><h2>证据冲突</h2><div class="notice">冲突检测${miss('未生成')}。</div></section>`;
-  const later = e.conflicts.length - a.conflicts.length;
-  return `<section class="sec" id="s-conflict"><h2>证据冲突<small>${a.conflicts.length ? a.conflicts.length + ' 处' : '截至这一天没有发现'}${later > 0 ? `，之后还会出现 ${later} 处` : ''}</small></h2>
-    ${a.conflicts.map((c) => `<div class="cf" id="cf-${esc(c.id)}"><div class="h">${esc(c.kind || '冲突')}<span>${c.resolved_by ? '处理方式：' + esc(c.resolved_by) : ''}${c.first_seen ? ' · ' + esc(c.first_seen) + ' 发现' : ''}</span></div>
-      <p>${esc(c.text)}</p>
-      <div class="qs">${(c.quotes || []).map((q) => { const x = evidenceById(e, q.evidence_id); const t = x ? tierLabel(x, DATA.weights) : {}; return `<div class="q"><button class="srcq" data-src="${esc(q.evidence_id)}" data-q="${esc(q.quote)}" title="在原文里定位这一句">“${esc(q.quote)}”</button><small>${esc(docName(x))} · ${t.tier ? esc(t.tier) + ' 级' : ''}${ref(q.evidence_id)}</small></div>`; }).join('')}</div>
-      <p class="res"><b>${c.resolved_by === '推断' ? '怎么处理（推断）' : '怎么处理'}</b>${val(c.resolution)}</p></div>`).join('')}</section>`;
+  if (!a.conflicts.length) return '';
+  return `<section class="sec" id="s-conflict"><h2>对不上的地方</h2>
+    ${a.conflicts.map((c) => `<div class="cf" id="cf-${esc(c.id)}"><p>${esc(c.text)}</p>
+      ${(c.quotes || []).slice(0, 3).map((q) => { const x = evidenceById(e, q.evidence_id); return `<blockquote><button data-src="${esc(q.evidence_id)}" data-q="${esc(q.quote)}">“${esc(q.quote)}”</button><cite>${esc(srcType(x))} · ${esc(docName(x))}</cite></blockquote>`; }).join('')}
+      ${c.resolution ? `<p class="res">${esc(c.resolution)}</p>` : ''}</div>`).join('')}</section>`;
 }
 
-function secClaims(e, a) {
-  const head = `<h2>数字版本${glBtn('数字版本的状态')}<small>被更正的数字不删，留着看它往哪边变</small><span class="seg" role="group"><button data-mode="line" aria-pressed="${S.claimMode === 'line'}">数轴</button><button data-mode="table" aria-pressed="${S.claimMode === 'table'}">表格</button></span></h2>`;
-  if (!Array.isArray(e.claims) || !e.claims.length) return `<section class="sec" id="s-claims">${head}<div class="notice">这个事件没有抽取数字（${miss('未抽取')}），变化体现在状态和证据里。</div></section>`;
-  const body = a.claims.map((c) => (S.claimMode === 'table' ? claimTable(e, c, a) : claimLine(e, c, a))).join('');
-  return `<section class="sec" id="s-claims">${head}<p class="note">${S.claimMode === 'line' ? '每个指标一根数轴，虚线是 0。横条是区间，圆点是单一数值；蓝色是截至这一天“当前有效”的版本，淡色是“前值”（越淡越早），虚线框是“已作废”。点任一行看原文。' : '原单位，不四舍五入。'}</p>${body}</section>`;
+const rawRange = (r) => (r.low === r.high || r.high == null ? exact(r.low, r.unit) : `${exact(r.low, '')} ~ ${exact(r.high, r.unit)}`);
+function claimTable(e, c, a) {
+  return `<div class="vt-wrap"><h5>${esc(c.key)}</h5><table class="vt"><tbody>
+    ${c.all.filter((v) => v.valid_from <= a.D).map((v) => {
+      const isCur = v === c.current;
+      const x = evidenceById(e, v.evidence_id), by = v.superseded_by ? evidenceById(e, v.superseded_by) : null;
+      const st = isCur && c.voided ? '已作废' : isCur ? '当前有效' : (v.valid_to && v.valid_to <= a.D ? `前值 · ${md(v.valid_to)} 被 ${docName(by)} 取代` : '');
+      const num = v.low == null && v.high == null ? '没给数字' : v.low === v.high ? exact(v.low, c.unit) : `${exact(v.low, '')} ~ ${exact(v.high, c.unit)}`;
+      return `<tr class="${isCur ? 'cur' : ''}"><td class="m">${md(v.valid_from)}</td><td><button class="lnk" data-src="${esc(v.evidence_id)}" data-q="${esc(v.quote || '')}">${esc(docName(x))}</button></td><td class="num">${esc(num)}${v.raw && v.raw.unit !== c.unit ? `<small>原文 ${esc(rawRange(v.raw))}</small>` : ''}</td><td class="st">${esc(st)}</td></tr>`;
+    }).join('')}</tbody></table>${gapText(c, a)}</div>`;
 }
-
-function verLabel(e, v) {
-  const x = evidenceById(e, v.evidence_id);
-  return `${md(v.valid_from)}<small>${esc(docName(x))}</small>`;
-}
-function claimLine(e, c, a) {
-  const nums = c.all.filter((v) => v.low != null || v.high != null);
-  const vals = nums.flatMap((v) => [v.low ?? v.high, v.high ?? v.low]).concat(0);
-  let lo = Math.min(...vals), hi = Math.max(...vals);
-  if (lo === hi) { lo -= 1; hi += 1; }
-  const pad = (hi - lo) * 0.05; const L = lo - pad, H = hi + pad;
-  const x = (n) => ((n - L) / (H - L)) * 100;
-  const seenNums = c.seen.filter((v) => v.low != null || v.high != null);
-  const rows = c.seen.map((v, i) => {
-    const isCur = v === c.current;
-    const isVoid = isCur && c.voided;
-    const older = c.seen.length - 1 - i;
-    const cls = isVoid ? 'void' : isCur ? 'cur' : older === 1 ? 'o2' : '';
-    const has = v.low != null || v.high != null;
-    const l = v.low ?? v.high, h = v.high ?? v.low;
-    const mark = !has ? `<span class="nonum">没给数字</span>` : l === h ? `<span class="dot" style="left:${x(l)}%"></span>` : `<span class="bar" style="left:${x(Math.min(l, h))}%;width:${Math.abs(x(h) - x(l))}%"></span>`;
-    const by = !isCur && v.superseded_by ? evidenceById(e, v.superseded_by) : null;
-    const stTxt = (isVoid ? `已作废：${v.void_from ? md(v.void_from) + ' 起' : ''}` : !isCur && v.valid_to ? `前值 · ${md(v.valid_to)} 被 ${docName(by)} 取代 · ${v.basis || ''}` : (v.basis || '')) + rawNote(v, c.unit);
-    return `<div class="vrow ${cls}" data-src="${esc(v.evidence_id)}" data-q="${esc(v.quote || '')}" title="点开看原文：${esc(v.quote || '')}">
-      <span class="d">${verLabel(e, v)}</span>
-      <span class="val">${has ? esc(rangeText(v, c.unit)) : '—'}<small>${esc(stTxt)}</small></span>
-      <span class="cell"><span class="zero" style="left:${x(0)}%"></span>${mark}</span></div>`;
-  }).join('');
-  const ticks = []; [Math.min(...vals), 0, Math.max(...vals)].forEach((n) => { if (!ticks.some((t) => Math.abs(x(t) - x(n)) < 18)) ticks.push(n); });
-  const later = c.all.length - c.seen.length;
-  const lastTwo = seenNums.slice(-2);
-  const ch = lastTwo.length === 2 ? change(lastTwo[0], lastTwo[1]) : '';
-  const vsFirst = seenNums.length > 2 ? change(seenNums[0], seenNums[seenNums.length - 1]) : '';
-  const notes = c.seen.filter((v) => v.note).map((v) => `${md(v.valid_from)} 这一版：${esc(v.note)}`);
-  const gap = gapText(c, a);
-  return `<div class="claim" data-claim="${esc(c.key)}"><h5>${esc(c.key)}<span>${c.seen.length ? c.seen.length + ' 版' : '尚未披露'}${ch ? '，最近一次' + ch : ''}</span>${/转/.test(vsFirst) && !/转/.test(ch) ? `<span class="flip">较第一版${vsFirst}</span>` : ''}${c.voided ? '<span class="flip">交易终止，数字作废</span>' : ''}</h5>
-    ${rows || '<p class="empty" style="padding:0">这一天还没有任何版本。</p>'}
-    ${seenNums.length ? `<div class="axis"><span></span><span></span><span class="cell">${ticks.map((n) => `<span class="${x(n) < 8 ? 'l' : x(n) > 92 ? 'r' : ''}" style="left:${x(n)}%">${n === 0 ? '0' : esc(human(n, c.unit))}</span>`).join('')}</span></div>` : ''}
-    ${gap}
-    ${notes.length ? `<p class="vnote">${notes.join('<br>')}</p>` : ''}
-    ${later > 0 ? `<p class="later">之后还有 ${later} 版，回放到更晚的日期可见。</p>` : ''}</div>`;
-}
-// 首次预告和当前有效数的差：只在实际数已经披露之后显示，免得回放时提前透露
 function gapText(c, a) {
   const e = ev(); const raw = (e.claims || []).find((k) => k.key === c.key);
   const g = raw && raw.forecast_gap;
@@ -294,122 +304,78 @@ function gapText(c, a) {
   const hit = (raw.versions || []).find((v) => v.low === g.actual || v.high === g.actual);
   if (!hit || hit.valid_from > a.D) return '';
   const u = g.unit || c.unit;
-  const first = rangeText({ low: g.first_low, high: g.first_high }, u);
-  const where = g.within_first_range ? '落在首次预告区间内' : `不在首次预告区间内，离较近的一端差 ${esc(human(g.gap_to_nearer_bound, u))}`;
-  return `<p class="gap"><b>首次预告和当前有效的数</b>首次 ${esc(first)}，当前 ${esc(human(g.actual, u))}（${md(hit.valid_from)}）：${where}${g.revisions != null ? `；中间更正 ${esc(g.revisions)} 次` : ''}。<span class="muted">${esc(g.note || '只陈列已发生的事实。')}</span></p>`;
-}
-const rawRange = (r) => (r.low === r.high || r.high == null ? exact(r.low, r.unit) : `${exact(r.low, '')} ~ ${exact(r.high, r.unit)}`);
-function rawNote(v, unit) {
-  const r = v.raw;
-  if (!r || r.low == null) return '';
-  if (r.unit === unit && r.low === v.low && r.high === v.high) return '';
-  return ` · 原文 ${rawRange(r)}`;
-}
-function claimTable(e, c, a) {
-  return `<div class="claim" data-claim="${esc(c.key)}"><h5>${esc(c.key)}<span>单位：${esc(c.unit || '未记录')}</span></h5><div class="tblwrap"><table class="vt">
-    <thead><tr><th>版本</th><th>披露日</th><th>来源</th><th class="num">数值（${esc(c.unit || '')}）</th><th>原文口径</th><th>依据</th><th>状态</th></tr></thead><tbody>
-    ${c.all.map((v) => {
-      const seen = v.valid_from <= a.D;
-      if (!seen) return `<tr><td>第 ${esc(v.v ?? '')} 版</td><td colspan="6" class="muted">尚未披露</td></tr>`;
-      const isCur = v === c.current;
-      const x = evidenceById(e, v.evidence_id), by = v.superseded_by ? evidenceById(e, v.superseded_by) : null;
-      let st = '';
-      if (isCur && c.voided) st = `已作废（${md(v.void_from)} 起）`;
-      else if (isCur) st = '当前有效';
-      else if (v.valid_to && v.valid_to <= a.D) st = `前值：${md(v.valid_to)} 被 ${esc(docName(by))} 取代`;
-      const num = v.low == null && v.high == null ? '没给数字' : v.low === v.high ? exact(v.low, '') : `${exact(v.low, '')} ~ ${exact(v.high, '')}`;
-      return `<tr class="${isCur ? 'cur' : ''}"><td>第 ${esc(v.v ?? '')} 版</td><td class="m">${esc(v.valid_from)}</td><td>${esc(docName(x))}${ref(v.evidence_id)}</td><td class="num ${isCur ? '' : 'old'}">${num}</td><td class="m">${v.raw ? esc(rawRange(v.raw)) : '<span class="muted">同左</span>'}</td><td>${val(v.basis)}</td><td>${st}</td></tr>`;
-    }).join('')}</tbody></table></div>${gapText(c, a)}</div>`;
+  return `<p class="gap">首次预告 ${esc(rangeText({ low: g.first_low, high: g.first_high }, u))}，当前 ${esc(human(g.actual, u))}，${g.within_first_range ? '落在首次区间内' : `离首次区间较近的一端差 ${esc(human(g.gap_to_nearer_bound, u))}`}。</p>`;
 }
 
-function secEvidence(e, a, tiersHere) {
-  const counts = {}; a.evidence.forEach((x) => (counts[x.source_tier] = (counts[x.source_tier] || 0) + 1));
-  const shown = a.evidence.filter((x) => !x.source_tier || S.tiers.has(x.source_tier)).slice().reverse();
-  const later = (e.evidence || []).length - a.evidence.length;
-  const W = DATA.weights || {};
-  return `<section class="sec" id="s-evidence"><h2>证据时间线<small>新的在上 · 截至这一天 ${a.evidence.length} 条${later > 0 ? `，之后还有 ${later} 条` : ''}</small></h2>
-    <div class="filters">来源级别${glBtn('来源级别和权重')} ${tiersHere.map((t) => `<label title="${esc(W[t] ? W[t].label + '，权重 ' + W[t].w : '')}"><input type="checkbox" data-tier="${esc(t)}" ${S.tiers.has(t) ? 'checked' : ''}>${esc(t)} ${W[t] ? esc(W[t].label) : ''} <span class="muted">${counts[t] || 0}</span></label>`).join('')}</div>
-    <ol class="tl">${shown.map((x) => item(e, x, a)).join('') || '<li class="empty">没有符合筛选的证据。</li>'}</ol></section>`;
-}
-// 可以对比正文的上一版：关系指向的那条也是公告
+// 证据：一行一条，点开看原文和四种时间
 function diffTarget(e, x) {
   if (x.src !== 'ann' || !x.ref || !x.relation || !x.relation.target) return null;
   const t = evidenceById(e, x.relation.target);
   return t && t.src === 'ann' && t.ref ? t : null;
 }
-function item(e, x, a) {
-  const t = x.times || {};
-  const tl = tierLabel(x, DATA.weights);
-  const rel = x.relation || {};
-  const target = rel.target ? evidenceById(e, rel.target) : null;
-  const od = a.outdated[x.id];
-  const clock = t.precision === '分钟' && t.published_at && t.published_at.length > 10 ? t.published_at.slice(11, 16) : (t.precision === '日' ? '精确到日' : '');
-  const occ = occurredText(t.occurred);
-  return `<li class="item t-${esc(x.source_tier || 'x')} ${od ? 'is-outdated' : ''} ${S.focus === x.id ? 'focus' : ''}" id="ev-${esc(x.id)}">
-    <div class="when">${md(disclosedOf(x))}<small>${esc(clock)}</small></div><span class="pin"></span>
-    <div class="body">
-      <div class="tags"><b>${val(x.kind)}</b>${glBtn('证据类型')}<span>${tl.tier ? esc(tl.tier) + ' 级 · ' + esc(tl.label || '') : miss('来源级别未抽取')}${tl.weight != null ? ' · 权重 ' + esc(tl.weight) : ''}</span>
-        <span>${esc(SRC_NAME[x.src] || x.src || '')}${x.source ? ' · ' + esc(x.source) : ''}</span>
-        ${rel.type ? `<span class="rel">${esc(rel.type)}${target ? ' ' + esc(docName(target)) + ref(rel.target) : ''}</span>` : ''}<span class="m">${esc(x.id)}</span></div>
-      <h4>${esc(x.doc_no && x.src === 'ann' ? docName(x) + '　' : '')}${val(x.title)}</h4>
-      ${x.summary ? `<p>${esc(x.summary)}</p>` : x.reason ? `<p>${esc(x.reason)}</p>` : `<p>${miss('要点未抽取')}</p>`}
-      ${od ? `<div class="outd"><b>前提已不成立</b>${esc(od.note || '')}${ref(od.by.id)}</div>` : ''}
-      <div class="quote">${x.quote || x.reason_quote ? `原文：“${esc(x.quote || x.reason_quote)}”` : `原文引用 ${miss()}`}
-        <span class="qact">${x.src === 'ann' && x.ref ? `<button data-src="${esc(x.id)}" data-q="${esc(x.quote || x.reason_quote || '')}">在正文中定位</button>` : ''}${diffTarget(e, x) ? `<button data-diff-a="${esc(diffTarget(e, x).id)}" data-diff-b="${esc(x.id)}">和 ${esc(docName(diffTarget(e, x)))} 对比正文</button>` : ''}${x.url ? `<a href="${esc(x.url)}" target="_blank" rel="noopener">${x.src === 'ann' ? '巨潮 PDF' : '打开原文'} ↗</a>` : ` ${miss('链接未记录', '数据里没有原文链接')}`}</span></div>
-      <div class="times">
-        ${glBtn('四种时间')}<span>发生<i>${occ ? esc(occ) : miss()}</i>${t.occurred && t.occurred.note && occ ? `<span class="muted">（${esc(t.occurred.note)}）</span>` : ''}</span>
-        <span>披露<i>${esc(timeLine(x) || '') || miss()}</i></span>
-        ${x.src === 'ann' ? `<span>落款<i>${t.signed ? esc(t.signed) : miss()}</i></span>` : ''}
-        <span>抓取<i>${bj(t.fetched) ? esc(bj(t.fetched)) : miss('未记录')}</i></span>
-        <span>更新<i>${updatedText(e, x)}</i></span>
-        ${x.snapshot && x.snapshot.sha256_16 ? `<span title="${esc((x.snapshot.of || '') + '的 SHA-256 前 16 位；' + (bj(x.snapshot.taken_at) || '') + ' 首次抓取')}">指纹<i class="m">${esc(x.snapshot.sha256_16)}</i></span>` : ''}
-      </div>
-    </div></li>`;
+function secEvidence(e, a) {
+  const rows = a.evidence.slice().reverse();
+  const later = (e.evidence || []).length - rows.length;
+  return `<section class="sec" id="s-evidence"><h2>证据</h2>
+    <ol class="ev-rows">${rows.map((x) => evRow(e, x, a)).join('') || '<li class="empty">还没有。</li>'}</ol>
+    ${later > 0 ? `<p class="later">之后还有 ${later} 条，往后回放可见。</p>` : ''}</section>`;
 }
-
-// 更新时间：来源自己不提供；有重抓比对记录时，写比对结果
+function evRow(e, x, a) {
+  const t = x.times || {};
+  const od = a.outdated[x.id];
+  const dt = diffTarget(e, x);
+  const occ = occurredText(t.occurred);
+  const open = S.focus === x.id;
+  return `<li id="ev-${esc(x.id)}" class="${od ? 'outdated' : ''} ${open ? 'focus' : ''}"><details ${open ? 'open' : ''}>
+    <summary><span class="d">${md(disclosedOf(x))}</span><span class="k">${esc(srcType(x))}</span><span class="t">${esc(x.summary || x.title || '')}${od ? '<em>前提已不成立</em>' : ''}</span></summary>
+    <div class="ev-more">
+      <p class="src">${esc(x.src === 'ann' ? docName(x) + ' · ' : (x.source ? x.source + ' · ' : ''))}${val(x.title)}</p>
+      ${x.quote || x.reason_quote ? `<blockquote>“${esc(x.quote || x.reason_quote)}”</blockquote>` : ''}
+      ${od ? `<p class="od">${esc(od.note || '')}</p>` : ''}
+      <p class="acts">${x.src === 'ann' && x.ref ? `<button class="lnk" data-src="${esc(x.id)}" data-q="${esc(x.quote || x.reason_quote || '')}">在正文里看 ›</button>` : ''}${dt ? `<button class="lnk" data-diff-a="${esc(dt.id)}" data-diff-b="${esc(x.id)}">和 ${esc(docName(dt))} 对比 ›</button>` : ''}${x.url ? `<a href="${esc(x.url)}" target="_blank" rel="noopener">${x.src === 'ann' ? '巨潮 PDF' : '原文链接'} ↗</a>` : ''}</p>
+      <p class="times">${esc(x.source_tier ? x.source_tier + ' 级' : '')}${x.weight != null ? ' · 权重 ' + esc(x.weight) : ''} · 发生 ${occ ? esc(occ) : miss()} · 披露 ${esc(timeLine(x) || '') || miss()} · 抓取 ${bj(t.fetched) ? esc(bj(t.fetched).replace('（北京时间）', '')) : miss('未记录')} · 更新 ${updatedText(e, x)}</p>
+    </div></details></li>`;
+}
 function updatedText(e, x) {
   const t = x.times || {};
   if (t.updated) return esc(bj(t.updated) || t.updated);
   const r = RECHECK && RECHECK.items.find((i) => i.event_id === e.id && i.evidence_id === x.id);
   if (!r) return miss('来源未提供');
-  const at = (bj(RECHECK.checked_at) || '').replace('（北京时间）', '');
-  if (r.error) return `${esc(at)} 重抓失败：${esc(r.error)}`;
-  return r.changed ? `<b>${esc(at)} 重抓发现正文有变化</b>` : `${esc(at)} 重抓比对，正文未变`;
+  if (r.error) return `重抓失败`;
+  return r.changed ? `<b>重抓发现正文有变化</b>` : `重抓比对未变`;
 }
 
 function secPrices(e, a) {
   const p = e.prices;
-  const h = `<h2>披露前后股价<small>只摆事实，不解读涨跌原因</small></h2>`;
-  if (!p) return `<section class="sec" id="s-prices">${h}<div class="notice">行情${miss('未接入')}，这个事件没有价格数据。</div></section>`;
-  if (p.error) return `<section class="sec" id="s-prices">${h}<div class="notice">行情${miss('未接入')}：${esc(p.error)}。所以这里不显示任何价格。</div></section>`;
+  const h = `<h2>披露前后股价</h2>`;
+  if (!p || p.error) return `<section class="sec" id="s-prices">${h}<p class="empty">行情${miss('未接入')}${p && p.error ? '：' + esc(p.error) : ''}</p></section>`;
   const byDay = {};
   (p.markers || []).filter((m) => m.disclosed <= a.D).forEach((m) => { (byDay[m.first_trading_day] = byDay[m.first_trading_day] || []).push(m); });
   const cards = Object.entries(byDay).map(([day, ms]) => {
     const w = priceWindow(p, ms[0], a.D);
     const bar = w.find((b) => b.date === day);
-    if (!w.length || !bar) return `<div class="pxc"><div class="h"><b>${md(ms[0].disclosed)} ${ms.map((m) => esc(docName(evidenceById(e, m.evidence_id)))).join('、')}</b></div><p class="muted">首个交易日 ${esc(day)} 的价格${miss('未接入', '这一天不在已取的行情片段里')}</p></div>`;
+    if (!w.length || !bar) return '';
     const cs = w.map((b) => b.close), mn = Math.min(...cs), mx = Math.max(...cs), r = mx - mn || 1;
-    const X = (i) => 6 + (i / Math.max(1, w.length - 1)) * 228, Y = (v) => 40 - ((v - mn) / r) * 34;
+    const X = (i) => 4 + (i / Math.max(1, w.length - 1)) * 152, Y = (v) => 30 - ((v - mn) / r) * 24;
     const k = w.indexOf(bar);
-    const pct = bar.pct == null ? null : (bar.pct > 0 ? '+' : bar.pct < 0 ? '−' : '') + Math.abs(bar.pct).toFixed(2) + '%';
-    const halt = ms[0].first_trading_day !== ms[0].disclosed ? `（${md(ms[0].disclosed)} 披露，${md(day)} 起首个交易日）` : '';
-    return `<div class="pxc"><div class="h"><b>${md(ms[0].disclosed)} ${ms.map((m) => esc(docName(evidenceById(e, m.evidence_id)))).join('、')}</b><span>${ms.map((m) => ref(m.evidence_id)).join('')}</span></div>
-      <svg viewBox="0 0 240 46" preserveAspectRatio="none" aria-label="收盘价"><line x1="${X(k)}" x2="${X(k)}" y1="0" y2="46" stroke="var(--line)" stroke-dasharray="2 2"/>
-        <polyline fill="none" stroke="var(--ink-2)" stroke-width="1.5" vector-effect="non-scaling-stroke" points="${w.map((b, i) => X(i) + ',' + Y(b.close)).join(' ')}"/>
-        <circle cx="${X(k)}" cy="${Y(bar.close)}" r="3.5" fill="var(--cur)"/></svg>
-      <div class="r"><span>${md(day)} 收盘 <b>${esc(bar.close)}</b> 元</span><span>较前日 <b>${pct || miss('未记录')}</b></span></div>
-      <div class="r muted"><span>${w.length} 个交易日：${md(w[0].date)}–${md(w[w.length - 1].date)}</span><span>${bar.turnover != null ? '成交额 ' + (bar.turnover / 1e8).toFixed(2) + ' 亿' : ''}</span></div>
-      ${halt ? `<div class="muted">${halt}</div>` : ''}</div>`;
+    const pct = bar.pct == null ? '' : (bar.pct > 0 ? '+' : bar.pct < 0 ? '−' : '') + Math.abs(bar.pct).toFixed(2) + '%';
+    return `<li><span class="d">${md(day)}</span><svg viewBox="0 0 160 34" aria-hidden="true"><polyline points="${w.map((b, i) => X(i) + ',' + Y(b.close)).join(' ')}"/><circle cx="${X(k)}" cy="${Y(bar.close)}" r="3"/></svg><span class="v">${esc(bar.close)} 元 <small>${pct}</small></span><span class="w">${ms.map((m) => esc(docName(evidenceById(e, m.evidence_id)))).join('、')}</span></li>`;
   }).join('');
-  return `<section class="sec" id="s-prices">${h}${cards ? `<div class="px">${cards}</div>` : `<p class="empty">截至这一天还没有披露，没有对应的价格片段。</p>`}
-    <p class="pxnote">${esc(p.adjust || '复权方式未记录')} · ${esc(p.note || '')} · 来源：${esc(p.source || '未记录')} · 抓取 ${bj(p.fetched) ? esc(bj(p.fetched)) : miss('未记录')}。价格只是同一时间发生的事实，不代表公告导致了涨跌。</p></section>`;
+  return `<section class="sec" id="s-prices">${h}${cards ? `<ul class="px">${cards}</ul><p class="small">${esc(p.adjust || '')}，披露后首个交易日前后各 3 天</p>` : `<p class="empty">这一天之前没有价格片段。</p>`}</section>`;
 }
 
 function secPending(e) {
   const list = Array.isArray(e.pending) ? e.pending : null;
-  return `<section class="sec" id="s-pending"><h2>还没做到<small>缺的东西写在这里，不假装完整</small></h2>
-    ${list ? (list.length ? `<ul class="pend">${list.map((p) => `<li>${esc(p)}</li>`).join('')}</ul>` : '<p class="empty">没有登记的缺口。</p>') : `<div class="notice">缺口清单${miss('未生成')}。</div>`}</section>`;
+  if (list && !list.length) return '';
+  return `<section class="sec" id="s-pending"><h2>还没做到</h2>${list ? `<ul class="pend">${list.map((p) => `<li>${esc(p)}</li>`).join('')}</ul>` : `<p class="empty">缺口清单${miss('未生成')}</p>`}</section>`;
+}
+
+// 证据编号换成来源类型文字链接；同类多条合并
+function tags(e, ids) {
+  if (!ids || !ids.length) return '';
+  const groups = [];
+  ids.forEach((id) => { const x = evidenceById(e, id); const t = srcType(x); let g = groups.find((k) => k.t === t); if (!g) groups.push(g = { t, ids: [] }); g.ids.push(id); });
+  return groups.map((g) => `<button class="stag" data-tag-ids="${esc(g.ids.join(','))}" data-tag-ev="${esc(e.id)}" title="${esc(g.ids.map((id) => docName(evidenceById(e, id))).join('、'))}">${esc(g.t)}${g.ids.length > 1 ? ' · ' + g.ids.length : ''} ›</button>`).join('');
 }
 
 // ---------- 问答 ----------
@@ -419,9 +385,9 @@ function renderQA() {
   const cur = items.find((q) => q.id === S.qaId);
   const groups = {};
   items.forEach((q) => { const e = evOf(q.event_id); const k = e ? e.name + ' · ' + (e.title || '') : '未关联事件'; (groups[k] = groups[k] || []).push(q); });
+  if (embedded && S.only === 'answer' && cur) { $('#view').innerHTML = `<div class="wrap only">${answer(cur)}</div>`; return; }
   $('#view').innerHTML = `<div class="wrap">
     <form class="ask" id="askf"><input id="askq" placeholder="问一个已收录事件的问题，或贴一句看到的消息" value="${esc(S.ask)}" autocomplete="off"><button>查</button></form>
-    <p class="honest">这里没有接实时大模型：网页放不了模型密钥。能回答的是下面这些离线生成、逐句挂了证据的预置问题；你自己输入的话，会先做数字查验，再按关键词找最接近的预置问题。</p>
     <div id="askres"></div>
     ${QA ? `<div class="qa-grid"><ul class="qlist">${Object.entries(groups).map(([g, qs]) => `<li class="g">${esc(g)}</li>${qs.map((q) => `<li><button data-qa="${esc(q.id)}" ${q.id === S.qaId ? 'aria-current="true"' : ''}>${esc(q.question)}</button></li>`).join('')}`).join('')}</ul>
       <div>${cur ? answer(cur) : '<p class="empty">选一个问题。</p>'}</div></div>`
@@ -434,9 +400,8 @@ function answer(q) {
   const ans = Array.isArray(q.answer) ? q.answer : [];
   const tr = Array.isArray(q.trace) ? q.trace : null;
   return `<div class="answer" id="answer" data-event="${esc(q.event_id || '')}"><p class="qq">${esc(q.question)}</p>
-    <div class="meta">${e ? esc(e.name) + ' · ' : ''}截至 ${q.as_of ? esc(q.as_of) : miss('未记录')} · 离线生成，逐句挂证据</div>
+    <div class="meta">${e ? esc(e.name) + ' · ' : ''}截至 ${q.as_of ? esc(q.as_of) : miss('未记录')}</div>
     ${ans.length ? `<ol class="sent">${ans.map((s) => `<li class="k-${esc(s.kind)}"><span class="kind k-${esc(s.kind)}">${s.kind ? esc(s.kind) : miss('未标')}</span><span>${esc(s.text)}${e ? tags(e, s.evidence_ids) : refs(s.evidence_ids)}</span></li>`).join('')}</ol>` : `<p>${miss('回答未生成')}</p>`}
-    <p class="legend"><b>事实</b>公告、交易所文件里有　<b>推断</b>写明依据的判断　<b>不确定</b>现有证据答不了　<b>不回答</b>超出边界（买卖建议、涨跌预测）</p>
     <details class="trace" ${S.openTrace ? 'open' : ''}><summary>它是怎么得出这个回答的（${tr ? tr.length + ' 步' : '未生成'}）</summary>
       ${tr ? `<ol>${tr.map((t) => `<li><b>${esc(t.step)}</b> ${esc(t.detail || '')}
         ${t.used && t.used.length ? `<div class="x">用了：${refs(t.used)}</div>` : ''}
@@ -558,9 +523,11 @@ function bind() {
     if (b.dataset.src) { ev2.preventDefault(); const evId = b.dataset.srcEv || (b.closest('[data-event]') && b.closest('[data-event]').dataset.event) || S.eventId; closePeek(); openSource(evId, b.dataset.src, b.dataset.q); return; }
     if (b.dataset.diffA) { openDiff(S.eventId, b.dataset.diffA, b.dataset.diffB); return; }
     if (b.matches('[data-drawer-close]')) { closeDrawer(); return; }
+    if (b.hasAttribute('data-merge')) { S.mergeOpen = !S.mergeOpen; renderEvent(); return; }
+    if (b.hasAttribute('data-tabletoggle')) { S.tableOpen = !S.tableOpen; renderEvent(); scrollToSel('#s-chart', false); return; }
     if (b.hasAttribute('data-revtoggle')) { S.revOpen = !S.revOpen; emit({ type: 'rev', event: S.eventId, date: S.D }); renderEvent(); scrollToSel('#s-concl', false); return; }
     if (b.dataset.rev) { S.revView = S.revView === b.dataset.rev ? null : b.dataset.rev; emit({ type: 'rev', event: S.eventId, date: S.D, as_of: b.dataset.rev }); renderEvent(); scrollToSel('#revs', false); return; }
-    if (b.dataset.goto) { ev2.preventDefault(); closePeek(); go({ view: 'event', event: b.dataset.goto, date: b.dataset.gd || null, focus: b.dataset.gf || null, section: b.dataset.gf ? null : 's-claims' }); return; }
+    if (b.dataset.goto) { ev2.preventDefault(); closePeek(); go({ view: 'event', event: b.dataset.goto, date: b.dataset.gd || null, focus: b.dataset.gf || null, section: b.dataset.gf ? null : 's-chart' }); return; }
     if (b.closest('.subnav') && b.hash) { ev2.preventDefault(); scrollToSel(b.hash, false); }
   });
   document.addEventListener('change', (ev2) => {
@@ -574,7 +541,8 @@ function bind() {
     if (ev2.target.id === 'askf') { S.ask = $('#askq').value.trim(); emit({ type: 'ask', text: S.ask }); runAsk(S.ask); }
     listeners.forEach((f) => f({ ...S }));
   });
-  document.addEventListener('click', (ev2) => { const r = ev2.target.closest('.vrow'); if (r && r.dataset.src) openSource(S.eventId, r.dataset.src, r.dataset.q); });
+  document.addEventListener('click', (ev2) => { const r = ev2.target.closest('.seg'); if (r && r.dataset.src) openSource(S.eventId, r.dataset.src, r.dataset.q); });
+  addEventListener('resize', () => { if (S.view === 'event') { const e = ev(); if (e) drawLanes(e, asOf(e, S.D)); } });
   addEventListener('keydown', (k) => {
     if (k.key === 'Escape') { closePeek(); closeDrawer(); return; }
     if (S.view !== 'event' || k.target.closest('input, textarea, select') || k.metaKey || k.ctrlKey) return;
@@ -675,6 +643,8 @@ async function openDiff(eventId, aId, bId) {
   d.innerHTML = head + `<div class="dbody">${pick}
     <p class="dnote">${esc(docName(A))}（${esc(disclosedOf(A))}）→ ${esc(docName(B))}（${esc(disclosedOf(B))}）：${df.same} 句相同，${df.edited} 句改了内容，新增 ${df.added} 句，删去 ${df.removed} 句。</p>
     <div class="dcols"><b>旧：${esc(docName(A))}</b><b>新：${esc(docName(B))}</b></div>${rows}</div>`;
+  const firstNum = [...d.querySelectorAll('.drow:not(.same)')].find((r) => !/证券代码|编号/.test(r.textContent) && [...r.querySelectorAll('mark')].some((m) => /\d/.test(m.textContent)));
+  if (firstNum) { const body = d.querySelector('.dbody'); body.scrollTop = Math.max(0, firstNum.offsetTop - 120); }
 }
 
 // 演示页用的接口：所有参数都可选
@@ -692,6 +662,8 @@ function go(o = {}) {
   if ('ask' in o) S.ask = o.ask || '';
   if (o.view === 'event' && !o.date && !S.D) S.D = today(DATA);
   if ('revOpen' in o) S.revOpen = !!o.revOpen;
+  if ('only' in o) S.only = o.only || null;
+  if ('tableOpen' in o) S.tableOpen = !!o.tableOpen;
   if ('revView' in o) S.revView = o.revView;
   if (!o.source && !o.diff && (o.view || o.event || o.date || o.close)) closeDrawer();
   emit({ type: 'nav', view: S.view, event: S.eventId, date: S.D, focus: S.focus });

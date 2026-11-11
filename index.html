@@ -9,43 +9,42 @@
 </head>
 <body>
 <header class="bar">
-  <b>事件证据时间线<small>同花顺 AI 产品经理笔试作品</small></b>
+  <b>事件证据时间线</b>
   <nav>
-    <a href="#demo"><i>01</i>痛点与演示</a>
-    <a href="#highlights"><i>02</i>亮点</a>
-    <a href="#eval"><i>03</i>评测</a>
-    <a href="#ai"><i>04</i>我怎么用 AI 的</a>
-  </nav>
-  <div class="ext">
     <a href="workbench.html">工作台</a>
     <a href="https://github.com/lijiajie-git/event-evidence-timeline" target="_blank" rel="noopener">GitHub</a>
-    <button id="theme" type="button"></button>
-  </div>
+  </nav>
 </header>
 
 <main>
+  <section class="hero">
+    <div class="hero-l">
+      <h1>你看到的那条消息，<br>现在还算数吗？</h1>
+      <p id="hero-sub">同一件事会被公告、快讯、评论反复说，数字还会被公司自己改。</p>
+      <a class="go" href="#demo">看它怎么解决 ↓</a>
+    </div>
+    <div class="hero-r" id="hero-table"></div>
+  </section>
+
   <section class="stage" id="demo">
     <div id="stage" class="st-grid">
       <div class="dev-col">
-        <div class="dev-cap"><b>用户看到的：工作台</b><span id="gen"></span></div>
         <div class="ipad-box" id="ipad-box">
           <div class="ipad" id="ipad"><div class="screen"><iframe id="ipad-frame" src="workbench.html?embed" title="工作台"></iframe></div></div>
         </div>
-        <div class="dev-note">公告、报道、行情都是真实数据 · 只整理公开信息，不构成投资建议</div>
       </div>
-      <div class="ai">
-        <div class="eyebrow" id="ai-eyebrow">正在读取数据</div>
+      <aside class="ai" aria-live="polite">
+        <p class="ch" id="ch"></p>
         <h2 id="ai-title"></h2>
-        <p class="lede" id="ai-lede"></p>
-        <div class="loghead"><b>后台做了什么</b><span id="loghead-r">回放离线处理记录</span></div>
-        <ol class="log" id="log" aria-live="polite"></ol>
-        <p class="honest">抽取和问答由大模型在本地离线完成，结果校验后写进数据文件；网页只读文件，不调用模型（静态托管放不了模型密钥）。“查一句话”是浏览器里的规则比对。</p>
-      </div>
+        <dl class="three" id="three"></dl>
+        <p class="hint" id="hint"></p>
+      </aside>
     </div>
     <div class="rail">
-      <div class="steps" id="steps"></div>
-      <div class="ctl">
-        <span class="mode" id="mode"></span>
+      <div class="prog"><i id="prog"></i></div>
+      <div class="rail-row">
+        <span class="cur" id="ch-name"></span>
+        <span class="sp"></span>
         <button id="prev" type="button">上一段</button>
         <button id="next" type="button">下一段</button>
         <button id="play" type="button">暂停</button>
@@ -54,50 +53,29 @@
   </section>
 
   <section class="sec" id="highlights">
-    <div class="no">02 / 亮点</div>
-    <h2>每一步是规则还是模型做的，核了什么，都留了记录</h2>
-    <p class="lede">模型只做读不懂就做不准的部分：抽说法、抽数字、判断是不是同一件事、写分时点结论。抓取、分级、状态、时间和全部校验都是规则；任何一条引用对不上原文，这次就不生成数据文件。</p>
-    <div id="hl-body"><p class="lede">读取中…</p></div>
-    <details class="more"><summary>逐条看核查记录和重抓比对</summary><div id="audit-body"></div></details>
+    <h2>怎么做出来的</h2>
+    <p class="lede">模型只做读不懂就做不准的那一步，其余都是规则。</p>
+    <ol class="flow" id="flow"></ol>
+    <details class="more"><summary>看逐条核查记录</summary><div id="audit-body"></div></details>
   </section>
 
   <section class="sec" id="eval">
-    <div class="no">03 / 评测</div>
-    <h2>抽得准不准：独立标注的标准答案，加上故意改坏数据的陷阱</h2>
-    <p class="lede">标准答案由另一个窗口在不看抽取结果的情况下标注，是模型标的，不是人工标的；能逐字核对原文的部分已经自查。主数字是每个事件第一次抽取、还没参考评测意见时的成绩；按评测意见改过之后的分数放在后面，那些不是独立测量。陷阱用例是把数据故意改坏，看管线拦不拦得住。数字都直接读 <code>eval/report.json</code>。</p>
+    <h2>抽得准不准</h2>
     <div id="eval-body"><p class="lede">读取中…</p></div>
   </section>
 
   <section class="sec" id="ai">
-    <div class="no">04 / 我怎么用 AI 的</div>
-    <h2>一个主窗口协调，几个窗口同时做，用 CLAUDE.md 对齐进展</h2>
-    <p class="lede">范围、取舍和每个关键决定由本人定；AI 负责执行，做错的地方也照实列出。内容读 <code>data/process.json</code>。</p>
+    <h2>我怎么用 AI 做的</h2>
     <div id="ai-body"><p class="lede">读取中…</p></div>
   </section>
-
-  <section class="sec" id="how">
-    <div class="no">边界</div>
-    <h2>网页不实时调模型，也不给买卖建议</h2>
-    <div class="cols">
-      <div>
-        <h3 class="sub">为什么网页不实时调模型</h3>
-        <p>页面托管在 GitHub Pages，是纯静态站，没有地方安全存放模型密钥。所以模型在本地跑，结果经过校验再发布；问答是离线生成的预置问题，每一步推理都留了记录。</p>
-        <p>你自己输入的话，页面只做两件事：读出数字和已收录的版本比对，或者找最接近的预置问题。都对不上就直说。</p>
-      </div>
-      <div>
-        <h3 class="sub">边界</h3>
-        <p>只整理公开披露的公告和公开报道。不预测涨跌，不给买卖建议。事实、推断、不确定分开写；每个数字都能点回原文。</p>
-        <p>没接入或没抽取的地方标成“未接入”“未抽取”，不显示成正常值。</p>
-      </div>
-    </div>
-  </section>
-
-  <footer class="end">
-    <a href="workbench.html">全屏打开工作台</a>
-    <a href="https://github.com/lijiajie-git/event-evidence-timeline" target="_blank" rel="noopener">GitHub：README、数据管线、评测</a>
-    <span>只整理公开信息，不构成投资建议。</span>
-  </footer>
 </main>
+
+<footer class="end">
+  <p>标准答案是另一个模型独立标注的，不是人工标注。</p>
+  <p>网页不实时调用模型，问答是离线生成的。</p>
+  <p>只整理公开信息，不构成投资建议。</p>
+  <p class="links"><a href="workbench.html">工作台</a><a href="https://github.com/lijiajie-git/event-evidence-timeline" target="_blank" rel="noopener">GitHub</a><button id="theme" type="button"></button></p>
+</footer>
 <noscript><p style="padding:20px">这个页面需要 JavaScript 才能读取数据文件。</p></noscript>
 <script type="module" src="web/stage.js"></script>
 </body>

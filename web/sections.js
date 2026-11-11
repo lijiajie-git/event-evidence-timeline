@@ -7,41 +7,53 @@ const pct = (v) => (v == null || isNaN(v) ? '—' : (v * 100).toFixed(v === 1 ? 
 const bjs = (iso) => (bj(iso) || '').replace('（北京时间）', ' 北京时间');
 const absent = (name, res) => `<div class="absent">${esc(name)}${miss('未生成')}：<code>${esc(res.path)}</code>（${esc(res.error || '格式不对')}）。生成后这里会直接显示，不需要改页面。</div>`;
 
-// ---------------- 亮点 ----------------
+// ---------------- 亮点：一条横向流程，数字写进句子 ----------------
 export function renderHighlights(el, { events, audit, recheck, qa }) {
   const ev = (events && events.events) || [];
   const all = ev.flatMap((e) => e.evidence || []);
   const n = (f) => all.filter(f).length;
   const versions = ev.flatMap((e) => (e.claims || []).flatMap((c) => c.versions || [])).length;
-  const concl = ev.reduce((s, e) => s + (e.conclusions || []).length, 0);
-  const states = ev.reduce((s, e) => s + (e.status_history || []).length, 0);
-  const conf = ev.reduce((s, e) => s + (e.conflicts || []).length, 0);
-  const outd = n((x) => x.outdated_by);
-  const bars = ev.reduce((s, e) => s + (e.prices && !e.prices.error && Array.isArray(e.prices.bars) ? e.prices.bars.length : 0), 0);
-  const A = audit && audit.ok && isObj(audit.data) ? audit.data : null;
-  const sm = A && isObj(A.summary) ? A.summary : null;
+  const concl = ev.reduce((s2, e) => s2 + (e.conclusions || []).length, 0);
+  const states = ev.reduce((s2, e) => s2 + (e.status_history || []).length, 0);
+  const conf = ev.reduce((s2, e) => s2 + (e.conflicts || []).length, 0);
+  const bars = ev.reduce((s2, e) => s2 + (e.prices && !e.prices.error && Array.isArray(e.prices.bars) ? e.prices.bars.length : 0), 0);
+  const sm = audit && audit.ok && isObj(audit.data) && isObj(audit.data.summary) ? audit.data.summary : null;
   const R = recheck && recheck.ok && isObj(recheck.data) ? recheck.data : null;
   const Q = qa && qa.ok && qa.data && Array.isArray(qa.data.items) ? qa.data.items.length : null;
-  const node = (tag, title, big, small, cls = '') => `<li class="fn ${cls}"><i>${tag}</i><b>${title}</b><span class="big">${big}</span><span class="sm">${small}</span></li>`;
-  const flow = `<ol class="fflow">
-    ${node('规则', '抓取', `${n((x) => x.src === 'ann')}<small>份公告</small>`, `新闻 ${n((x) => x.src === 'news')} 条 · 异动解读 ${n((x) => x.src === 'anomaly')} 条 · 日 K 线 ${bars} 根`)}
-    ${node('模型 · 离线', '抽取', `${versions}<small>个数字版本</small>`, `${concl} 份分时点结论${Q != null ? ` · ${Q} 道问答` : ''} · 每条带原文引用`, 'model')}
-    ${node('规则', '校验', sm ? `${esc(sm.quotes_passed)}/${esc(sm.quotes_checked)}<small>条引用通过</small>` : miss('未生成'), sm ? `被拦下 ${esc(sm.quotes_blocked ?? 0)} 条 · 时序检查 ${esc(sm.qa_evidence_time_checks ?? '—')} 次 · 不通过就不生成文件` : '核查记录未生成')}
-    ${node('规则', '组装', `${ev.length}<small>个事件</small>`, `${states} 次状态变化 · ${conf} 处冲突 · ${outd} 条观点前提已不成立`)}
-    ${node('浏览器', '页面', '只读<small>数据文件</small>', '回放、查验、两版对比都在浏览器里算，不调用模型', 'page')}
-  </ol>`;
-  const checks = A && Array.isArray(A.checks) ? A.checks : [];
-  const rc = R && Array.isArray(R.items) ? R.items : [];
-  const grid = (items, ok, title, label) => `<div class="sq"><div class="sqh"><b>${title}</b><span>${label}</span></div><div class="sqs">${items.map((x) => `<i class="${ok(x) ? 'y' : 'n'}" title="${esc(x.t)}"></i>`).join('')}</div></div>`;
-  el.innerHTML = `${flow}
-    <div class="sqrow">
-      ${checks.length ? grid(checks.map((c) => ({ ok: c.pass, t: `${c.where}：${c.quote}` })), (x) => x.ok, '每条引用都回原文核过', `${checks.filter((c) => c.pass).length}/${checks.length} 通过 · 每格一条，悬停看原句`) : `<div class="sq">${absent('核查记录', audit || { path: 'data/audit.json' })}</div>`}
-      ${rc.length ? grid(rc.map((r) => ({ ok: !r.changed && !r.error, t: `${r.evidence_id}：${r.old} → ${r.new}` })), (x) => x.ok, '公告发出后有没有被悄悄改过', `重抓 ${rc.length} 份，正文有变化 ${rc.filter((r) => r.changed).length} 份${R.checked_at ? ' · ' + esc(bjs(R.checked_at)) : ''}`) : `<div class="sq">${absent('重抓比对', recheck || { path: 'data/recheck.json' })}</div>`}
-    </div>`;
+  const step = (name, by, text, model) => `<li class="${model ? 'model' : ''}"><b>${name}</b><i>${by}</i><p>${text}</p></li>`;
+  el.innerHTML = [
+    step('抓取', '规则', `巨潮公告 ${n((x) => x.src === 'ann')} 份，新闻 ${n((x) => x.src === 'news')} 条，异动解读 ${n((x) => x.src === 'anomaly')} 条，日 K 线 ${bars} 根。`),
+    step('抽取', '模型 · 离线', `读正文，抽出 ${versions} 个数字版本、${concl} 份分时点结论${Q != null ? `和 ${Q} 道问答` : ''}，每条带原文引用。`, true),
+    step('校验', '规则', sm ? `${esc(sm.quotes_checked)} 条引用逐字回原文核对，${esc(sm.quotes_passed)} 条通过${R && Array.isArray(R.items) ? `；${R.items.length} 份公告重抓比对，${R.items.filter((r) => r.changed).length} 份有变化` : ''}。` : '核查记录未生成。'),
+    step('组装', '规则', `${ev.length} 个事件，${states} 次状态变化，${conf} 处冲突，来源分级和权重按固定规则。`),
+    step('页面', '浏览器', '只读数据文件。回放、查验、两版对比都在浏览器里算。'),
+  ].join('');
+}
+
+// ---------------- 核查记录（折叠里） ----------------
+const scalar = (v) => v == null || ['string', 'number', 'boolean'].includes(typeof v);
+function cell(v) {
+  if (v === true) return '<span class="ok">通过</span>';
+  if (v === false) return '<span class="bad">未通过</span>';
+  if (v == null) return miss('未记录');
+  if (!scalar(v)) { const t = JSON.stringify(v); return esc(t.length > 140 ? t.slice(0, 140) + '…' : t); }
+  return esc(v);
+}
+function table(rows) {
+  const cols = [...new Set(rows.flatMap((r) => Object.keys(r)))].slice(0, 8);
+  return `<div class="tw"><table class="g"><thead><tr>${cols.map((c) => `<th>${esc(c)}</th>`).join('')}</tr></thead><tbody>${rows.slice(0, 300).map((r) => `<tr>${cols.map((c) => `<td class="${typeof r[c] === 'number' ? 'n' : ''}">${cell(r[c])}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`;
+}
+export function renderAudit(a) {
+  if (!isObj(a)) return `<p class="absent">核查记录格式不对。</p>`;
+  const s = a.summary || {};
+  const checks = Array.isArray(a.checks) ? a.checks : [];
+  return `<p class="small">${s.quotes_checked != null ? `引用核对 ${esc(s.quotes_passed)}/${esc(s.quotes_checked)} 通过，拦下 ${esc(s.quotes_blocked ?? 0)} 条；` : ''}${s.builds_recorded != null ? `记录了 ${esc(s.builds_recorded)} 次构建，被拦 ${esc(s.builds_blocked ?? 0)} 次。` : ''}</p>
+    ${Array.isArray(a.rules) ? `<ol class="small" style="padding-left:1.3em">${a.rules.map((r) => `<li>${esc(r)}</li>`).join('')}</ol>` : ''}
+    ${checks.length ? table(checks.map((c) => ({ 事件: c.event_id, 位置: c.where, 引用: c.quote, 结果: c.pass }))) : ''}`;
 }
 
 // ---------------- 评测 ----------------
-export function renderEvalSection(el, res, events) {
+function renderEvalFull(el, res, events) {
   if (!res || !res.ok || !isObj(res.data)) { el.innerHTML = absent('评测成绩单', res || { path: 'eval/report.json' }); return; }
   const r = res.data;
   const names = Object.fromEntries(((events && events.events) || []).map((e) => [e.id, `${e.name} · ${e.title || e.type || ''}`]));
@@ -117,35 +129,47 @@ export function renderEvalSection(el, res, events) {
   el.innerHTML = html;
 }
 
-// ---------------- 我怎么用 AI 的 ----------------
+// 评测：一张四行的小表 + 一句第一版到修订后；其余收进“看完整成绩单”
+export function renderEvalSection(el, res, events) {
+  if (!res || !res.ok || !isObj(res.data)) { el.innerHTML = absent('评测成绩单', res || { path: 'eval/report.json' }); return; }
+  const r = res.data, fp = isObj(r.first_pass) ? r.first_pass : null;
+  const S = fp ? fp.summary || {} : {};
+  const traps = r.traps && Array.isArray(r.traps.cases) ? r.traps.cases : [];
+  const caught = traps.filter((t) => /拦住/.test(t.verdict || '') && !/放行|没拦住|未拦住/.test(t.verdict || '')).length;
+  const row = (name, o) => `<tr><td>${esc(name)}</td>${o && o.den > 0 ? `<td class="p">${pct(o.value)}</td><td class="n">${esc(o.num)}/${esc(o.den)}</td>` : '<td class="n" colspan="2">还没有打分</td>'}</tr>`;
+  const first = fp && fp.note ? fp.note.split('。')[0] + '。' : '';
+  const E1 = fp && fp.event1;
+  const cur = E1 && (r.events || []).find((e) => e.id === E1.id);
+  const a1 = E1 && E1.summary && E1.summary['数值抽取精确匹配'];
+  const b1 = cur && cur.results && cur.results['数值抽取精确匹配'];
+  el.innerHTML = fp ? `<p class="lede">${esc(first)}${Array.isArray(fp.test_events) ? `共 ${fp.test_events.length} 个事件。` : ''}</p>
+    <table class="score"><thead><tr><th>指标</th><th colspan="2">首次抽取</th></tr></thead><tbody>
+      ${row('数值抽取', S['数值抽取精确匹配'])}${row('版本链', S['版本链'])}${row('引用逐字匹配', S['引用逐字匹配'])}
+      ${traps.length ? `<tr><td>陷阱用例被拦住</td><td class="p">${caught}/${traps.length}</td><td class="n">故意改坏的数据</td></tr>` : ''}
+    </tbody></table>
+    ${a1 && a1.den ? `<p class="shiftline">事件 1 第一版数值抽取 <b>${pct(a1.value)}</b>${b1 && b1.den ? ` → 按评测意见修订后 <b>${pct(b1.value)}</b><small>修订后的不算独立测量</small>` : ''}</p>` : ''}
+    <details class="more"><summary>看完整成绩单</summary><div id="eval-full"></div></details>`
+    : `<p class="lede">首次抽取成绩${miss('未生成')}。</p><details class="more"><summary>看完整成绩单</summary><div id="eval-full"></div></details>`;
+  renderEvalFull(el.querySelector('#eval-full'), res, events);
+}
+
+// ---------------- 我怎么用 AI 的：四个窗口一行，两列短清单 ----------------
+const PICK_H = [/题|选了/, /删除线|不删除/, /实时|密钥/, /评测/, /痛点|讲法/, /同类产品|截图/, /亮点/];
+const pickBy = (arr, res, n) => {
+  const out = [];
+  res.forEach((re) => { const hit = arr.find((x) => re.test(x) && !out.includes(x)); if (hit && out.length < n) out.push(hit); });
+  arr.forEach((x) => { if (out.length < n && !out.includes(x)) out.push(x); });
+  return out;
+};
 export function renderProcess(el, res) {
   if (!res || !res.ok || !isObj(res.data)) { el.innerHTML = absent('过程记录', res || { path: 'data/process.json' }); return; }
   const p = res.data;
   const wins = Array.isArray(p.windows) ? p.windows : [];
-  const main = wins.find((w) => /主/.test(w.name)) || wins[0];
-  const others = wins.filter((w) => w !== main);
-  const subs = Array.isArray(p.subtasks) ? p.subtasks : [];
-  const list = (arr) => (Array.isArray(arr) && arr.length ? `<ol>${arr.map((x) => `<li>${esc(x)}</li>`).join('')}</ol>` : `<p>${miss('未记录')}</p>`);
-  el.innerHTML = `<div class="org" id="org">
-      <svg class="wires" aria-hidden="true"></svg>
-      <div class="sat">${others.map((w, i) => `<div class="win" data-w="${i}"><b>${esc(w.name)}</b><span>${esc(w.does || '')}</span></div>`).join('')}</div>
-      ${main ? `<div class="win main" id="org-main"><b>${esc(main.name)}</b><span>${esc(main.does || '')}</span></div>` : ''}
-      <div class="subs">${subs.map((s, i) => `<div class="sub" data-s="${i}"><b>子任务 × ${esc(s.count ?? 1)}</b><span>${esc(s.what || '')}</span><small>${esc(s.limit || '')}</small></div>`).join('')}</div>
-    </div>
-    <div class="sync"><b>怎么同步</b>${list(p.sync)}</div>
-    <div class="two"><div><h3 class="sub">本人定的</h3>${list(p.human_decisions)}</div><div><h3 class="sub">AI 被纠正的</h3>${list(p.ai_corrected)}</div></div>
-    ${p.tool ? `<p class="lede small">工具：${esc(p.tool)}。${esc(p.note || '')}</p>` : ''}`;
-  drawWires();
-  addEventListener('resize', drawWires);
-}
-function drawWires() {
-  const org = document.getElementById('org'), m = document.getElementById('org-main');
-  if (!org || !m) return;
-  const svg = org.querySelector('.wires'), o = org.getBoundingClientRect();
-  svg.setAttribute('width', o.width); svg.setAttribute('height', o.height);
-  const c = (el) => { const r = el.getBoundingClientRect(); return { x: r.left - o.left + r.width / 2, top: r.top - o.top, bottom: r.bottom - o.top }; };
-  const M = c(m);
-  const lines = [...org.querySelectorAll('.sat .win')].map((w) => { const W = c(w); return `<path d="M${M.x} ${M.top} C ${M.x} ${(M.top + W.bottom) / 2}, ${W.x} ${(M.top + W.bottom) / 2}, ${W.x} ${W.bottom}"/>`; })
-    .concat([...org.querySelectorAll('.subs .sub')].map((s) => { const S = c(s); return `<path class="dash" d="M${M.x} ${M.bottom} C ${M.x} ${(M.bottom + S.top) / 2}, ${S.x} ${(M.bottom + S.top) / 2}, ${S.x} ${S.top}"/>`; }));
-  svg.innerHTML = lines.join('');
+  const hd = Array.isArray(p.human_decisions) ? pickBy(p.human_decisions, PICK_H, 5) : [];
+  // 两列不重复说同一件事（比如删除线）
+  const ac = Array.isArray(p.ai_corrected) ? p.ai_corrected.filter((x) => !(/删除线/.test(x) && hd.some((h) => /删除线/.test(h)))).slice(0, 4) : [];
+  const ol = (a) => (a.length ? `<ol>${a.map((x) => `<li>${esc(x)}</li>`).join('')}</ol>` : `<p>${miss('未记录')}</p>`);
+  el.innerHTML = `<ul class="wins">${wins.map((w) => `<li class="${/主/.test(w.name) ? 'main' : ''}"><b>${esc(w.name)}</b><span>${esc(w.does || '')}</span></li>`).join('')}</ul>
+    <p class="syncline">靠任务说明和仓库里的 CLAUDE.md 对齐。</p>
+    <div class="two"><div><h3>本人定的</h3>${ol(hd)}</div><div><h3>AI 被纠正的</h3>${ol(ac)}</div></div>`;
 }

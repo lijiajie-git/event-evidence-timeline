@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>工作台 · 事件证据时间线</title>
+<meta name="description" content="同一件事在公告和报道里怎么变的：最早怎么说，后来改了什么，现在算数的是哪一版。">
+<link rel="stylesheet" href="web/app.css">
+<style>.embedded .top .out { display: none; }</style>
+</head>
+<body>
+<header class="top">
+  <span class="brand">事件证据时间线<small>工作台</small></span>
+  <nav class="tabs" role="tablist">
+    <button data-view="event" role="tab">事件</button>
+    <button data-view="qa" role="tab">问答</button>
+    <button data-view="verify" role="tab">消息查验</button>
+  </nav>
+  <span class="sp"></span>
+  <span class="gen" id="gen"></span>
+  <a class="tbtn out" href="./">演示页</a>
+  <button class="tbtn" id="theme" type="button"></button>
+</header>
+<div class="shell">
+  <aside class="side" id="side"></aside>
+  <main class="view" id="view"><p class="loading">正在读取 data/events.json …</p></main>
+</div>
+<noscript><p style="padding:20px">这个页面需要 JavaScript 才能读取数据文件。</p></noscript>
+<script type="module" src="web/app.js"></script>
+</body>
+</html>

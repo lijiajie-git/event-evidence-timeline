@@ -4,6 +4,7 @@ import {
   PATHS, load, esc, miss, md, rangeText, change, evidenceById, disclosedOf, today, docName, bj,
 } from './core.js';
 import { verify, describe, exampleSentences } from './verify.js';
+import { loadText, locate, diffDocs, charDiff } from './source.js';
 
 const $ = (s, r = document) => r.querySelector(s);
 const $$ = (s, r = document) => [...r.querySelectorAll(s)];
@@ -71,6 +72,7 @@ function chExpire() {
   }));
   if (!best || best.vs.length < 2) return null;
   const { e, c, vs } = best;
+  PICK = { e, c, vs };
   const unit = c.unit || vs[0].unit;
   const flips = (e.claims || []).map((k) => { const ns = (k.versions || []).filter((v) => v.low != null); return ns.length > 1 && /转/.test(change(ns[0], ns[ns.length - 1])) ? `${k.key}${change(ns[0], ns[ns.length - 1])}` : ''; }).filter(Boolean);
   return {
@@ -87,8 +89,61 @@ function chExpire() {
       if (i > 0) log.push(L('关联', `第 ${i} 版的有效期截到 ${esc(v.valid_from)}，标为“被取代”，保留不删`, '规则'));
       if (i === vs.length - 1) log.push(take(`${md(vs[0].valid_from)} 看到“${esc(rangeText(vs[0], unit))}”的人，${md(vs[1].valid_from)} 之后手里就是旧数了${flips.length ? `；同一件事里，${esc(flips.join('、'))}` : ''}。页面上旧版不删，只是变淡；蓝色是那一天算数的版本。`));
       return { ms: i === vs.length - 1 ? 6500 : 3600, go: { view: 'event', event: e.id, date: v.valid_from, section: 's-claims', claimMode: 'line' }, log };
-    }),
+    }).concat(revBeat(e)),
   };
+}
+// 结论也会改：打开修订记录
+function revBeat(e) {
+  const cs = (e.conclusions || []).slice().sort((x, y) => (x.as_of < y.as_of ? -1 : 1));
+  if (cs.length < 2) return [];
+  return [{ ms: 6400, go: { view: 'event', event: e.id, date: today(DATA), section: 's-concl', revOpen: true, revView: null },
+    log: [L('结论', `同一件事的结论写过 <b>${cs.length}</b> 版：${cs.map((k) => md(k.as_of)).join('、')}。每一版只用当时已披露的证据`, '模型'),
+      take('结论卡上有修订记录：哪天改的、因为哪份公告，点开能看当时的全文。')] }];
+}
+let PICK = null;
+
+async function chSource() {
+  if (!PICK) return null;
+  const { e, c, vs } = PICK;
+  const v = vs[vs.length - 1];
+  const x = evidenceById(e, v.evidence_id);
+  const beats = [];
+  if (x && x.src === 'ann' && x.ref && v.quote) {
+    const t = await loadText(x.ref);
+    const sp = t.ok ? locate(t.paras, v.quote) : null;
+    beats.push({ ms: 6200, go: { view: 'event', event: e.id, date: today(DATA), section: 's-claims', source: { event: e.id, evidence: x.id, quote: v.quote } },
+      log: [L('读取', `${esc(docName(x))} 正文 <code>data/raw/text/${esc(x.ref)}.txt</code>${t.ok ? `，${t.paras.length} 段` : ''}`, t.ok ? '浏览器' : '未读到', t.ok ? '' : 'bad'),
+        L('定位', `${esc(c.key)} 的引用 <q>${esc(v.quote)}</q>${sp ? `，在第 ${sp[0].p + 1} 段` : ''}`, sp ? '逐字匹配' : '未能定位', sp ? 'ok' : 'bad'),
+        L('规则', '两边都去掉空白再比：正文是 PDF 转出来的，换行和空格是乱的', '浏览器')] });
+  }
+  // 挑一对最像的公告做对比：改动句占比最高、增删最少
+  const anns = (e.evidence || []).filter((y) => y.src === 'ann' && y.ref && y.relation && y.relation.target);
+  let best = null;
+  for (const b of anns) {
+    const a = evidenceById(e, b.relation.target);
+    if (!a || a.src !== 'ann' || !a.ref) continue;
+    const [ta, tb] = await Promise.all([loadText(a.ref), loadText(b.ref)]);
+    if (!ta.ok || !tb.ok) continue;
+    const df = diffDocs(ta.paras, tb.paras);
+    if (!df || !df.edited) continue;
+    const score = df.edited / (df.edited + df.added + df.removed);
+    if (!best || score > best.score) best = { a, b, df, score };
+  }
+  if (best) {
+    const nums = [];
+    best.df.rows.filter((r) => r.type === 'change' && r.a && r.b && !/证券代码|编号|公告编号/.test(r.a + r.b)).forEach((r) => {
+      const [Lc, Rc] = charDiff(r.a, r.b);
+      const o = Lc.filter(([t, ch]) => ch && /\d/.test(t)).map(([t]) => t.trim()).join(' '), n = Rc.filter(([t, ch]) => ch && /\d/.test(t)).map(([t]) => t.trim()).join(' ');
+      if (o && n && nums.length < 3 && !nums.some((z) => z[0] === o)) nums.push([o, n]);
+    });
+    beats.push({ ms: 7600, go: { view: 'event', event: e.id, date: today(DATA), diff: { event: e.id, a: best.a.id, b: best.b.id } },
+      log: [L('对比', `${esc(docName(best.a))}（${md(disclosedOf(best.a))}）和 ${esc(docName(best.b))}（${md(disclosedOf(best.b))}）逐句对照：${best.df.same} 句相同，${best.df.edited} 句改了内容`, '浏览器'),
+        ...nums.map(([o, n]) => L('改动', `${esc(o)} → <b>${esc(n)}</b>`, '数字')),
+        take('更正公告和原公告大部分一样，逐句对照后，变的就是这几个数。左边旧版、右边新版，只给改动加底色，不用删除线。')] });
+  }
+  if (!beats.length) return null;
+  return { id: 'source', name: '点回原文', eyebrow: '01½ · 每个数字都能点回原文', title: '数字点回原句，两版公告逐句对照',
+    lede: '只给一个数字，读者没法判断它从哪来。点任何一个版本，都能打开公告正文，看到那一句；更正公告和原公告并排，改了哪几个数一眼看到。', beats };
 }
 
 function chRetell() {
@@ -261,7 +316,7 @@ function show(ci, bi, instantPrev = false) {
   const chChanged = ci !== P.ci || !$('#ai-title').textContent;
   P.ci = ci; P.bi = bi;
   const c = CH[ci], b = c.beats[bi];
-  if (chChanged || instantPrev) {
+  if (chChanged || instantPrev || bi === 0) {
     $('#ai-eyebrow').textContent = c.eyebrow;
     $('#ai-title').textContent = c.title;
     $('#ai-lede').innerHTML = c.lede;
@@ -438,7 +493,9 @@ async function init() {
   const q = await load(PATHS.qa);
   QA = q.ok && q.data && Array.isArray(q.data.items) ? q.data : null;
   $('#gen').textContent = DATA.generated_at ? `数据 ${bj(DATA.generated_at).replace('（北京时间）', ' 北京时间')}` : '';
-  CH = [overview(), chExpire(), chRetell(), chPremise(), chStatus(), chQA(), chVerify(), chEnd()].filter(Boolean);
+  const ex = chExpire();
+  CH = [overview(), ex, await chSource(), chRetell(), chPremise(), chStatus(), chQA(), chVerify(), chEnd()].filter(Boolean);
+  CH.forEach((c, i) => { c.eyebrow = c.eyebrow.replace(/^[0-9½]+/, String(i).padStart(2, '0')); });
   renderRail();
 
   const frame = $('#ipad-frame');

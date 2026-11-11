@@ -5,6 +5,7 @@ import {
   timeLine, occurredText, priceWindow, initTheme, fatal, ref, refs, dayDiff,
 } from './core.js';
 import { verify, describe, exampleSentences } from './verify.js';
+import { loadText, locate, diffDocs, charDiff } from './source.js';
 
 const $ = (s, r = document) => r.querySelector(s);
 const $$ = (s, r = document) => [...r.querySelectorAll(s)];
@@ -12,7 +13,7 @@ const embedded = new URLSearchParams(location.search).has('embed');
 if (embedded) document.documentElement.classList.add('embedded');
 
 let DATA = null, QA = null, QA_RES = null, RECHECK = null;
-const S = { view: 'event', eventId: null, D: null, claimMode: 'line', tiers: null, focus: null, qaId: null, ask: '', verifyText: '', openTrace: false };
+const S = { view: 'event', eventId: null, D: null, claimMode: 'line', tiers: null, focus: null, qaId: null, ask: '', verifyText: '', openTrace: false, revOpen: false, revView: null };
 let readyResolve; const ready = new Promise((r) => (readyResolve = r));
 const listeners = [];
 
@@ -106,6 +107,7 @@ function renderEvent() {
       <div class="kicker">${esc(e.code || '代码未抽取')} ${esc(e.name || '')} · ${val(e.type)}${e.period ? ' · ' + esc(e.period) : ''}</div>
       <h1>${esc(e.title || '标题未抽取')}</h1>
       <p class="merge"><b>为什么算同一件事</b>${val(e.merge_reason)}</p>
+      ${statusTrack(e, a)}
     </header>
     <div class="replay" id="replay">
       <div class="row1"><span class="lbl">截至</span><span class="date">${cn(S.D)}</span>
@@ -146,13 +148,29 @@ function secConclusion(e, a) {
   if (!c) return `<section class="sec" id="s-concl"><h2>截至这一天的结论</h2><div class="notice">这一天已有 ${a.evidence.length} 条证据，但还没有对应的分时点结论（${miss('未生成')}）。</div></section>`;
   const list = (arr, cls) => (arr && arr.length ? `<ol class="${cls}">${arr.map((x) => typeof x === 'string' ? `<li>${esc(x)}</li>` : `<li>${esc(x.text)}${refs(x.evidence_ids)}</li>`).join('')}</ol>` : `<p class="empty" style="padding:2px 0">无</p>`);
   const basis = evidenceById(e, c.evidence_id);
-  return `<section class="sec" id="s-concl"><h2>截至这一天的结论<small>写于 ${esc(c.as_of)}，依据 ${esc(docName(basis))}${ref(c.evidence_id)}</small></h2>
+  const body = (k) => `<h4>事实</h4>${list(k.facts, 'fact')}<h4>推断</h4>${list(k.inferences, 'inf')}<h4>还不确定</h4>${list(k.unknowns, 'unk')}`;
+  const all = e.conclusions.slice().sort((x, y) => (x.as_of < y.as_of ? -1 : 1));
+  const seen = all.filter((k) => k.as_of <= a.D);
+  const later = all.length - seen.length;
+  const n = (k, f) => (Array.isArray(k[f]) ? k[f].length : 0);
+  const rev = S.revOpen ? `<div class="revs" id="revs"><p class="note">这条结论截至这一天写过 ${seen.length} 版${later ? `，之后还会改 ${later} 次（回放到更晚可见）` : ''}。每一版只用当时已经披露的证据。</p>
+    <ol>${seen.slice().reverse().map((k, i) => { const x = evidenceById(e, k.evidence_id); const open = S.revView === k.as_of; return `<li class="${k === c ? 'now' : ''}">
+      <button class="revbtn" data-rev="${esc(k.as_of)}" aria-expanded="${open}"><span class="m">${esc(k.as_of)}</span><span>因为 ${esc(docName(x))}${x && x.title ? '：' + esc(x.title.slice(0, 24)) : ''}</span><span class="muted">事实 ${n(k, 'facts')} · 推断 ${n(k, 'inferences')} · 不确定 ${n(k, 'unknowns')}${k === c ? ' · 正在显示' : ''}</span></button>
+      ${open ? `<div class="revbody">${body(k)}<p class="act"><button data-jump="${esc(k.as_of)}">回放到 ${esc(k.as_of)}</button></p></div>` : ''}</li>`; }).join('')}</ol></div>` : '';
+  return `<section class="sec" id="s-concl"><h2>截至这一天的结论<small>写于 ${esc(c.as_of)}，依据 ${esc(docName(basis))}${ref(c.evidence_id)}</small><button class="revtoggle" data-revtoggle aria-expanded="${S.revOpen}">修订记录 · ${seen.length} 版</button></h2>
     <div class="concl">
-      <h4>事实</h4>${list(c.facts, 'fact')}
-      <h4>推断</h4>${list(c.inferences, 'inf')}
-      <h4>还不确定</h4>${list(c.unknowns, 'unk')}
+      ${body(c)}
       <div class="basis">事实只来自公告和交易所文件；推断写明了依据；不确定的地方不补全。结论只引用截至 ${esc(c.as_of)} 已经出现的证据。</div>
-    </div></section>`;
+    </div>${rev}</section>`;
+}
+
+// 状态轨：按标准状态码画形状，文字用给人看的短语
+const CODE_SHAPE = { 终止: 'end', 终止上市: 'end', 否认: 'end', 未通过: 'stop', 终止审核: 'stop', 已兑现: 'done' };
+function statusTrack(e, a) {
+  const h = e.status_history;
+  if (!Array.isArray(h) || !h.length) return `<p class="strack-miss">状态变化${miss('未抽取')}</p>`;
+  const later = h.length - a.hist.length;
+  return `<ol class="strack" aria-label="状态变化">${a.hist.map((s, i) => `<li class="sh-${CODE_SHAPE[s.code] || 'step'} ${i === a.hist.length - 1 ? 'now' : ''}" title="${esc((s.code ? '状态码：' + s.code + '；' : '') + (s.at || ''))}"><i></i><span>${esc(s.status || s.code || '未命名状态')}</span><small>${md(s.at)}</small></li>`).join('') || '<li class="none">尚无状态</li>'}${later > 0 ? `<li class="more">之后还有 ${later} 步</li>` : ''}</ol>`;
 }
 
 function secConflicts(e, a) {
@@ -161,7 +179,7 @@ function secConflicts(e, a) {
   return `<section class="sec" id="s-conflict"><h2>证据冲突<small>${a.conflicts.length ? a.conflicts.length + ' 处' : '截至这一天没有发现'}${later > 0 ? `，之后还会出现 ${later} 处` : ''}</small></h2>
     ${a.conflicts.map((c) => `<div class="cf" id="cf-${esc(c.id)}"><div class="h">${esc(c.kind || '冲突')}<span>${c.resolved_by ? '处理方式：' + esc(c.resolved_by) : ''}${c.first_seen ? ' · ' + esc(c.first_seen) + ' 发现' : ''}</span></div>
       <p>${esc(c.text)}</p>
-      <div class="qs">${(c.quotes || []).map((q) => { const x = evidenceById(e, q.evidence_id); const t = x ? tierLabel(x, DATA.weights) : {}; return `<div class="q">“${esc(q.quote)}”<small>${esc(docName(x))} · ${t.tier ? esc(t.tier) + ' 级' : ''}${ref(q.evidence_id)}</small></div>`; }).join('')}</div>
+      <div class="qs">${(c.quotes || []).map((q) => { const x = evidenceById(e, q.evidence_id); const t = x ? tierLabel(x, DATA.weights) : {}; return `<div class="q"><button class="srcq" data-src="${esc(q.evidence_id)}" data-q="${esc(q.quote)}" title="在原文里定位这一句">“${esc(q.quote)}”</button><small>${esc(docName(x))} · ${t.tier ? esc(t.tier) + ' 级' : ''}${ref(q.evidence_id)}</small></div>`; }).join('')}</div>
       <p class="res"><b>${c.resolved_by === '推断' ? '怎么处理（推断）' : '怎么处理'}</b>${val(c.resolution)}</p></div>`).join('')}</section>`;
 }
 
@@ -192,8 +210,8 @@ function claimLine(e, c, a) {
     const has = v.low != null || v.high != null;
     const l = v.low ?? v.high, h = v.high ?? v.low;
     const mark = !has ? `<span class="nonum">没给数字</span>` : l === h ? `<span class="dot" style="left:${x(l)}%"></span>` : `<span class="bar" style="left:${x(Math.min(l, h))}%;width:${Math.abs(x(h) - x(l))}%"></span>`;
-    const stTxt = isVoid ? `作废：${v.void_from ? md(v.void_from) + ' 起' : ''}` : (v.basis || '');
-    return `<div class="vrow ${cls}" data-focus="${esc(v.evidence_id)}" title="${esc(v.quote || '')}">
+    const stTxt = (isVoid ? `作废：${v.void_from ? md(v.void_from) + ' 起' : ''}` : (v.basis || '')) + rawNote(v, c.unit);
+    return `<div class="vrow ${cls}" data-src="${esc(v.evidence_id)}" data-q="${esc(v.quote || '')}" title="点开看原文：${esc(v.quote || '')}">
       <span class="d">${verLabel(e, v)}</span>
       <span class="val">${has ? esc(rangeText(v, c.unit)) : '—'}<small>${esc(stTxt)}</small></span>
       <span class="cell"><span class="zero" style="left:${x(0)}%"></span>${mark}</span></div>`;
@@ -224,12 +242,19 @@ function gapText(c, a) {
   const where = g.within_first_range ? '落在首次预告区间内' : `不在首次预告区间内，离较近的一端差 ${esc(human(g.gap_to_nearer_bound, u))}`;
   return `<p class="gap"><b>首次预告和现行数</b>首次 ${esc(first)}，现行 ${esc(human(g.actual, u))}（${md(hit.valid_from)}）：${where}${g.revisions != null ? `；中间更正 ${esc(g.revisions)} 次` : ''}。<span class="muted">${esc(g.note || '只陈列已发生的事实。')}</span></p>`;
 }
+const rawRange = (r) => (r.low === r.high || r.high == null ? exact(r.low, r.unit) : `${exact(r.low, '')} ~ ${exact(r.high, r.unit)}`);
+function rawNote(v, unit) {
+  const r = v.raw;
+  if (!r || r.low == null) return '';
+  if (r.unit === unit && r.low === v.low && r.high === v.high) return '';
+  return ` · 原文 ${rawRange(r)}`;
+}
 function claimTable(e, c, a) {
   return `<div class="claim" data-claim="${esc(c.key)}"><h5>${esc(c.key)}<span>单位：${esc(c.unit || '未记录')}</span></h5><div class="tblwrap"><table class="vt">
-    <thead><tr><th>版本</th><th>披露日</th><th>来源</th><th class="num">数值</th><th>依据</th><th>状态</th></tr></thead><tbody>
+    <thead><tr><th>版本</th><th>披露日</th><th>来源</th><th class="num">数值（${esc(c.unit || '')}）</th><th>原文口径</th><th>依据</th><th>状态</th></tr></thead><tbody>
     ${c.all.map((v) => {
       const seen = v.valid_from <= a.D;
-      if (!seen) return `<tr><td>第 ${esc(v.v ?? '')} 版</td><td colspan="5" class="muted">尚未披露</td></tr>`;
+      if (!seen) return `<tr><td>第 ${esc(v.v ?? '')} 版</td><td colspan="6" class="muted">尚未披露</td></tr>`;
       const isCur = v === c.current;
       const x = evidenceById(e, v.evidence_id), by = v.superseded_by ? evidenceById(e, v.superseded_by) : null;
       let st = '';
@@ -237,7 +262,7 @@ function claimTable(e, c, a) {
       else if (isCur) st = '现行';
       else if (v.valid_to && v.valid_to <= a.D) st = `${md(v.valid_to)} 被 ${esc(docName(by))} 取代`;
       const num = v.low == null && v.high == null ? '没给数字' : v.low === v.high ? exact(v.low, '') : `${exact(v.low, '')} ~ ${exact(v.high, '')}`;
-      return `<tr class="${isCur ? 'cur' : ''}"><td>第 ${esc(v.v ?? '')} 版</td><td class="m">${esc(v.valid_from)}</td><td>${esc(docName(x))}${ref(v.evidence_id)}</td><td class="num ${isCur ? '' : 'old'}">${num}</td><td>${val(v.basis)}</td><td>${st}</td></tr>`;
+      return `<tr class="${isCur ? 'cur' : ''}"><td>第 ${esc(v.v ?? '')} 版</td><td class="m">${esc(v.valid_from)}</td><td>${esc(docName(x))}${ref(v.evidence_id)}</td><td class="num ${isCur ? '' : 'old'}">${num}</td><td class="m">${v.raw ? esc(rawRange(v.raw)) : '<span class="muted">同左</span>'}</td><td>${val(v.basis)}</td><td>${st}</td></tr>`;
     }).join('')}</tbody></table></div>${gapText(c, a)}</div>`;
 }
 
@@ -249,6 +274,12 @@ function secEvidence(e, a, tiersHere) {
   return `<section class="sec" id="s-evidence"><h2>证据时间线<small>新的在上 · 截至这一天 ${a.evidence.length} 条${later > 0 ? `，之后还有 ${later} 条` : ''}</small></h2>
     <div class="filters">来源级别 ${tiersHere.map((t) => `<label title="${esc(W[t] ? W[t].label + '，权重 ' + W[t].w : '')}"><input type="checkbox" data-tier="${esc(t)}" ${S.tiers.has(t) ? 'checked' : ''}>${esc(t)} ${W[t] ? esc(W[t].label) : ''} <span class="muted">${counts[t] || 0}</span></label>`).join('')}</div>
     <ol class="tl">${shown.map((x) => item(e, x, a)).join('') || '<li class="empty">没有符合筛选的证据。</li>'}</ol></section>`;
+}
+// 可以对比正文的上一版：关系指向的那条也是公告
+function diffTarget(e, x) {
+  if (x.src !== 'ann' || !x.ref || !x.relation || !x.relation.target) return null;
+  const t = evidenceById(e, x.relation.target);
+  return t && t.src === 'ann' && t.ref ? t : null;
 }
 function item(e, x, a) {
   const t = x.times || {};
@@ -267,7 +298,8 @@ function item(e, x, a) {
       <h4>${esc(x.doc_no && x.src === 'ann' ? docName(x) + '　' : '')}${val(x.title)}</h4>
       ${x.summary ? `<p>${esc(x.summary)}</p>` : x.reason ? `<p>${esc(x.reason)}</p>` : `<p>${miss('要点未抽取')}</p>`}
       ${od ? `<div class="outd"><b>前提已失效</b>${esc(od.note || '')}${ref(od.by.id)}</div>` : ''}
-      <div class="quote">${x.quote || x.reason_quote ? `原文：“${esc(x.quote || x.reason_quote)}”` : `原文引用 ${miss()}`}${x.url ? `<a href="${esc(x.url)}" target="_blank" rel="noopener">打开原文 ↗</a>` : ` ${miss('链接未记录', '数据里没有原文链接')}`}</div>
+      <div class="quote">${x.quote || x.reason_quote ? `原文：“${esc(x.quote || x.reason_quote)}”` : `原文引用 ${miss()}`}
+        <span class="qact">${x.src === 'ann' && x.ref ? `<button data-src="${esc(x.id)}" data-q="${esc(x.quote || x.reason_quote || '')}">在正文中定位</button>` : ''}${diffTarget(e, x) ? `<button data-diff-a="${esc(diffTarget(e, x).id)}" data-diff-b="${esc(x.id)}">和 ${esc(docName(diffTarget(e, x)))} 对比正文</button>` : ''}${x.url ? `<a href="${esc(x.url)}" target="_blank" rel="noopener">${x.src === 'ann' ? '巨潮 PDF' : '打开原文'} ↗</a>` : ` ${miss('链接未记录', '数据里没有原文链接')}`}</span></div>
       <div class="times">
         <span>发生<i>${occ ? esc(occ) : miss()}</i>${t.occurred && t.occurred.note && occ ? `<span class="muted">（${esc(t.occurred.note)}）</span>` : ''}</span>
         <span>披露<i>${esc(timeLine(x) || '') || miss()}</i></span>
@@ -294,7 +326,7 @@ function secPrices(e, a) {
   const p = e.prices;
   const h = `<h2>披露前后股价<small>只摆事实，不解读涨跌原因</small></h2>`;
   if (!p) return `<section class="sec" id="s-prices">${h}<div class="notice">行情${miss('未接入')}，这个事件没有价格数据。</div></section>`;
-  if (p.error) return `<section class="sec" id="s-prices">${h}<div class="notice">行情没有取到：${esc(p.error)}。所以这里不显示任何价格。</div></section>`;
+  if (p.error) return `<section class="sec" id="s-prices">${h}<div class="notice">行情${miss('未接入')}：${esc(p.error)}。所以这里不显示任何价格。</div></section>`;
   const byDay = {};
   (p.markers || []).filter((m) => m.disclosed <= a.D).forEach((m) => { (byDay[m.first_trading_day] = byDay[m.first_trading_day] || []).push(m); });
   const cards = Object.entries(byDay).map(([day, ms]) => {
@@ -429,7 +461,7 @@ function peek(id, btn) {
     peekEl.innerHTML = `<button class="x" aria-label="关闭">×</button><div class="tags">${esc(x.id)} · ${val(x.kind)} · ${tl.tier ? esc(tl.tier) + ' 级 ' + esc(tl.label || '') : ''} · ${esc(timeLine(x) || '')}</div>
       <h4>${esc(x.src === 'ann' ? docName(x) + ' ' : (x.source ? x.source + '：' : ''))}${val(x.title)}</h4><p>${x.summary ? esc(x.summary) : miss('要点未抽取')}</p>
       ${x.quote ? `<p class="muted">原文：“${esc(x.quote)}”</p>` : ''}
-      <div class="act">${x.url ? `<a href="${esc(x.url)}" target="_blank" rel="noopener">打开原文 ↗</a>` : ''}<a href="#" data-goto="${esc(e.id)}" data-gd="${esc(disclosedOf(x))}" data-gf="${esc(x.id)}">在时间线上看</a></div>`;
+      <div class="act">${x.src === 'ann' && x.ref ? `<button data-src="${esc(x.id)}" data-q="${esc(x.quote || '')}" data-src-ev="${esc(e.id)}">看正文</button>` : ''}${x.url ? `<a href="${esc(x.url)}" target="_blank" rel="noopener">打开原文 ↗</a>` : ''}<a href="#" data-goto="${esc(e.id)}" data-gd="${esc(disclosedOf(x))}" data-gf="${esc(x.id)}">在时间线上看</a></div>`;
   }
   document.body.appendChild(peekEl);
   const r = btn.getBoundingClientRect(), w = peekEl.offsetWidth, h = peekEl.offsetHeight;
@@ -465,11 +497,17 @@ function bind() {
     if (b.dataset.ref) { ev2.preventDefault(); peek(b.dataset.ref, b); return; }
     if (b.dataset.qa) { S.view = 'qa'; S.qaId = b.dataset.qa; S.ask = ''; render(); scrollToSel('#answer', false); return; }
     if (b.dataset.vex) { S.verifyText = b.dataset.vex; renderVerify(); toHash(); listeners.forEach((f) => f({ ...S })); return; }
+    if (b.dataset.src) { ev2.preventDefault(); const evId = b.dataset.srcEv || (b.closest('[data-event]') && b.closest('[data-event]').dataset.event) || S.eventId; closePeek(); openSource(evId, b.dataset.src, b.dataset.q); return; }
+    if (b.dataset.diffA) { openDiff(S.eventId, b.dataset.diffA, b.dataset.diffB); return; }
+    if (b.matches('[data-drawer-close]')) { closeDrawer(); return; }
+    if (b.hasAttribute('data-revtoggle')) { S.revOpen = !S.revOpen; renderEvent(); scrollToSel('#s-concl', false); return; }
+    if (b.dataset.rev) { S.revView = S.revView === b.dataset.rev ? null : b.dataset.rev; renderEvent(); scrollToSel('#revs', false); return; }
     if (b.dataset.goto) { ev2.preventDefault(); closePeek(); go({ view: 'event', event: b.dataset.goto, date: b.dataset.gd || null, focus: b.dataset.gf || null, section: b.dataset.gf ? null : 's-claims' }); return; }
     if (b.closest('.subnav') && b.hash) { ev2.preventDefault(); scrollToSel(b.hash, false); }
   });
   document.addEventListener('change', (ev2) => {
     const t = ev2.target;
+    if (t.dataset.diffsel) { const a = $('[data-diffsel="a"]').value, b = $('[data-diffsel="b"]').value; openDiff(S.eventId, a, b); return; }
     if (t.dataset.tier) { t.checked ? S.tiers.add(t.dataset.tier) : S.tiers.delete(t.dataset.tier); renderEvent(); scrollToSel('#s-evidence', false); }
   });
   document.addEventListener('submit', (ev2) => {
@@ -478,13 +516,14 @@ function bind() {
     if (ev2.target.id === 'askf') { S.ask = $('#askq').value.trim(); runAsk(S.ask); }
     listeners.forEach((f) => f({ ...S }));
   });
-  document.addEventListener('click', (ev2) => { const r = ev2.target.closest('.vrow'); if (r && r.dataset.focus) go({ focus: r.dataset.focus }); });
+  document.addEventListener('click', (ev2) => { const r = ev2.target.closest('.vrow'); if (r && r.dataset.src) openSource(S.eventId, r.dataset.src, r.dataset.q); });
   addEventListener('keydown', (k) => {
-    if (S.view !== 'event' || k.target.closest('input, textarea') || k.metaKey || k.ctrlKey) return;
+    if (k.key === 'Escape') { closePeek(); closeDrawer(); return; }
+    if (S.view !== 'event' || k.target.closest('input, textarea, select') || k.metaKey || k.ctrlKey) return;
     const dates = eventDates(ev());
     if (k.key === 'ArrowLeft') { const p = [...dates].reverse().find((d) => d < S.D); if (p) { S.D = p; renderEvent(); toHash(); } }
     if (k.key === 'ArrowRight') { const n = dates.find((d) => d > S.D); S.D = n || today(DATA); renderEvent(); toHash(); }
-    if (k.key === 'Escape') closePeek();
+    if (k.key === 'Escape') { closePeek(); closeDrawer(); }
   });
   addEventListener('hashchange', () => { const before = JSON.stringify([S.view, S.eventId, S.D]); fromHash(); if (JSON.stringify([S.view, S.eventId, S.D]) !== before) render(); });
   // 当前小节高亮
@@ -495,11 +534,81 @@ function bind() {
   }, { passive: true });
 }
 
+// ---------------- 正文抽屉：定位引用、两版对比 ----------------
+let drawerEl = null, drawerToken = 0;
+function drawer() {
+  if (!drawerEl) {
+    drawerEl = document.createElement('aside');
+    drawerEl.className = 'drawer'; drawerEl.setAttribute('role', 'dialog'); drawerEl.setAttribute('aria-label', '公告正文');
+    document.body.appendChild(drawerEl);
+  }
+  drawerEl.hidden = false; document.body.classList.add('has-drawer');
+  return drawerEl;
+}
+function closeDrawer() { if (drawerEl) { drawerEl.hidden = true; drawerEl.innerHTML = ''; } document.body.classList.remove('has-drawer'); drawerToken++; }
+const dHead = (title, sub) => `<div class="dhead"><div><b>${title}</b><small>${sub}</small></div><button data-drawer-close aria-label="关闭">×</button></div>`;
+
+async function openSource(eventId, evId, quote) {
+  closePeek();
+  const e = evOf(eventId) || ev(), x = e && evidenceById(e, evId);
+  const d = drawer(), tok = ++drawerToken;
+  if (!x) { d.innerHTML = dHead('没有找到这条证据', esc(evId)) + `<div class="dbody"><p class="empty">数据里没有证据 ${esc(evId)}。</p></div>`; return; }
+  const pdf = x.url ? `<a href="${esc(x.url)}" target="_blank" rel="noopener">${x.src === 'ann' ? '巨潮 PDF' : '原文链接'} ↗</a>` : miss('链接未记录');
+  const head = dHead(esc(x.src === 'ann' ? docName(x) : (x.source || x.id)), `${esc(x.title || '')} · ${esc(timeLine(x) || '')}`);
+  if (x.src !== 'ann' || !x.ref) {
+    d.innerHTML = head + `<div class="dbody"><p class="dnote">这是${esc(SRC_NAME[x.src] || '非公告')}，仓库里没有全文，只有标题、摘要里的这一句和原文链接。</p>
+      <h3 class="dtitle">${val(x.title)}</h3>${x.summary ? `<p>${esc(x.summary)}</p>` : ''}${quote || x.quote ? `<p><mark class="hit">${esc(quote || x.quote)}</mark></p>` : ''}<p>${pdf}</p></div>`;
+    return;
+  }
+  d.innerHTML = head + `<div class="dbody"><p class="empty">正在读取正文…</p></div>`;
+  const t = await loadText(x.ref);
+  if (tok !== drawerToken) return;
+  if (!t.ok) { d.innerHTML = head + `<div class="dbody"><p class="dnote">正文没有读到：${esc(t.error)}。可以直接看 ${pdf}</p></div>`; return; }
+  const spans = quote ? locate(t.paras, quote) : null;
+  const marks = {}; (spans || []).forEach((sp) => (marks[sp.p] = marks[sp.p] || []).push(sp));
+  const html = t.paras.map((p, i) => {
+    if (!marks[i]) return `<p>${esc(p)}</p>`;
+    let out = '', k = 0; marks[i].forEach((sp) => { out += esc(p.slice(k, sp.from)) + `<mark class="hit">${esc(p.slice(sp.from, sp.to))}</mark>`; k = sp.to; });
+    return `<p class="hitp">${out + esc(p.slice(k))}</p>`;
+  }).join('');
+  const status = !quote ? '' : spans ? `<p class="dnote ok">已在正文里定位到这句引用（去掉空白后逐字匹配），黄色底是原句。</p>` : `<p class="dnote bad">未能在正文中定位这句引用：“${esc(quote)}”。可以对照 ${pdf}。</p>`;
+  const dt = diffTarget(e, x);
+  d.innerHTML = head + `<div class="dbody">${status}<p class="dact">${pdf}${dt ? `<button data-diff-a="${esc(dt.id)}" data-diff-b="${esc(x.id)}">和 ${esc(docName(dt))} 对比正文</button>` : ''}<span class="muted">正文由 PDF 转出，段落按标点重排过</span></p><div class="doc">${html}</div></div>`;
+  const m = d.querySelector('mark.hit');
+  if (m) { const body = d.querySelector('.dbody'); body.scrollTop = Math.max(0, m.offsetTop - body.clientHeight / 3); }
+}
+
+async function openDiff(eventId, aId, bId) {
+  closePeek();
+  const e = evOf(eventId) || ev(), A = evidenceById(e, aId), B = evidenceById(e, bId);
+  const d = drawer(), tok = ++drawerToken;
+  const anns = (e.evidence || []).filter((x) => x.src === 'ann' && x.ref);
+  const sel = (name, cur) => `<select data-diffsel="${name}">${anns.map((x) => `<option value="${esc(x.id)}" ${x.id === cur ? 'selected' : ''}>${esc(docName(x))}（${esc(disclosedOf(x))}）</option>`).join('')}</select>`;
+  const head = dHead('两版公告对比', '只标出不同的地方；完全相同的句子只计数');
+  if (!A || !B) { d.innerHTML = head + `<div class="dbody"><p class="empty">找不到要对比的公告。</p></div>`; return; }
+  d.innerHTML = head + `<div class="dbody"><p class="empty">正在读取两份正文…</p></div>`;
+  const [ta, tb] = await Promise.all([loadText(A.ref), loadText(B.ref)]);
+  if (tok !== drawerToken) return;
+  const pick = `<p class="dact pick">旧 ${sel('a', A.id)} → 新 ${sel('b', B.id)}</p>`;
+  if (!ta.ok || !tb.ok) { d.innerHTML = head + `<div class="dbody">${pick}<p class="dnote bad">正文没有读到：${esc((!ta.ok ? ta : tb).error)}</p></div>`; return; }
+  const df = diffDocs(ta.paras, tb.paras);
+  if (!df) { d.innerHTML = head + `<div class="dbody">${pick}<p class="dnote">两份正文太长，这里不做逐句对比。</p></div>`; return; }
+  const seg = (arr, cls) => arr.map(([t, c]) => (c ? `<mark class="${cls}">${esc(t)}</mark>` : esc(t))).join('');
+  const rows = df.rows.map((r) => {
+    if (r.type === 'same') return `<div class="drow same"><span>${r.n} 句相同</span></div>`;
+    const [L, Rr] = charDiff(r.a, r.b);
+    return `<div class="drow"><div class="old">${r.a ? seg(L, 'was') : '<span class="muted">（旧版没有这一句）</span>'}</div><div class="new">${r.b ? seg(Rr, 'now') : '<span class="muted">（新版删掉了这一句）</span>'}</div></div>`;
+  }).join('');
+  d.innerHTML = head + `<div class="dbody">${pick}
+    <p class="dnote">${esc(docName(A))}（${esc(disclosedOf(A))}）→ ${esc(docName(B))}（${esc(disclosedOf(B))}）：${df.same} 句相同，${df.edited} 句改了内容，新增 ${df.added} 句，删去 ${df.removed} 句。</p>
+    <div class="dcols"><b>旧：${esc(docName(A))}</b><b>新：${esc(docName(B))}</b></div>${rows}</div>`;
+}
+
 // 演示页用的接口：所有参数都可选
 function go(o = {}) {
   closePeek();
   if (o.view) S.view = o.view;
-  if (o.event && evOf(o.event)) { if (o.event !== S.eventId) S.tiers = null; S.eventId = o.event; }
+  if (o.event && evOf(o.event)) { if (o.event !== S.eventId) { S.tiers = null; S.revOpen = false; S.revView = null; } S.eventId = o.event; }
   if (o.date) S.D = o.date;
   if (o.claimMode) S.claimMode = o.claimMode;
   if ('focus' in o) S.focus = o.focus;
@@ -509,7 +618,12 @@ function go(o = {}) {
   if ('verify' in o) S.verifyText = o.verify || '';
   if ('ask' in o) S.ask = o.ask || '';
   if (o.view === 'event' && !o.date && !S.D) S.D = today(DATA);
+  if ('revOpen' in o) S.revOpen = !!o.revOpen;
+  if ('revView' in o) S.revView = o.revView;
+  if (!o.source && !o.diff && (o.view || o.event || o.date || o.close)) closeDrawer();
   render();
+  if (o.source) openSource(o.source.event || S.eventId, o.source.evidence, o.source.quote);
+  if (o.diff) openDiff(o.diff.event || S.eventId, o.diff.a, o.diff.b);
   requestAnimationFrame(() => {
     if (o.top) scrollTo({ top: 0 });
     else if (S.focus && S.view === 'event' && $('#ev-' + CSS.escape(S.focus))) scrollToSel('#ev-' + CSS.escape(S.focus));

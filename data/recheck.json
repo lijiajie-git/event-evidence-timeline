@@ -1,0 +1,149 @@
+{
+ "checked_at": "2026-11-11T19:14:58+00:00",
+ "checked": 14,
+ "changed": 0,
+ "failed": 0,
+ "items": [
+  {
+   "event_id": "600187-2025A-forecast",
+   "evidence_id": "e1",
+   "ref": "1224956497",
+   "first_snapshot": "2026-11-11T18:35:40+00:00",
+   "old": "6de12ea0e77ae7dc",
+   "new": "6de12ea0e77ae7dc",
+   "changed": false,
+   "error": null
+  },
+  {
+   "event_id": "600187-2025A-forecast",
+   "evidence_id": "e2",
+   "ref": "1225121518",
+   "first_snapshot": "2026-11-11T18:35:40+00:00",
+   "old": "383f78f0c7c8dd2f",
+   "new": "383f78f0c7c8dd2f",
+   "changed": false,
+   "error": null
+  },
+  {
+   "event_id": "600187-2025A-forecast",
+   "evidence_id": "e3",
+   "ref": "1225230061",
+   "first_snapshot": "2026-11-11T18:35:40+00:00",
+   "old": "8d7b5114605a7f59",
+   "new": "8d7b5114605a7f59",
+   "changed": false,
+   "error": null
+  },
+  {
+   "event_id": "600187-2025A-forecast",
+   "evidence_id": "e4",
+   "ref": "1225268438",
+   "first_snapshot": "2026-11-11T18:35:40+00:00",
+   "old": "c54cba74990167a5",
+   "new": "c54cba74990167a5",
+   "changed": false,
+   "error": null
+  },
+  {
+   "event_id": "600187-2025A-forecast",
+   "evidence_id": "e5",
+   "ref": "1225268441",
+   "first_snapshot": "2026-11-11T18:35:40+00:00",
+   "old": "e2116cf33e36cae4",
+   "new": "e2116cf33e36cae4",
+   "changed": false,
+   "error": null
+  },
+  {
+   "event_id": "600187-2025A-forecast",
+   "evidence_id": "e6",
+   "ref": "1225277438",
+   "first_snapshot": "2026-11-11T18:35:40+00:00",
+   "old": "cd78dc44e349d1d5",
+   "new": "cd78dc44e349d1d5",
+   "changed": false,
+   "error": null
+  },
+  {
+   "event_id": "600499-2026-tefu-restructuring",
+   "evidence_id": "k1",
+   "ref": "1224934284",
+   "first_snapshot": "2026-11-11T18:53:04+00:00",
+   "old": "0ad615bcc946c8d4",
+   "new": "0ad615bcc946c8d4",
+   "changed": false,
+   "error": null
+  },
+  {
+   "event_id": "600499-2026-tefu-restructuring",
+   "evidence_id": "k2",
+   "ref": "1224954529",
+   "first_snapshot": "2026-11-11T18:53:04+00:00",
+   "old": "dab9051cd8ebbebe",
+   "new": "dab9051cd8ebbebe",
+   "changed": false,
+   "error": null
+  },
+  {
+   "event_id": "600499-2026-tefu-restructuring",
+   "evidence_id": "k3",
+   "ref": "1225091538",
+   "first_snapshot": "2026-11-11T18:35:40+00:00",
+   "old": "8bc7a05a7f56b994",
+   "new": "8bc7a05a7f56b994",
+   "changed": false,
+   "error": null
+  },
+  {
+   "event_id": "600499-2026-tefu-restructuring",
+   "evidence_id": "k4",
+   "ref": "1225304470",
+   "first_snapshot": "2026-11-11T18:35:40+00:00",
+   "old": "27d4a2c15fc284da",
+   "new": "27d4a2c15fc284da",
+   "changed": false,
+   "error": null
+  },
+  {
+   "event_id": "600499-2026-tefu-restructuring",
+   "evidence_id": "k6",
+   "ref": "1225446806",
+   "first_snapshot": "2026-11-11T18:35:40+00:00",
+   "old": "1950605ed4eabce7",
+   "new": "1950605ed4eabce7",
+   "changed": false,
+   "error": null
+  },
+  {
+   "event_id": "600499-2026-tefu-restructuring",
+   "evidence_id": "k7",
+   "ref": "1225458608",
+   "first_snapshot": "2026-11-11T18:35:40+00:00",
+   "old": "0de34bc26a7b076d",
+   "new": "0de34bc26a7b076d",
+   "changed": false,
+   "error": null
+  },
+  {
+   "event_id": "600499-2026-tefu-restructuring",
+   "evidence_id": "k8",
+   "ref": "1225466467",
+   "first_snapshot": "2026-11-11T18:35:40+00:00",
+   "old": "fca8194664b4a8f5",
+   "new": "fca8194664b4a8f5",
+   "changed": false,
+   "error": null
+  },
+  {
+   "event_id": "600499-2026-tefu-restructuring",
+   "evidence_id": "k9",
+   "ref": "1225475032",
+   "first_snapshot": "2026-11-11T18:35:40+00:00",
+   "old": "9e4660b34a660e98",
+   "new": "9e4660b34a660e98",
+   "changed": false,
+   "error": null
+  }
+ ],
+ "note": "changed 为真表示公告正文和首次抓取时不一样，页面上应把重抓时间记为该证据的更新时间。"
+}

@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-11-11T19:11:04+00:00",
+ "generated_at": "2026-11-11T19:14:14+00:00",
  "disclaimer": "只整理公开披露信息和公开报道，不预测涨跌，不构成投资建议。",
  "weights": {
   "A": {
@@ -68,6 +68,11 @@
       "fetched": "2026-11-11T18:49:16+00:00",
       "updated": null
      },
+     "snapshot": {
+      "sha256_16": "b8f3a2151c92e734",
+      "taken_at": "2026-11-11T18:49:16+00:00",
+      "of": "标题加摘要（去空白后）"
+     },
      "weight": 0.2,
      "tier_note": "推测性报道、算法归因"
     },
@@ -98,6 +103,11 @@
       "signed": null,
       "fetched": "2026-11-11T18:49:16+00:00",
       "updated": null
+     },
+     "snapshot": {
+      "sha256_16": "5a0be27c8c33ad2a",
+      "taken_at": "2026-11-11T18:49:16+00:00",
+      "of": "标题加摘要（去空白后）"
      },
      "weight": 0.7,
      "tier_note": "媒体对公告的转述"
@@ -131,6 +141,11 @@
       "fetched": "2026-11-11T18:35:40+00:00",
       "updated": null
      },
+     "snapshot": {
+      "sha256_16": "6de12ea0e77ae7dc",
+      "taken_at": "2026-11-11T18:35:40+00:00",
+      "of": "公告正文（去空白后）"
+     },
      "weight": 1.0,
      "tier_note": "公司公告、交易所文件"
     },
@@ -161,6 +176,11 @@
       "signed": null,
       "fetched": "2026-11-11T18:49:16+00:00",
       "updated": null
+     },
+     "snapshot": {
+      "sha256_16": "c62d5b653b4aa051",
+      "taken_at": "2026-11-11T18:49:16+00:00",
+      "of": "标题加摘要（去空白后）"
      },
      "weight": 0.2,
      "tier_note": "推测性报道、算法归因"
@@ -195,6 +215,11 @@
       "fetched": "2026-11-11T18:35:40+00:00",
       "updated": null
      },
+     "snapshot": {
+      "sha256_16": "383f78f0c7c8dd2f",
+      "taken_at": "2026-11-11T18:35:40+00:00",
+      "of": "公告正文（去空白后）"
+     },
      "weight": 1.0,
      "tier_note": "公司公告、交易所文件"
     },
@@ -228,6 +253,11 @@
       "fetched": "2026-11-11T18:35:40+00:00",
       "updated": null
      },
+     "snapshot": {
+      "sha256_16": "8d7b5114605a7f59",
+      "taken_at": "2026-11-11T18:35:40+00:00",
+      "of": "公告正文（去空白后）"
+     },
      "weight": 1.0,
      "tier_note": "公司公告、交易所文件"
     },
@@ -258,6 +288,11 @@
       "signed": null,
       "fetched": "2026-11-11T18:49:16+00:00",
       "updated": null
+     },
+     "snapshot": {
+      "sha256_16": "b739828ee4649ad1",
+      "taken_at": "2026-11-11T18:49:16+00:00",
+      "of": "标题加摘要（去空白后）"
      },
      "weight": 0.4,
      "tier_note": "媒体评论、研报观点"
@@ -292,6 +327,11 @@
       "fetched": "2026-11-11T18:35:40+00:00",
       "updated": null
      },
+     "snapshot": {
+      "sha256_16": "c54cba74990167a5",
+      "taken_at": "2026-11-11T18:35:40+00:00",
+      "of": "公告正文（去空白后）"
+     },
      "weight": 1.0,
      "tier_note": "公司公告、交易所文件"
     },
@@ -323,6 +363,11 @@
       "signed": null,
       "fetched": "2026-11-11T18:35:40+00:00",
       "updated": null
+     },
+     "snapshot": {
+      "sha256_16": "e2116cf33e36cae4",
+      "taken_at": "2026-11-11T18:35:40+00:00",
+      "of": "公告正文（去空白后）"
      },
      "weight": 1.0,
      "tier_note": "公司公告、交易所文件"
@@ -356,6 +401,11 @@
       "signed": null,
       "fetched": "2026-11-11T18:35:40+00:00",
       "updated": null
+     },
+     "snapshot": {
+      "sha256_16": "cd78dc44e349d1d5",
+      "taken_at": "2026-11-11T18:35:40+00:00",
+      "of": "公告正文（去空白后）"
      },
      "weight": 1.0,
      "tier_note": "公司公告、交易所文件"
@@ -418,7 +468,17 @@
        "status": "active",
        "superseded_by": null
       }
-     ]
+     ],
+     "forecast_gap": {
+      "first_low": -13000,
+      "first_high": -10400,
+      "actual": -21490.73,
+      "unit": "万元",
+      "within_first_range": false,
+      "gap_to_nearer_bound": 8490.73,
+      "revisions": 2,
+      "note": "首次预告区间和年报数的差。只陈列已发生的事实，不代表对今后预告的判断。"
+     }
     },
     {
      "key": "扣非净利润",
@@ -477,7 +537,17 @@
        "status": "active",
        "superseded_by": null
       }
-     ]
+     ],
+     "forecast_gap": {
+      "first_low": 900,
+      "first_high": 1080,
+      "actual": -6000,
+      "unit": "万元",
+      "within_first_range": false,
+      "gap_to_nearer_bound": 6900,
+      "revisions": 2,
+      "note": "首次预告区间和年报数的差。只陈列已发生的事实，不代表对今后预告的判断。"
+     }
     },
     {
      "key": "利润总额",
@@ -536,7 +606,17 @@
        "status": "active",
        "superseded_by": null
       }
-     ]
+     ],
+     "forecast_gap": {
+      "first_low": -11000,
+      "first_high": -8800,
+      "actual": -19651.44,
+      "unit": "万元",
+      "within_first_range": false,
+      "gap_to_nearer_bound": 8651.44,
+      "revisions": 2,
+      "note": "首次预告区间和年报数的差。只陈列已发生的事实，不代表对今后预告的判断。"
+     }
     },
     {
      "key": "营业收入",
@@ -595,7 +675,17 @@
        "status": "active",
        "superseded_by": null
       }
-     ]
+     ],
+     "forecast_gap": {
+      "first_low": 21000,
+      "first_high": 25200,
+      "actual": 22281.57,
+      "unit": "万元",
+      "within_first_range": true,
+      "gap_to_nearer_bound": 0,
+      "revisions": 2,
+      "note": "首次预告区间和年报数的差。只陈列已发生的事实，不代表对今后预告的判断。"
+     }
     }
    ],
    "status_history": [
@@ -1115,6 +1205,11 @@
       "fetched": "2026-11-11T18:49:16+00:00",
       "updated": null
      },
+     "snapshot": {
+      "sha256_16": "6eced74c1d17356b",
+      "taken_at": "2026-11-11T18:49:16+00:00",
+      "of": "标题加摘要（去空白后）"
+     },
      "weight": 0.7,
      "tier_note": "媒体对公告的转述"
     },
@@ -1146,6 +1241,11 @@
       "signed": null,
       "fetched": "2026-11-11T18:53:04+00:00",
       "updated": null
+     },
+     "snapshot": {
+      "sha256_16": "0ad615bcc946c8d4",
+      "taken_at": "2026-11-11T18:53:04+00:00",
+      "of": "公告正文（去空白后）"
      },
      "weight": 1.0,
      "tier_note": "公司公告、交易所文件"
@@ -1179,6 +1279,11 @@
       "fetched": "2026-11-11T18:53:04+00:00",
       "updated": null
      },
+     "snapshot": {
+      "sha256_16": "dab9051cd8ebbebe",
+      "taken_at": "2026-11-11T18:53:04+00:00",
+      "of": "公告正文（去空白后）"
+     },
      "weight": 1.0,
      "tier_note": "公司公告、交易所文件"
     },
@@ -1209,6 +1314,11 @@
       "signed": null,
       "fetched": "2026-11-11T18:49:16+00:00",
       "updated": null
+     },
+     "snapshot": {
+      "sha256_16": "ec3e18317d78927d",
+      "taken_at": "2026-11-11T18:49:16+00:00",
+      "of": "标题加摘要（去空白后）"
      },
      "weight": 0.2,
      "tier_note": "推测性报道、算法归因"
@@ -1243,6 +1353,11 @@
       "fetched": "2026-11-11T18:49:16+00:00",
       "updated": null
      },
+     "snapshot": {
+      "sha256_16": "aab44963d93a2ced",
+      "taken_at": "2026-11-11T18:49:16+00:00",
+      "of": "标题加摘要（去空白后）"
+     },
      "weight": 0.4,
      "tier_note": "媒体评论、研报观点"
     },
@@ -1273,6 +1388,11 @@
       "signed": null,
       "fetched": "2026-11-11T18:49:16+00:00",
       "updated": null
+     },
+     "snapshot": {
+      "sha256_16": "38dd337f9f9b5b4d",
+      "taken_at": "2026-11-11T18:49:16+00:00",
+      "of": "标题加摘要（去空白后）"
      },
      "weight": 0.7,
      "tier_note": "媒体对公告的转述"
@@ -1305,6 +1425,11 @@
       "signed": null,
       "fetched": "2026-11-11T18:35:40+00:00",
       "updated": null
+     },
+     "snapshot": {
+      "sha256_16": "8bc7a05a7f56b994",
+      "taken_at": "2026-11-11T18:35:40+00:00",
+      "of": "公告正文（去空白后）"
      },
      "weight": 1.0,
      "tier_note": "公司公告、交易所文件"
@@ -1339,6 +1464,11 @@
       "fetched": "2026-11-11T18:49:16+00:00",
       "updated": null
      },
+     "snapshot": {
+      "sha256_16": "e0506e73dba1f96a",
+      "taken_at": "2026-11-11T18:49:16+00:00",
+      "of": "标题加摘要（去空白后）"
+     },
      "weight": 0.4,
      "tier_note": "媒体评论、研报观点"
     },
@@ -1370,6 +1500,11 @@
       "signed": null,
       "fetched": "2026-11-11T18:35:40+00:00",
       "updated": null
+     },
+     "snapshot": {
+      "sha256_16": "27d4a2c15fc284da",
+      "taken_at": "2026-11-11T18:35:40+00:00",
+      "of": "公告正文（去空白后）"
      },
      "weight": 1.0,
      "tier_note": "公司公告、交易所文件"
@@ -1404,6 +1539,11 @@
       "fetched": "2026-11-11T18:35:40+00:00",
       "updated": null
      },
+     "snapshot": {
+      "sha256_16": "1950605ed4eabce7",
+      "taken_at": "2026-11-11T18:35:40+00:00",
+      "of": "公告正文（去空白后）"
+     },
      "weight": 1.0,
      "tier_note": "公司公告、交易所文件"
     },
@@ -1436,6 +1576,11 @@
       "fetched": "2026-11-11T18:35:40+00:00",
       "updated": null
      },
+     "snapshot": {
+      "sha256_16": "0de34bc26a7b076d",
+      "taken_at": "2026-11-11T18:35:40+00:00",
+      "of": "公告正文（去空白后）"
+     },
      "weight": 1.0,
      "tier_note": "公司公告、交易所文件"
     },
@@ -1467,6 +1612,11 @@
       "fetched": "2026-11-11T18:49:16+00:00",
       "updated": null
      },
+     "snapshot": {
+      "sha256_16": "621844d9ac95b826",
+      "taken_at": "2026-11-11T18:49:16+00:00",
+      "of": "标题加摘要（去空白后）"
+     },
      "weight": 0.7,
      "tier_note": "媒体对公告的转述"
     },
@@ -1497,6 +1647,11 @@
       "signed": null,
       "fetched": "2026-11-11T18:49:16+00:00",
       "updated": null
+     },
+     "snapshot": {
+      "sha256_16": "cf2d9bb4373bcf7c",
+      "taken_at": "2026-11-11T18:49:16+00:00",
+      "of": "标题加摘要（去空白后）"
      },
      "weight": 0.4,
      "tier_note": "媒体评论、研报观点"
@@ -1530,6 +1685,11 @@
       "fetched": "2026-11-11T18:35:40+00:00",
       "updated": null
      },
+     "snapshot": {
+      "sha256_16": "fca8194664b4a8f5",
+      "taken_at": "2026-11-11T18:35:40+00:00",
+      "of": "公告正文（去空白后）"
+     },
      "weight": 1.0,
      "tier_note": "公司公告、交易所文件"
     },
@@ -1560,6 +1720,11 @@
       "signed": null,
       "fetched": "2026-11-11T18:49:16+00:00",
       "updated": null
+     },
+     "snapshot": {
+      "sha256_16": "6ef86794fbba0725",
+      "taken_at": "2026-11-11T18:49:16+00:00",
+      "of": "标题加摘要（去空白后）"
      },
      "weight": 0.4,
      "tier_note": "媒体评论、研报观点"
@@ -1593,6 +1758,11 @@
       "fetched": "2026-11-11T18:35:40+00:00",
       "updated": null
      },
+     "snapshot": {
+      "sha256_16": "24749c509440b879",
+      "taken_at": "2026-11-11T18:35:40+00:00",
+      "of": "公告正文（去空白后）"
+     },
      "weight": 1.0,
      "tier_note": "公司公告、交易所文件"
     },
@@ -1623,6 +1793,11 @@
       "signed": null,
       "fetched": "2026-11-11T18:49:16+00:00",
       "updated": null
+     },
+     "snapshot": {
+      "sha256_16": "9a5d0599f02715fc",
+      "taken_at": "2026-11-11T18:49:16+00:00",
+      "of": "标题加摘要（去空白后）"
      },
      "weight": 0.2,
      "tier_note": "推测性报道、算法归因"

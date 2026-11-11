@@ -1,0 +1,436 @@
+{
+ "generated_at": "2026-11-11T19:14:14+00:00",
+ "summary": {
+  "quotes_checked": 58,
+  "quotes_passed": 58,
+  "quotes_blocked": 0,
+  "qa_items": 10,
+  "qa_evidence_time_checks": 73,
+  "builds_recorded": 1,
+  "builds_blocked": 0
+ },
+ "rules": [
+  "每条引用去掉空白后，必须在对应证据的原文里逐字出现",
+  "结论和问答不能引用截至日之后才披露的证据",
+  "标为事实的句子必须挂证据编号",
+  "引用的证据编号必须存在",
+  "任何一条不通过，本次构建不生成数据文件，线上保持上一版"
+ ],
+ "note": "能生成这份文件，说明本次构建全部通过。被拦下的构建记在 history 里；历史从 2026-11-11 开始记，之前的失败没有留档。",
+ "history": [
+  {
+   "at": "2026-11-11T19:14:14+00:00",
+   "ok": true,
+   "quotes_checked": 58,
+   "blocked": []
+  }
+ ],
+ "checks": [
+  {
+   "event_id": "600187-2025A-forecast",
+   "where": "n0",
+   "evidence_id": "n0",
+   "quote": "汇源回A之路或现曙光",
+   "pass": true
+  },
+  {
+   "event_id": "600187-2025A-forecast",
+   "where": "e1",
+   "evidence_id": "e1",
+   "quote": "预计2025年年度实现归属于母公司所有者的净利润-13,000万元到-10,400万元",
+   "pass": true
+  },
+  {
+   "event_id": "600187-2025A-forecast",
+   "where": "n1",
+   "evidence_id": "n1",
+   "quote": "预计2025年年度实现归属于母公司所有者的净利润为-1.3亿元到-1.04亿元",
+   "pass": true
+  },
+  {
+   "event_id": "600187-2025A-forecast",
+   "where": "a1",
+   "evidence_id": "a1",
+   "quote": "据2026年1月30日风险提示公告",
+   "pass": true
+  },
+  {
+   "event_id": "600187-2025A-forecast",
+   "where": "e2",
+   "evidence_id": "e2",
+   "quote": "询证函未得到回函，因此无法确认这部分污水处理费所形成的收入",
+   "pass": true
+  },
+  {
+   "event_id": "600187-2025A-forecast",
+   "where": "e3",
+   "evidence_id": "e3",
+   "quote": "现2025年度不再确认投资收益，同时计提资产减值损失",
+   "pass": true
+  },
+  {
+   "event_id": "600187-2025A-forecast",
+   "where": "n2",
+   "evidence_id": "n2",
+   "quote": "公司亏损幅度进一步扩大，退市风险加剧",
+   "pass": true
+  },
+  {
+   "event_id": "600187-2025A-forecast",
+   "where": "e4",
+   "evidence_id": "e4",
+   "quote": "实现归属于母公司所有者的净利润-2.15亿元",
+   "pass": true
+  },
+  {
+   "event_id": "600187-2025A-forecast",
+   "where": "e5",
+   "evidence_id": "e5",
+   "quote": "归属于上市公司股东的净利润人民币-21,490.73万元",
+   "pass": true
+  },
+  {
+   "event_id": "600187-2025A-forecast",
+   "where": "e6",
+   "evidence_id": "e6",
+   "quote": "表述有误，应为“间接持有北京汇源食品饮料有限公司（简称北京汇源）21.89%的股权”",
+   "pass": true
+  },
+  {
+   "event_id": "600187-2025A-forecast",
+   "where": "归母净利润 v1",
+   "evidence_id": "e1",
+   "quote": "归属于母公司所有者的净利润-13,000万元到-10,400万元",
+   "pass": true
+  },
+  {
+   "event_id": "600187-2025A-forecast",
+   "where": "归母净利润 v2",
+   "evidence_id": "e2",
+   "quote": "归属于母公司所有者的净利润-15,500万元到-13,000万元",
+   "pass": true
+  },
+  {
+   "event_id": "600187-2025A-forecast",
+   "where": "归母净利润 v3",
+   "evidence_id": "e3",
+   "quote": "归属于母公司所有者的净利润-21,491万元",
+   "pass": true
+  },
+  {
+   "event_id": "600187-2025A-forecast",
+   "where": "归母净利润 v4",
+   "evidence_id": "e5",
+   "quote": "归属于上市公司股东的净利润人民币-21,490.73万元",
+   "pass": true
+  },
+  {
+   "event_id": "600187-2025A-forecast",
+   "where": "扣非净利润 v1",
+   "evidence_id": "e1",
+   "quote": "扣除非经常性损益后的净利润为900万元到1,080万元",
+   "pass": true
+  },
+  {
+   "event_id": "600187-2025A-forecast",
+   "where": "扣非净利润 v2",
+   "evidence_id": "e2",
+   "quote": "扣除非经常性损益后的净利润为-3,600万元到-2,900万元",
+   "pass": true
+  },
+  {
+   "event_id": "600187-2025A-forecast",
+   "where": "扣非净利润 v3",
+   "evidence_id": "e3",
+   "quote": "扣除非经常性损益后的净利润为-5,976万元",
+   "pass": true
+  },
+  {
+   "event_id": "600187-2025A-forecast",
+   "where": "扣非净利润 v4",
+   "evidence_id": "e4",
+   "quote": "扣除非经常性损益后的净利润-0.60亿元",
+   "pass": true
+  },
+  {
+   "event_id": "600187-2025A-forecast",
+   "where": "利润总额 v1",
+   "evidence_id": "e1",
+   "quote": "利润总额-11,000万元到-8,800万元",
+   "pass": true
+  },
+  {
+   "event_id": "600187-2025A-forecast",
+   "where": "利润总额 v2",
+   "evidence_id": "e2",
+   "quote": "利润总额-13,900万元到-11,200万元",
+   "pass": true
+  },
+  {
+   "event_id": "600187-2025A-forecast",
+   "where": "利润总额 v3",
+   "evidence_id": "e3",
+   "quote": "利润总额-19,651万元",
+   "pass": true
+  },
+  {
+   "event_id": "600187-2025A-forecast",
+   "where": "利润总额 v4",
+   "evidence_id": "e5",
+   "quote": "利润总额-196,514,386.50",
+   "pass": true
+  },
+  {
+   "event_id": "600187-2025A-forecast",
+   "where": "营业收入 v1",
+   "evidence_id": "e1",
+   "quote": "营业收入21,000万元到25,200万元",
+   "pass": true
+  },
+  {
+   "event_id": "600187-2025A-forecast",
+   "where": "营业收入 v2",
+   "evidence_id": "e2",
+   "quote": "营业收入20,000万元到24,000万元",
+   "pass": true
+  },
+  {
+   "event_id": "600187-2025A-forecast",
+   "where": "营业收入 v3",
+   "evidence_id": "e3",
+   "quote": "营业收入22,282万元",
+   "pass": true
+  },
+  {
+   "event_id": "600187-2025A-forecast",
+   "where": "营业收入 v4",
+   "evidence_id": "e5",
+   "quote": "营业收入222,815,735.23",
+   "pass": true
+  },
+  {
+   "event_id": "600187-2025A-forecast",
+   "where": "冲突 c1",
+   "evidence_id": "e2",
+   "quote": "公司于2025年1月30日在上海证券交易所网站披露了《2025年年度业绩预亏公告》",
+   "pass": true
+  },
+  {
+   "event_id": "600187-2025A-forecast",
+   "where": "冲突 c1",
+   "evidence_id": "n2",
+   "quote": "公司于1月29日披露2025年业绩预亏公告",
+   "pass": true
+  },
+  {
+   "event_id": "600187-2025A-forecast",
+   "where": "冲突 c1",
+   "evidence_id": "e1",
+   "quote": "2026年1月30日",
+   "pass": true
+  },
+  {
+   "event_id": "600187-2025A-forecast",
+   "where": "冲突 c2",
+   "evidence_id": "e3",
+   "quote": "间接持有北京汇源食品饮料有限公司（简称北京汇源）20.89%的股权",
+   "pass": true
+  },
+  {
+   "event_id": "600187-2025A-forecast",
+   "where": "冲突 c2",
+   "evidence_id": "e6",
+   "quote": "应为“间接持有北京汇源食品饮料有限公司（简称北京汇源）21.89%的股权”",
+   "pass": true
+  },
+  {
+   "event_id": "600499-2026-tefu-restructuring",
+   "where": "n1",
+   "evidence_id": "n1",
+   "quote": "公司正在筹划以发行股份及支付现金的方式收购公司控股子公司广东特福国际控股有限公司的少数股权",
+   "pass": true
+  },
+  {
+   "event_id": "600499-2026-tefu-restructuring",
+   "where": "k1",
+   "evidence_id": "k1",
+   "quote": "因本次交易尚处于筹划阶段，有关事项存在不确定性",
+   "pass": true
+  },
+  {
+   "event_id": "600499-2026-tefu-restructuring",
+   "where": "k2",
+   "evidence_id": "k2",
+   "quote": "拟通过发行股份及支付现金的方式购买广东特福国际控股有限公司51.55%股份",
+   "pass": true
+  },
+  {
+   "event_id": "600499-2026-tefu-restructuring",
+   "where": "a1",
+   "evidence_id": "a1",
+   "quote": "公司拟通过发行股份及支付现金方式收购控股子公司广东特福国际控股有限公司51.55%股权",
+   "pass": true
+  },
+  {
+   "event_id": "600499-2026-tefu-restructuring",
+   "where": "n2",
+   "evidence_id": "n2",
+   "quote": "重组箭在弦上",
+   "pass": true
+  },
+  {
+   "event_id": "600499-2026-tefu-restructuring",
+   "where": "n3",
+   "evidence_id": "n3",
+   "quote": "公司拟以74.75亿元的交易价格",
+   "pass": true
+  },
+  {
+   "event_id": "600499-2026-tefu-restructuring",
+   "where": "k3",
+   "evidence_id": "k3",
+   "quote": "本次交易尚需履行多项审批程序方可实施",
+   "pass": true
+  },
+  {
+   "event_id": "600499-2026-tefu-restructuring",
+   "where": "n4",
+   "evidence_id": "n4",
+   "quote": "重组推进，携手森大共享出海红利",
+   "pass": true
+  },
+  {
+   "event_id": "600499-2026-tefu-restructuring",
+   "where": "k4",
+   "evidence_id": "k4",
+   "quote": "决定予以受理并依法进行审核",
+   "pass": true
+  },
+  {
+   "event_id": "600499-2026-tefu-restructuring",
+   "where": "k6",
+   "evidence_id": "k6",
+   "quote": "定于2026年8月4日召开2026年第14次并购重组审核委员会审议会议",
+   "pass": true
+  },
+  {
+   "event_id": "600499-2026-tefu-restructuring",
+   "where": "k7",
+   "evidence_id": "k7",
+   "quote": "本次交易不符合重组条件或信息披露要求",
+   "pass": true
+  },
+  {
+   "event_id": "600499-2026-tefu-restructuring",
+   "where": "n5",
+   "evidence_id": "n5",
+   "quote": "科达制造开盘后一度触及跌停",
+   "pass": true
+  },
+  {
+   "event_id": "600499-2026-tefu-restructuring",
+   "where": "n6",
+   "evidence_id": "n6",
+   "quote": "遭遇了实质性的推进障碍",
+   "pass": true
+  },
+  {
+   "event_id": "600499-2026-tefu-restructuring",
+   "where": "k8",
+   "evidence_id": "k8",
+   "quote": "上市公司未充分说明并披露标的公司营业收入增长的合理性，以及本次交易作价的公允性",
+   "pass": true
+  },
+  {
+   "event_id": "600499-2026-tefu-restructuring",
+   "where": "n7",
+   "evidence_id": "n7",
+   "quote": "上市公司并购重组方案必须经得起审视",
+   "pass": true
+  },
+  {
+   "event_id": "600499-2026-tefu-restructuring",
+   "where": "k9",
+   "evidence_id": "k9",
+   "quote": "决定终止通过发行股份及支付现金的方式购买广东特福国际控股有限公司",
+   "pass": true
+  },
+  {
+   "event_id": "600499-2026-tefu-restructuring",
+   "where": "n8",
+   "evidence_id": "n8",
+   "quote": "重组被否后的一场重资产押注",
+   "pass": true
+  },
+  {
+   "event_id": "600499-2026-tefu-restructuring",
+   "where": "收购股权比例 v1",
+   "evidence_id": "k1",
+   "quote": "的少数股权",
+   "pass": true
+  },
+  {
+   "event_id": "600499-2026-tefu-restructuring",
+   "where": "收购股权比例 v2",
+   "evidence_id": "k2",
+   "quote": "51.55%股份",
+   "pass": true
+  },
+  {
+   "event_id": "600499-2026-tefu-restructuring",
+   "where": "交易作价 v1",
+   "evidence_id": "k2",
+   "quote": "鉴于本次交易的审计、评估等工作尚未完成",
+   "pass": true
+  },
+  {
+   "event_id": "600499-2026-tefu-restructuring",
+   "where": "交易作价 v2",
+   "evidence_id": "n3",
+   "quote": "公司拟以74.75亿元的交易价格",
+   "pass": true
+  },
+  {
+   "event_id": "600499-2026-tefu-restructuring",
+   "where": "交易作价 v3",
+   "evidence_id": "k9",
+   "quote": "747,475.00万元",
+   "pass": true
+  },
+  {
+   "event_id": "600499-2026-tefu-restructuring",
+   "where": "冲突 c1",
+   "evidence_id": "n6",
+   "quote": "并购案遭上交所否决",
+   "pass": true
+  },
+  {
+   "event_id": "600499-2026-tefu-restructuring",
+   "where": "冲突 c1",
+   "evidence_id": "k7",
+   "quote": "本次交易不符合重组条件或信息披露要求",
+   "pass": true
+  },
+  {
+   "event_id": "600499-2026-tefu-restructuring",
+   "where": "冲突 c1",
+   "evidence_id": "k8",
+   "quote": "公司董事会将在收到决定之日起10日内对是否修改或终止本次方案作出决议",
+   "pass": true
+  },
+  {
+   "event_id": "600499-2026-tefu-restructuring",
+   "where": "冲突 c2",
+   "evidence_id": "n3",
+   "quote": "公司拟以74.75亿元的交易价格",
+   "pass": true
+  },
+  {
+   "event_id": "600499-2026-tefu-restructuring",
+   "where": "冲突 c2",
+   "evidence_id": "k9",
+   "quote": "747,475.00万元",
+   "pass": true
+  }
+ ]
+}

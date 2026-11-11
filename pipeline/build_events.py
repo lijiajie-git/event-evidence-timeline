@@ -10,7 +10,10 @@ WEIGHTS = {"A": dict(w=1.0, label="公司公告、交易所文件"), "B": dict(w
 norm = lambda s: re.sub(r"\s+", "", re.sub(r"<[^>]+>", "", s or "")).replace("，", ",")
 iso = lambda ms: datetime.datetime.fromtimestamp(int(ms) / 1000, BJ)
 ANN = {r["id"]: r for r in json.load(open("data/raw/announcements.json"))}
-errs = []
+errs, AUD = [], []
+CUR = [None]
+import hashlib
+sha = lambda t: hashlib.sha256((t or "").encode()).hexdigest()[:16]
 def load_news(th):
     p = f"data/raw/news/{th}.json"
     return json.load(open(p)) if os.path.exists(p) else None
@@ -37,7 +40,9 @@ def resolve(x, th, news):
 def check(eid, q, texts, where):
     if eid not in texts: errs.append(f"{where}: 证据 {eid} 不存在"); return
     if texts[eid] is None: errs.append(f"{where}: 证据 {eid} 没有可校验的正文"); return
-    if norm(q) not in texts[eid]: errs.append(f"{where}: 引用未在 {eid} 原文中匹配到 → {q}")
+    ok = norm(q) in texts[eid]
+    AUD.append(dict(event_id=CUR[0], where=where, evidence_id=eid, quote=q, **{"pass": ok}))
+    if not ok: errs.append(f"{where}: 引用未在 {eid} 原文中匹配到 → {q}")
 def prices(th, dates):
     p = f"data/prices/{th}.json"
     if not os.path.exists(p): return dict(error="行情未抓取", bars=[], markers=[])
@@ -56,6 +61,7 @@ out = []
 for path in sorted(glob.glob("pipeline/extracted/*.json")):
     e = json.load(open(path)); th = e.get("thscode"); news = load_news(th) if th else None
     texts, ev = {}, {}
+    CUR[0] = e["id"]
     for x in e["evidence"]:
         meta, texts[x["id"]] = resolve(x, th, news)
         if not meta: continue
@@ -63,6 +69,7 @@ for path in sorted(glob.glob("pipeline/extracted/*.json")):
         x.update(title=meta["title"], url=meta["url"], source=meta["source"], channel=meta["channel"], source_tier=x.pop("tier"),
                  times=dict(occurred=occ, disclosed=meta["published_at"][:10], published_at=meta["published_at"], precision=meta["precision"],
                             signed=x.pop("signed", None), fetched=meta["fetched"], updated=None))
+        x["snapshot"] = dict(sha256_16=sha(texts[x["id"]]), taken_at=meta["fetched"], of="公告正文（去空白后）" if x["src"] == "ann" else "标题加摘要（去空白后）") if texts[x["id"]] else None
         x["weight"] = WEIGHTS[x["source_tier"]]["w"]; x["tier_note"] = WEIGHTS[x["source_tier"]]["label"]
         if x.get("quote"): check(x["id"], x["quote"], texts, x["id"])
         ev[x["id"]] = x
@@ -79,6 +86,11 @@ for path in sorted(glob.glob("pipeline/extracted/*.json")):
             vs.append(v)
         for a, b in zip(vs, vs[1:]): a.update(valid_to=b["valid_from"], status="superseded", superseded_by=b["evidence_id"])
         c["versions"] = vs
+        if e["type"] == "业绩预告" and len(vs) > 1 and vs[-1].get("basis", "").startswith("年报") and vs[0]["low"] is not None:
+            a, lo, hi = vs[-1]["low"], vs[0]["low"], vs[0]["high"]
+            c["forecast_gap"] = dict(first_low=lo, first_high=hi, actual=a, unit=c.get("unit"), within_first_range=lo <= a <= hi,
+                                     gap_to_nearer_bound=0 if lo <= a <= hi else round(min(abs(a - lo), abs(a - hi)), 2), revisions=len(vs) - 2,
+                                     note="首次预告区间和年报数的差。只陈列已发生的事实，不代表对今后预告的判断。")
     for c in e.get("conflicts", []):
         c["quotes"] = [dict(evidence_id=i, quote=q) for i, q in c["quotes"]]
         for q in c["quotes"]: check(q["evidence_id"], q["quote"], texts, f"冲突 {c['id']}")
@@ -100,6 +112,20 @@ for path in sorted(glob.glob("pipeline/extracted/*.json")):
     e["prices"] = prices(th, [(x["id"], x["times"]["disclosed"]) for x in e["evidence"] if x["src"] == "ann"]) if th else dict(error="未提供代码", bars=[], markers=[])
     if e["prices"].get("error"): e.setdefault("pending", []).append(f"行情不可用：{e['prices']['error']}")
     out.append(e)
+QA = json.load(open("pipeline/qa.json")); EV = {e["id"]: {x["id"]: x for x in e["evidence"]} for e in out}; leak_checks = 0
+for q in QA["items"]:
+    if q["event_id"] not in EV: errs.append(f"问答 {q['id']} 指向不存在的事件"); continue
+    used = [i for a in q["answer"] for i in a["evidence_ids"]] + [i for t in q["trace"] for i in t.get("used", [])] + [x["id"] for t in q["trace"] for x in t.get("excluded", [])]
+    for i in used:
+        if i not in EV[q["event_id"]]: errs.append(f"问答 {q['id']} 引用了不存在的证据 {i}")
+    for i in [i for a in q["answer"] for i in a["evidence_ids"]] + [i for t in q["trace"] for i in t.get("used", [])]:
+        leak_checks += 1
+        if i in EV[q["event_id"]] and EV[q["event_id"]][i]["times"]["disclosed"] > q["as_of"]: errs.append(f"问答 {q['id']}（截至 {q['as_of']}）用了之后才披露的证据 {i}")
+    for a in q["answer"]:
+        if a["kind"] == "事实" and not a["evidence_ids"]: errs.append(f"问答 {q['id']} 有一句事实没有证据编号")
+now = datetime.datetime.now(datetime.timezone.utc).isoformat(timespec="seconds")
+hist = json.load(open("data/audit_history.json")) if os.path.exists("data/audit_history.json") else []
+hist.append(dict(at=now, ok=not errs, quotes_checked=len(AUD), blocked=errs)); json.dump(hist[-50:], open("data/audit_history.json", "w"), ensure_ascii=False, indent=1)
 if errs:
     print("\n".join(errs)); sys.exit(f"{len(errs)} 处未通过校验，未生成文件")
 json.dump(dict(generated_at=datetime.datetime.now(datetime.timezone.utc).isoformat(timespec="seconds"),
@@ -107,4 +133,13 @@ json.dump(dict(generated_at=datetime.datetime.now(datetime.timezone.utc).isoform
     weights=WEIGHTS, weight_rule="低级别来源不能推翻高级别来源；同级别以后披露的为准。",
     time_note="发生时间=说法所指的日期或报告期；披露时间=公告在巨潮的披露日或媒体发布时间；抓取时间=本系统取数时间（UTC）；更新时间=来源事后修改的时间，目前数据源不提供。",
     events=out), open("data/events.json", "w"), ensure_ascii=False, indent=1)
+for q in QA["items"]: q["generated"] = "离线生成"
+json.dump(dict(generated_at=now, note=QA["note"], items=QA["items"]), open("data/qa.json", "w"), ensure_ascii=False, indent=1)
+json.dump(dict(generated_at=now,
+    summary=dict(quotes_checked=len(AUD), quotes_passed=sum(a["pass"] for a in AUD), quotes_blocked=sum(not a["pass"] for a in AUD), qa_items=len(QA["items"]), qa_evidence_time_checks=leak_checks,
+                 builds_recorded=len(hist), builds_blocked=sum(not h["ok"] for h in hist)),
+    rules=["每条引用去掉空白后，必须在对应证据的原文里逐字出现", "结论和问答不能引用截至日之后才披露的证据", "标为事实的句子必须挂证据编号", "引用的证据编号必须存在",
+           "任何一条不通过，本次构建不生成数据文件，线上保持上一版"],
+    note="能生成这份文件，说明本次构建全部通过。被拦下的构建记在 history 里；历史从 2026-11-11 开始记，之前的失败没有留档。",
+    history=hist[-50:], checks=AUD), open("data/audit.json", "w"), ensure_ascii=False, indent=1)
 print("OK", len(out), "个事件;", sum(len(e["evidence"]) for e in out), "条证据")

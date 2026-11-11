@@ -15,5 +15,9 @@ for e in d["events"]:
             for it in c.get(part, []): scan(f"{e['id']} {c['as_of']} {part}", it["text"])
         for t in c.get("unknowns", []): scan(f"{e['id']} {c['as_of']} unknowns", t)
     for c in e.get("conflicts", []): scan(f"{e['id']} 冲突", c["text"] + c["resolution"])
+import os
+if os.path.exists("data/qa.json"):
+    for q in json.load(open("data/qa.json"))["items"]:
+        for a in q["answer"]: scan(f"问答 {q['id']}", a["text"])
 print("\n".join(hits) if hits else f"合规检查通过：{len(d['events'])} 个事件，未发现买卖建议或涨跌预测用语")
 sys.exit(1 if hits else 0)

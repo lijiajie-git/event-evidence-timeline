@@ -1,0 +1,288 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>小样 A · 公告纸</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/noto-serif-sc@5.2.5/600.css">
+<style>
+:root {
+  --paper: #f5f2ea; --paper-2: #ece7db; --ink: #1d1c1a; --ink-2: #4a463f; --muted: #7a746a;
+  --rule: #d8d1c2; --rule-2: #e6e0d3; --accent: #24466e; --accent-soft: #24466e33;
+  --old: #1d1c1a; --warn: #9a5b0c; --warn-bg: #f1e6d0;
+  --serif: "Noto Serif SC", "Songti SC", "STSong", "SimSun", serif;
+  --sans: -apple-system, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans SC", sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper: #171614; --paper-2: #1f1d1a; --ink: #e9e5db; --ink-2: #c3bdb0; --muted: #8f897d;
+    --rule: #3a3631; --rule-2: #2a2724; --accent: #8fb3dc; --accent-soft: #8fb3dc33;
+    --old: #e9e5db; --warn: #d9a650; --warn-bg: #2b2418;
+  }
+}
+:root[data-theme="dark"] {
+  --paper: #171614; --paper-2: #1f1d1a; --ink: #e9e5db; --ink-2: #c3bdb0; --muted: #8f897d;
+  --rule: #3a3631; --rule-2: #2a2724; --accent: #8fb3dc; --accent-soft: #8fb3dc33;
+  --old: #e9e5db; --warn: #d9a650; --warn-bg: #2b2418;
+}
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body { margin: 0; background: var(--paper); color: var(--ink); font: 15px/1.75 var(--sans); font-variant-numeric: tabular-nums; }
+a { color: inherit; text-decoration-color: var(--rule); text-underline-offset: 3px; }
+a:hover { text-decoration-color: var(--ink); }
+button { font: inherit; color: inherit; background: none; border: 0; padding: 0; cursor: pointer; }
+
+.mast { display: flex; align-items: baseline; gap: 16px; padding: 14px 28px; border-bottom: 1px solid var(--ink); font-size: 13px; }
+.mast b { font-family: var(--serif); font-size: 17px; letter-spacing: .04em; }
+.mast .meta { color: var(--muted); }
+.mast .sp { flex: 1; }
+.mast button { color: var(--muted); border-bottom: 1px solid var(--rule); }
+
+.page { display: grid; grid-template-columns: 220px minmax(0, 1fr); max-width: 1180px; margin: 0 auto; }
+.rail { border-right: 1px solid var(--rule); padding: 28px 22px; font-size: 13px; }
+.rail h3 { font: 600 12px/1 var(--sans); letter-spacing: .12em; color: var(--muted); margin: 0 0 12px; }
+.rail h3 + * { margin-top: 0; }
+.rail section + section { margin-top: 34px; }
+.stock { margin-bottom: 14px; }
+.stock .code { color: var(--muted); margin-right: 6px; }
+.stock ul { list-style: none; margin: 6px 0 0; padding: 0; }
+.stock li a { display: block; padding: 3px 0 3px 10px; border-left: 2px solid transparent; text-decoration: none; color: var(--ink-2); }
+.stock li a[aria-current] { border-left-color: var(--accent); color: var(--ink); }
+.notes { list-style: none; padding: 0; margin: 0; }
+.notes li { padding: 7px 0; border-top: 1px solid var(--rule-2); color: var(--ink-2); }
+.notes time { display: block; color: var(--muted); font-size: 12px; }
+
+main { padding: 34px 40px 80px; }
+.row { display: grid; grid-template-columns: minmax(0, 640px) 230px; column-gap: 36px; }
+.side { font-size: 12.5px; line-height: 1.7; color: var(--ink-2); }
+.side .q { border-top: 1px solid var(--rule); padding-top: 8px; margin-bottom: 14px; }
+.side .q cite { display: block; font-style: normal; color: var(--muted); margin-top: 4px; }
+.kicker { font-size: 13px; color: var(--muted); letter-spacing: .02em; }
+h1 { font: 600 34px/1.3 var(--serif); margin: 6px 0 12px; letter-spacing: .01em; }
+.merge { font-size: 13.5px; color: var(--ink-2); margin: 0; padding-left: 12px; border-left: 2px solid var(--rule); }
+.merge b { font-weight: 600; color: var(--ink); }
+
+.ruler { margin: 30px 0 6px; }
+.ruler-head { display: flex; align-items: baseline; gap: 12px; font-size: 13px; color: var(--muted); }
+.ruler-head strong { font: 600 18px/1 var(--serif); color: var(--ink); }
+.ruler-head button { margin-left: auto; color: var(--accent); }
+.ruler-head button[hidden] { display: none; }
+.track { position: relative; margin: 14px 0 0; height: 52px; }
+.track input { position: absolute; inset: 0 0 auto 0; width: 100%; margin: 0; height: 20px; opacity: 0; cursor: pointer; z-index: 2; }
+.track .line { position: absolute; left: 0; right: 0; top: 9px; height: 1px; background: var(--ink); }
+.track .fill { position: absolute; left: 0; top: 8px; height: 3px; background: var(--accent); }
+.stop { position: absolute; top: 3px; transform: translateX(-50%); text-align: center; font-size: 12px; color: var(--muted); white-space: nowrap; }
+.stop i { display: block; width: 1px; height: 13px; background: var(--ink); margin: 0 auto 6px; }
+.stop.on { color: var(--ink); }
+.stop.cur i { width: 9px; height: 9px; border-radius: 50%; background: var(--accent); margin: 2px auto 8px; outline: 3px solid var(--paper); }
+.stop.first { transform: none; text-align: left; } .stop.first i { margin-left: 0; }
+.stop.last { transform: translateX(-100%); text-align: right; } .stop.last i { margin-right: 0; }
+.side.lead { padding-top: 150px; }
+.vk { font-style: normal; }
+
+.lede { font: 400 19px/1.85 var(--serif); margin: 26px 0 0; }
+.lede .n { font-weight: 600; color: var(--accent); white-space: nowrap; }
+.lede .flag { border-bottom: 2px solid var(--accent-soft); }
+
+.conflict { margin: 26px 0 0; padding: 14px 16px 12px; background: var(--warn-bg); border-top: 2px solid var(--warn); font-size: 14px; }
+.conflict h4 { margin: 0 0 4px; font: 600 13px/1.4 var(--sans); color: var(--warn); letter-spacing: .04em; }
+.conflict .pair { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin: 10px 0; font-size: 13px; color: var(--ink-2); }
+.conflict .pair div { border-left: 1px solid var(--warn); padding-left: 10px; }
+.conflict .pair cite { display: block; font-style: normal; color: var(--muted); font-size: 12px; }
+.conflict .res { margin: 0; font-size: 13px; }
+.conflict .res b { font-weight: 600; }
+
+h2 { font: 600 20px/1.4 var(--serif); margin: 52px 0 4px; padding-top: 10px; border-top: 1px solid var(--ink); }
+.h2note { font-size: 13px; color: var(--muted); margin: 0 0 18px; }
+
+.wide { grid-column: 1 / -1; max-width: 906px; }
+.metric { margin: 24px 0 0; }
+.metric h5 { margin: 0 0 6px; font: 600 14px/1.4 var(--sans); display: flex; gap: 10px; align-items: baseline; }
+.metric h5 span { font-weight: 400; color: var(--muted); font-size: 12.5px; }
+.vrow { display: grid; grid-template-columns: 5.6em 10.5em minmax(0, 1fr); align-items: center; font-size: 13px; height: 26px; cursor: pointer; }
+.vrow .d { color: var(--muted); }
+.vrow .val { color: var(--ink-2); }
+.vrow.cur .val { color: var(--accent); font-weight: 600; }
+.vrow.cur .d { color: var(--ink); }
+.vrow:hover .val { text-decoration: underline; text-decoration-color: var(--rule); }
+.cell { position: relative; height: 100%; }
+.zero { position: absolute; top: -4px; bottom: -4px; width: 0; border-left: 1px dashed var(--muted); }
+.bar { position: absolute; top: 50%; height: 9px; transform: translateY(-50%); background: var(--old); opacity: .2; min-width: 2px; }
+.dot { position: absolute; top: 50%; width: 9px; height: 9px; border-radius: 50%; transform: translate(-50%, -50%); background: var(--old); opacity: .22; }
+.vrow.cur .bar, .vrow.cur .dot { background: var(--accent); opacity: 1; }
+.vrow.mid .bar, .vrow.mid .dot { opacity: .45; }
+.axis { display: grid; grid-template-columns: 5.6em 10.5em minmax(0, 1fr); font-size: 11px; color: var(--muted); }
+.axis .cell { height: 16px; border-top: 1px solid var(--rule); }
+.axis .cell span { position: absolute; top: 2px; transform: translateX(-50%); white-space: nowrap; }
+.metric .gone { font-size: 12.5px; color: var(--muted); padding: 2px 0; }
+
+.ev { padding: 18px 0; border-top: 1px solid var(--rule); }
+.ev:first-of-type { border-top: 0; }
+.ev .when { font: 600 15px/1.3 var(--serif); }
+.ev .when small { font: 400 12.5px var(--sans); color: var(--muted); margin-left: 8px; }
+.ev .tags { font-size: 12.5px; color: var(--muted); margin: 4px 0 6px; }
+.ev .tags b { font-weight: 600; color: var(--ink); }
+.ev .title { font-size: 15px; margin: 0; }
+.ev .reason { margin: 4px 0 0; color: var(--ink-2); }
+.times { display: flex; flex-wrap: wrap; gap: 4px 18px; margin: 10px 0 0; font-size: 12px; color: var(--muted); }
+.times dt { display: inline; } .times dd { display: inline; margin: 0 0 0 4px; color: var(--ink-2); }
+.miss { color: var(--muted) !important; border-bottom: 1px dotted var(--muted); }
+.ev.hl { background: linear-gradient(90deg, var(--accent-soft), transparent 70%); }
+
+.pending { margin-top: 48px; padding-top: 10px; border-top: 1px dashed var(--muted); font-size: 13px; color: var(--ink-2); }
+.pending h4 { margin: 0 0 6px; font: 600 13px var(--sans); }
+.pending ul { margin: 0; padding-left: 1.2em; }
+.foot { margin-top: 36px; font-size: 12px; color: var(--muted); }
+
+@media (max-width: 1020px) { .row { grid-template-columns: minmax(0, 1fr); } .side { margin-top: 10px; } .side .q { border-top: 0; border-left: 1px solid var(--rule); padding: 0 0 0 10px; } }
+@media (max-width: 760px) {
+  .page { grid-template-columns: 1fr; }
+  .rail { border-right: 0; border-bottom: 1px solid var(--rule); padding: 16px; display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .rail section + section { margin-top: 0; }
+  main { padding: 22px 16px 60px; }
+  .mast { padding: 12px 16px; flex-wrap: wrap; }
+  h1 { font-size: 26px; }
+  .lede { font-size: 17px; }
+  .vrow, .axis { grid-template-columns: 3.6em 8.8em minmax(0, 1fr); font-size: 12px; }
+  .vk { display: none; }
+  .side.lead { padding-top: 0; }
+  .conflict .pair { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+<header class="mast"><b>事件证据时间线</b><span class="meta" id="gen"></span><span class="sp"></span><button id="theme"></button></header>
+<div class="page">
+  <aside class="rail">
+    <section><h3>关注</h3><div id="watch"></div></section>
+    <section><h3>变化通知</h3><ul class="notes" id="notes"></ul></section>
+  </aside>
+  <main id="main"></main>
+</div>
+<script src="mock-data.js"></script>
+<script src="mock-common.js"></script>
+<script>
+const { esc, wan, range, change, cn, cnShort, md, bj, stops, asOf, byId } = EV;
+const DATA = window.EVENTS_DATA;
+const ev = DATA.events[0];
+const S = stops(ev, DATA.generated_at);
+let idx = S.length - 1;
+let focus = null;
+
+document.getElementById('gen').textContent = '数据生成于 ' + bj(DATA.generated_at);
+EV.initTheme(document.getElementById('theme'));
+
+function renderRail(a) {
+  const byCode = {};
+  DATA.events.forEach((e) => (byCode[e.code] = byCode[e.code] || { name: e.name, list: [] }).list.push(e));
+  document.getElementById('watch').innerHTML = Object.entries(byCode).map(([c, s]) => `
+    <div class="stock"><span class="code">${esc(c)}</span>${esc(s.name)}
+      <ul>${s.list.map((e) => `<li><a href="#" ${e === ev ? 'aria-current="true"' : ''}>${esc(e.period)}${esc(e.type)}</a></li>`).join('')}</ul></div>`).join('');
+  const ns = a.notifications.slice().reverse();
+  document.getElementById('notes').innerHTML = ns.length ? ns.map((n) => `<li><time>${n.at}</time>${esc(ev.name)} ${esc(n.text)}</li>`).join('')
+    : '<li>截至这一天没有通知</li>';
+}
+
+function lede(a) {
+  if (!a.evidence.length) return `截至 ${cn(a.D)}，${esc(ev.name)}还没有发布与${esc(ev.period)}${esc(ev.type)}相关的公告。`;
+  const n = a.evidence.length, k = a.evidence.filter((x) => x.relation.type === '更正').length;
+  const cur = a.claims.filter((c) => c.current);
+  const top = cur.slice(0, 2).map((c) => `${c.key} <span class="n">${range(c.current)}</span>`).join('，');
+  const flips = a.claims.filter((c) => c.current && c.seen.length > 1 && /转/.test(change(c.seen[0], c.current)))
+    .map((c) => `<span class="flag">${c.key}${change(c.seen[0], c.current)}</span>`);
+  let s = `截至 ${cnShort(a.D)}，${esc(ev.name)}就 ${esc(ev.period)}业绩发了 ${n} 份公告${k ? `，其中 ${k} 份是更正` : ''}。`;
+  s += `现在算数的是 ${esc(a.last.doc_no)}（${cnShort(a.last.times.disclosed)}）：${top}。`;
+  if (flips.length) s += `和第一次预告比，${flips.join('，')}。`;
+  return s;
+}
+
+function ticks(c, x) {
+  const vs = c.all.flatMap((v) => [v.low, v.high]);
+  const cand = [Math.min(...vs), 0, Math.max(...vs)];
+  const out = [];
+  cand.forEach((v) => { if (!out.some((o) => Math.abs(x(o) - x(v)) < 22)) out.push(v); });
+  return out.map((v) => `<span style="left:${x(v)}%">${v === 0 ? '0' : wan(v)}</span>`).join('');
+}
+function metric(c, a) {
+  const vals = c.all.flatMap((v) => [v.low, v.high]).concat(0);
+  let lo = Math.min(...vals), hi = Math.max(...vals); const pad = (hi - lo) * 0.06; lo -= pad; hi += pad;
+  const x = (v) => ((v - lo) / (hi - lo)) * 100;
+  const rows = c.seen.map((v, i) => {
+    const e = byId(ev, v.evidence_id);
+    const cls = v === c.current ? 'cur' : (i === c.seen.length - 2 ? 'mid' : '');
+    const mark = v.low === v.high
+      ? `<span class="dot" style="left:${x(v.low)}%"></span>`
+      : `<span class="bar" style="left:${x(v.low)}%;width:${x(v.high) - x(v.low)}%"></span>`;
+    return `<div class="vrow ${cls}" data-ev="${v.evidence_id}" title="${esc(v.quote)}">
+      <span class="d">${md(v.valid_from)}<em class="vk"> ${e.relation.type === '首次披露' ? '预告' : '更正'}</em></span>
+      <span class="val">${range(v)}</span>
+      <span class="cell"><span class="zero" style="left:${x(0)}%"></span>${mark}</span></div>`;
+  }).join('');
+  const later = c.all.length - c.seen.length;
+  const ch = c.current && c.seen.length > 1 ? change(c.seen[c.seen.length - 2], c.current) : '';
+  return `<div class="metric"><h5>${esc(c.key)}<span>${c.seen.length ? `${c.seen.length} 版${ch ? '，最近一次' + ch : ''}` : '尚未披露'}</span></h5>
+    ${rows}
+    ${c.seen.length ? `<div class="axis"><span></span><span></span><span class="cell">${ticks(c, x)}</span></div>` : ''}
+    ${later > 0 ? `<div class="gone">此后还有 ${later} 版，回放到更晚的日期可见</div>` : ''}</div>`;
+}
+
+function evidence(x) {
+  const t = x.times, rel = x.relation;
+  const target = rel.target ? byId(ev, rel.target) : null;
+  const tm = (k, v, miss) => `<div><dt>${k}</dt><dd class="${v ? '' : 'miss'}" ${v ? '' : `title="${miss === '未抽取' ? '原文里有，但还没抽出来' : '数据里没有这一项'}"`}>${v || miss}</dd></div>`;
+  return `<div class="row"><div class="ev ${focus === x.id ? 'hl' : ''}" id="ev-${x.id}">
+      <div class="when">${t.disclosed}<small>${esc(x.doc_no)}</small></div>
+      <div class="tags"><b>${esc(x.kind)}</b> · ${esc(x.source_tier)} 级来源：${esc(x.tier_note)} · ${esc(rel.type)}${target ? ` ${esc(target.doc_no)}` : ''}</div>
+      <p class="title"><a href="${esc(x.url)}" target="_blank" rel="noopener">${esc(x.title)}</a></p>
+      ${x.reason ? `<p class="reason">原因：${esc(x.reason)}</p>` : `<p class="reason miss" style="display:inline-block">要点未抽取</p>`}
+      <dl class="times">
+        ${tm('发生', t.occurred ? `${t.occurred.start} 至 ${t.occurred.end}` : '', '未抽取')}
+        ${tm('披露', t.disclosed, '未抽取')}${tm('落款', t.signed, '未抽取')}
+        ${tm('抓取', t.fetched ? bj(t.fetched) : '', '未记录')}${tm('更新', t.updated ? bj(t.updated) : '', '未记录')}
+      </dl></div>
+    <div class="side">${x.reason_quote ? `<div class="q">“${esc(x.reason_quote)}”<cite>${esc(x.doc_no)} 原文</cite></div>` : ''}</div></div>`;
+}
+
+function render() {
+  const a = asOf(ev, S[idx].date);
+  renderRail(a);
+  const stopsHtml = S.map((s, i) => `<div class="stop ${i <= idx ? 'on' : ''} ${i === idx ? 'cur' : ''} ${i === 0 ? 'first' : ''} ${i === S.length - 1 ? 'last' : ''}" style="left:${(i / (S.length - 1)) * 100}%"><i></i>${i === 0 ? '披露前' : md(s.date)}</div>`).join('');
+  const curQuotes = a.claims.filter((c) => c.current).slice(0, 2).map((c) => `<div class="q">“${esc(c.current.quote)}”<cite>${esc(byId(ev, c.current.evidence_id).doc_no)} 原文 · <a href="${esc(byId(ev, c.current.evidence_id).url)}" target="_blank" rel="noopener">打开公告</a></cite></div>`).join('');
+  document.getElementById('main').innerHTML = `
+    <div class="row"><div>
+      <div class="kicker">${esc(ev.code)} ${esc(ev.name)} · ${esc(ev.type)} · ${esc(ev.period)}</div>
+      <h1>${esc(ev.title)}</h1>
+      <p class="merge"><b>为什么算同一件事</b>　${esc(ev.merge_reason || '未抽取')}</p>
+      <div class="ruler">
+        <div class="ruler-head">截至<strong>${cn(S[idx].date)}</strong><span>${esc(a.status)}</span><button id="latest" ${idx === S.length - 1 ? 'hidden' : ''}>回到最新</button></div>
+        <div class="track"><span class="line"></span><span class="fill" style="width:${(idx / (S.length - 1)) * 100}%"></span>${stopsHtml}
+          <input type="range" min="0" max="${S.length - 1}" step="1" value="${idx}" aria-label="回放到某一天"></div>
+      </div>
+      <p class="lede">${lede(a)}</p>
+      ${a.conflicts.map((c) => `<div class="conflict"><h4>证据冲突 · ${esc(c.kind)}</h4>${esc(c.text)}
+        <div class="pair">${c.quotes.map((q) => `<div>“${esc(q.quote)}”<cite>${esc(byId(ev, q.evidence_id).doc_no)}</cite></div>`).join('')}</div>
+        <p class="res"><b>怎么处理（推断）</b>　${esc(c.resolution)}</p></div>`).join('')}
+    </div><div class="side lead">${curQuotes}</div></div>
+    <div class="row"><div class="wide">
+      <h2>数字怎么变的</h2>
+      <p class="h2note">每个指标一根数轴，虚线是 0。横条是预告区间，圆点是单一数值。淡色是被后来的公告取代的版本，蓝色是截至这一天算数的版本。点任一行跳到它出自的那份公告。</p>
+      ${a.claims.map((c) => metric(c, a)).join('')}
+    </div></div>
+    <div class="row"><div><h2>证据</h2><p class="h2note">按披露时间排列，截至这一天共 ${a.evidence.length} 条${ev.evidence.length > a.evidence.length ? `，之后还有 ${ev.evidence.length - a.evidence.length} 条` : ''}。原文摘录在右侧。</p></div><div class="side"></div></div>
+    ${a.evidence.map(evidence).join('') || '<div class="row"><p class="h2note">这一天之前没有公告。</p></div>'}
+    <div class="row"><div>
+      <div class="pending"><h4>这条时间线还缺什么</h4><ul>${(ev.pending || []).map((p) => `<li>${esc(p)}</li>`).join('') || '<li>无</li>'}</ul></div>
+      <p class="foot">数字和原因由大模型在本地离线抽取，每一句引用都已和公告原文逐字核对，再写进数据文件；网页只读这份文件，不调用模型。${esc(DATA.disclaimer)}</p>
+    </div></div>`;
+  const input = document.querySelector('.track input');
+  input.addEventListener('input', () => { idx = +input.value; render(); document.querySelector('.track input').focus(); });
+  const l = document.getElementById('latest'); if (l) l.onclick = () => { idx = S.length - 1; render(); };
+  document.querySelectorAll('.vrow').forEach((r) => r.addEventListener('click', () => {
+    focus = r.dataset.ev; render();
+    document.getElementById('ev-' + focus).scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }));
+}
+render();
+</script>
+</body>
+</html>

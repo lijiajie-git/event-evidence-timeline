@@ -1,0 +1,250 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>小样 B · 研究终端</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/ibm-plex-mono@5.2.5/400.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/ibm-plex-mono@5.2.5/500.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/ibm-plex-sans@5.2.5/400.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/ibm-plex-sans@5.2.5/600.css">
+<style>
+:root {
+  --bg: #f4f5f6; --panel: #ffffff; --line: #dfe2e6; --line-2: #eceef1; --text: #1b1f24; --text-2: #48505a; --muted: #7c858f;
+  --cur: #0b6f8a; --cur-bg: #e3f1f5; --amber: #9a6205; --amber-bg: #fbf1dc; --sel: #eef2f6;
+  --mono: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, monospace;
+  --sans: "IBM Plex Sans", -apple-system, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0e1012; --panel: #14171a; --line: #262b31; --line-2: #1c2024; --text: #d9dde1; --text-2: #aab1b9; --muted: #707981;
+    --cur: #6cc4dc; --cur-bg: #15303a; --amber: #e4ad4f; --amber-bg: #2a2214; --sel: #1b2026;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0e1012; --panel: #14171a; --line: #262b31; --line-2: #1c2024; --text: #d9dde1; --text-2: #aab1b9; --muted: #707981;
+  --cur: #6cc4dc; --cur-bg: #15303a; --amber: #e4ad4f; --amber-bg: #2a2214; --sel: #1b2026;
+}
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body { margin: 0; background: var(--bg); color: var(--text); font: 13px/1.55 var(--sans); }
+.m { font-family: var(--mono); font-variant-numeric: tabular-nums; }
+a { color: var(--cur); text-decoration: none; } a:hover { text-decoration: underline; }
+button { font: inherit; color: inherit; background: none; border: 1px solid var(--line); padding: 1px 8px; cursor: pointer; border-radius: 2px; }
+button:hover { border-color: var(--text-2); }
+button:disabled { opacity: .35; cursor: default; }
+
+.bar { display: flex; align-items: stretch; height: 38px; border-bottom: 1px solid var(--line); background: var(--panel); font-size: 12.5px; position: sticky; top: 0; z-index: 3; }
+.bar > div { display: flex; align-items: center; gap: 8px; padding: 0 14px; border-right: 1px solid var(--line); white-space: nowrap; }
+.bar .k { color: var(--muted); }
+.bar .brand { font-weight: 600; letter-spacing: .02em; }
+.bar .asof { gap: 6px; }
+.bar .asof strong { font: 500 13px var(--mono); color: var(--cur); min-width: 84px; text-align: center; }
+.bar .sp { flex: 1; border-right: 0; }
+.bar .last { border-right: 0; }
+
+.grid { display: grid; grid-template-columns: 236px minmax(0, 1fr) 330px; min-height: calc(100vh - 38px); }
+.col { border-right: 1px solid var(--line); min-width: 0; }
+.col:last-child { border-right: 0; }
+.ph { display: flex; justify-content: space-between; align-items: baseline; padding: 9px 14px 7px; border-bottom: 1px solid var(--line); font-size: 11.5px; color: var(--muted); letter-spacing: .06em; background: var(--panel); }
+.ph b { font-weight: 600; color: var(--text-2); letter-spacing: .08em; }
+
+table { width: 100%; border-collapse: collapse; }
+th { text-align: left; font-weight: 400; color: var(--muted); font-size: 11.5px; padding: 6px 10px; border-bottom: 1px solid var(--line); white-space: nowrap; }
+td { padding: 7px 10px; border-bottom: 1px solid var(--line-2); vertical-align: top; }
+td.num, th.num { text-align: right; }
+
+.watch tr[aria-current] td { background: var(--sel); }
+.watch tr[aria-current] td:first-child { box-shadow: inset 2px 0 0 var(--cur); }
+.evt td.m { white-space: nowrap; }
+.log { list-style: none; margin: 0; padding: 4px 0; }
+.log li { display: grid; grid-template-columns: 44px 1fr; gap: 8px; padding: 5px 14px; color: var(--text-2); font-size: 12px; }
+.log li span:first-child { color: var(--muted); }
+
+.head { padding: 16px 20px 14px; border-bottom: 1px solid var(--line); background: var(--panel); }
+.head h1 { margin: 2px 0 6px; font-size: 19px; font-weight: 600; letter-spacing: .01em; }
+.head .sub { color: var(--muted); font-size: 12px; }
+.head .merge { margin: 8px 0 0; color: var(--text-2); font-size: 12.5px; }
+.head .merge .k { color: var(--muted); margin-right: 8px; }
+
+.evt tbody tr.r { cursor: pointer; }
+.evt tbody tr.r:hover td { background: var(--sel); }
+.evt tbody tr.open td { background: var(--sel); }
+.evt tbody tr.r td:first-child { box-shadow: inset 2px 0 0 transparent; }
+.evt tbody tr.open td:first-child { box-shadow: inset 2px 0 0 var(--cur); }
+.evt .ttl { color: var(--text); }
+.evt .rel { color: var(--text-2); }
+.evt .x td { padding: 0 10px 14px 22px; background: var(--sel); }
+.x .quote { margin: 4px 0 10px; padding: 8px 10px; border-left: 2px solid var(--cur); background: var(--panel); color: var(--text-2); }
+.x dl { display: grid; grid-template-columns: repeat(5, auto); gap: 2px 18px; margin: 0; font-size: 11.5px; justify-content: start; }
+.x dt { color: var(--muted); } .x dd { margin: 0; }
+.miss { color: var(--muted); border-bottom: 1px dotted var(--muted); }
+.more { padding: 8px 20px; color: var(--muted); font-size: 12px; border-bottom: 1px solid var(--line-2); }
+
+.sec { padding: 0; }
+.cmp th.v { min-width: 130px; }
+.cmp th.v small { display: block; color: var(--text-2); font-size: 11px; }
+.cmp td.old { color: var(--muted); }
+.cmp td.old .by { display: block; font-family: var(--sans); font-size: 10.5px; color: var(--muted); }
+.cmp td.now { color: var(--text); font-weight: 500; box-shadow: inset 2px 0 0 var(--cur); background: var(--cur-bg); }
+.cmp th.now { color: var(--cur); }
+.cmp td.na { color: var(--muted); }
+.cmp td.key { color: var(--text-2); white-space: nowrap; }
+.cmp td.chg { white-space: nowrap; color: var(--text-2); }
+.cmp td.chg.flip, .cmp .chg .flip { color: var(--text); font-weight: 600; }
+.cmp td.chg .by { display: block; font-size: 11px; }
+.cmpnote { padding: 8px 14px 18px; color: var(--muted); font-size: 11.5px; }
+
+.right .blk { padding: 12px 14px 14px; border-bottom: 1px solid var(--line); }
+.cur-list { margin: 0; padding: 0; list-style: none; }
+.cur-list li { padding: 7px 0; border-bottom: 1px solid var(--line-2); }
+.cur-list li:last-child { border-bottom: 0; }
+.cur-list .row1 { display: flex; justify-content: space-between; gap: 8px; }
+.cur-list .val { color: var(--cur); font-weight: 500; }
+.cur-list .q { color: var(--muted); font-size: 11.5px; margin-top: 2px; }
+.stat { display: grid; grid-template-columns: 70px 1fr; gap: 3px 10px; font-size: 12px; margin-bottom: 8px; }
+.stat span:nth-child(odd) { color: var(--muted); }
+.cf { background: var(--amber-bg); border-left: 2px solid var(--amber); padding: 10px 12px; font-size: 12.5px; }
+.cf .t { color: var(--amber); font-weight: 600; font-size: 11.5px; letter-spacing: .06em; margin-bottom: 4px; }
+.cf blockquote { margin: 6px 0; padding: 0 0 0 8px; border-left: 1px solid var(--amber); color: var(--text-2); font-size: 12px; }
+.cf .res { margin-top: 8px; color: var(--text-2); }
+.cf .res b { color: var(--text); font-weight: 600; }
+.pend { list-style: none; padding: 0; margin: 0; }
+.pend li { padding: 6px 8px; border: 1px dashed var(--line); margin-bottom: 6px; color: var(--text-2); font-size: 12px; }
+.pend li b { color: var(--muted); font-weight: 400; margin-right: 6px; }
+.foot { padding: 12px 14px; color: var(--muted); font-size: 11.5px; }
+
+@media (max-width: 1100px) { .grid { grid-template-columns: 200px minmax(0, 1fr); } .right { grid-column: 1 / -1; border-top: 1px solid var(--line); display: grid; grid-template-columns: repeat(3, 1fr); } .right .blk { border-right: 1px solid var(--line); } }
+@media (max-width: 760px) {
+  .bar { height: auto; flex-wrap: wrap; }
+  .bar > div { padding: 7px 12px; border-bottom: 1px solid var(--line); }
+  .bar .sp { display: none; }
+  .grid { grid-template-columns: 1fr; }
+  .col { border-right: 0; }
+  .left { border-bottom: 1px solid var(--line); }
+  .right { display: block; }
+  .evt .hide-s { display: none; }
+  .scroll { overflow-x: auto; }
+  .x dl { grid-template-columns: auto auto; }
+}
+</style>
+</head>
+<body>
+<div class="bar">
+  <div class="brand">事件证据时间线</div>
+  <div><span class="k">标的</span><span class="m" id="b-code"></span><span id="b-name"></span></div>
+  <div><span class="k">状态</span><span id="b-status"></span></div>
+  <div class="asof"><span class="k">截至</span><button id="prev" title="上一个披露日（←）">←</button><strong id="b-date"></strong><button id="next" title="下一个披露日（→）">→</button><button id="latest">最新</button></div>
+  <div class="sp"></div>
+  <div class="last"><button id="theme"></button></div>
+</div>
+<div class="grid">
+  <div class="col left">
+    <div class="ph"><b>关注</b><span>按代码</span></div>
+    <table class="watch"><thead><tr><th>代码</th><th>名称</th><th class="num">最近变化</th></tr></thead><tbody id="watch"></tbody></table>
+    <div class="ph" style="margin-top:18px"><b>通知</b><span id="n-count"></span></div>
+    <ul class="log m" id="log"></ul>
+  </div>
+  <div class="col mid">
+    <div class="head" id="head"></div>
+    <div class="ph"><b>证据</b><span>点一行展开原文</span></div>
+    <div class="scroll"><table class="evt"><thead><tr><th>披露</th><th>公告号</th><th>标题</th><th>性质</th><th class="hide-s">来源</th><th class="hide-s">关系</th></tr></thead><tbody id="evt"></tbody></table></div>
+    <div id="more"></div>
+    <div class="ph" style="margin-top:22px"><b>口径对照</b><span>单位：万元</span></div>
+    <div class="scroll"><table class="cmp" id="cmp"></table></div>
+    <div class="cmpnote">灰色是已被后续公告取代的前值；带青色竖线的是截至当天的现行值。“变化”比较最近两版的区间中点；和首次相比正负号翻转的，另起一行标出。</div>
+  </div>
+  <div class="col right" id="right"></div>
+</div>
+<script src="mock-data.js"></script>
+<script src="mock-common.js"></script>
+<script>
+const { esc, wan, range, change, md, bj, stops, asOf, byId } = EV;
+const DATA = window.EVENTS_DATA;
+const ev = DATA.events[0];
+const S = stops(ev, DATA.generated_at);
+let idx = S.length - 1, open = null;
+EV.initTheme(document.getElementById('theme'));
+const W = (v) => range(v, { forceWan: true }).replace(' 万', '');
+
+function render() {
+  const a = asOf(ev, S[idx].date);
+  document.getElementById('b-code').textContent = ev.code;
+  document.getElementById('b-name').textContent = ev.name;
+  document.getElementById('b-status').innerHTML = esc(a.status) + (a.last ? ` <span class="k m">${md(a.last.times.disclosed)} 起</span>` : '');
+  document.getElementById('b-date').textContent = S[idx].date;
+  document.getElementById('prev').disabled = idx === 0;
+  document.getElementById('next').disabled = document.getElementById('latest').disabled = idx === S.length - 1;
+
+  const codes = {}; DATA.events.forEach((e) => { codes[e.code] = codes[e.code] || { name: e.name, last: '' }; const seen = (e.notifications || []).map((n) => n.at).filter((d) => d <= a.D).sort().pop() || ''; codes[e.code].last = [codes[e.code].last, seen].sort().pop(); });
+  document.getElementById('watch').innerHTML = Object.entries(codes).map(([c, s]) => `<tr ${c === ev.code ? 'aria-current="true"' : ''}><td class="m">${c}</td><td>${esc(s.name)}</td><td class="num m">${s.last ? md(s.last) : '—'}</td></tr>`).join('');
+  document.getElementById('n-count').textContent = a.notifications.length + ' 条';
+  document.getElementById('log').innerHTML = a.notifications.slice().reverse().map((n) => `<li><span>${md(n.at)}</span><span>${esc(n.text)}</span></li>`).join('') || '<li><span></span><span>暂无</span></li>';
+
+  document.getElementById('head').innerHTML = `<div class="sub m">${esc(ev.code)} · ${esc(ev.type)} · ${esc(ev.period)}</div>
+    <h1>${esc(ev.name)}　${esc(ev.title)}</h1>
+    <p class="merge"><span class="k">归并依据</span>${esc(ev.merge_reason || '未抽取')}</p>`;
+
+  const miss = (v, w) => v ? esc(v) : `<span class="miss">${w}</span>`;
+  document.getElementById('evt').innerHTML = a.evidence.map((x) => {
+    const t = x.times, tgt = x.relation.target ? byId(ev, x.relation.target) : null;
+    const row = `<tr class="r ${open === x.id ? 'open' : ''}" data-id="${x.id}"><td class="m">${t.disclosed}</td><td class="m">${esc(x.doc_no)}</td>
+      <td class="ttl">${esc(x.title)}</td><td>${esc(x.kind)}</td><td class="hide-s m">${esc(x.source_tier)}</td><td class="hide-s rel">${esc(x.relation.type)}${tgt ? ' ' + esc(tgt.doc_no) : ''}</td></tr>`;
+    if (open !== x.id) return row;
+    return row + `<tr class="x"><td colspan="6">
+      <div style="margin:2px 0 4px;color:var(--text-2)">${x.reason ? '原因：' + esc(x.reason) : '<span class="miss">要点未抽取</span>'}</div>
+      ${x.reason_quote ? `<div class="quote">“${esc(x.reason_quote)}”</div>` : ''}
+      <dl class="m"><div><dt>发生</dt><dd>${t.occurred ? t.occurred.start.slice(0, 4) + ' 全年' : '<span class="miss">未抽取</span>'}</dd></div>
+        <div><dt>披露</dt><dd>${miss(t.disclosed, '未抽取')}</dd></div><div><dt>落款</dt><dd>${miss(t.signed, '未抽取')}</dd></div>
+        <div><dt>抓取</dt><dd>${t.fetched ? bj(t.fetched) : '<span class="miss">未记录</span>'}</dd></div><div><dt>更新</dt><dd>${t.updated ? bj(t.updated) : '<span class="miss">未记录</span>'}</dd></div></dl>
+      <div style="margin-top:10px">${esc(x.source)} · ${esc(x.tier_note)} · <a href="${esc(x.url)}" target="_blank" rel="noopener">打开公告原文 ↗</a></div></td></tr>`;
+  }).join('') || `<tr><td colspan="6" style="color:var(--muted)">截至 ${S[idx].date} 还没有相关公告</td></tr>`;
+  const rest = ev.evidence.length - a.evidence.length;
+  document.getElementById('more').innerHTML = rest ? `<div class="more">之后还有 ${rest} 条公告，回放中不显示</div>` : '';
+  document.querySelectorAll('.evt tr.r').forEach((r) => r.onclick = () => { open = open === r.dataset.id ? null : r.dataset.id; render(); });
+
+  // 口径对照：列 = 带数字的证据，按披露顺序
+  const cols = ev.evidence.filter((x) => (ev.claims || []).some((c) => c.versions.some((v) => v.evidence_id === x.id)));
+  const curIds = new Set(a.claims.map((c) => c.current && c.current.evidence_id));
+  document.getElementById('cmp').innerHTML = `<thead><tr><th>指标</th>${cols.map((x) => {
+      const seen = x.times.disclosed <= a.D;
+      return `<th class="v num ${curIds.has(x.id) ? 'now' : ''}">${seen ? `${x.relation.type === '首次披露' ? '首次' : '更正'}<small class="m">${md(x.times.disclosed)} ${esc(x.doc_no.replace('临 ', ''))}</small>` : '尚未披露<small class="m">—</small>'}</th>`; }).join('')}<th>变化</th></tr></thead>
+    <tbody>${a.claims.map((c) => {
+      const cells = cols.map((x) => {
+        const v = c.all.find((v) => v.evidence_id === x.id);
+        if (!v) return `<td class="num na m">无此项</td>`;
+        if (v.valid_from > a.D) return `<td class="num na m">—</td>`;
+        if (v === c.current) return `<td class="num now m" title="${esc(v.quote)}">${W(v)}</td>`;
+        const by = c.seen.find((w) => w.valid_from === v.valid_to);
+        return `<td class="num old m" title="${esc(v.quote)}">${W(v)}<span class="by">被${by ? ' ' + esc(byId(ev, by.evidence_id).doc_no) : ''}取代</span></td>`;
+      }).join('');
+      const ch = c.current && c.seen.length > 1 ? change(c.seen[c.seen.length - 2], c.current) : (c.current ? '首次' : '—');
+      const vsFirst = c.current && c.seen.length > 2 ? change(c.seen[0], c.current) : '';
+      return `<tr><td class="key">${esc(c.key)}</td>${cells}<td class="chg ${/转/.test(ch) ? 'flip' : ''}">${ch}${/转/.test(vsFirst) && !/转/.test(ch) ? `<span class="by flip">较首次${vsFirst}</span>` : ''}</td></tr>`;
+    }).join('')}</tbody>`;
+
+  // 右栏
+  const R = [];
+  R.push(`<div class="ph"><b>截至 ${md(a.D)} 的结论</b><span>${a.last ? '依据 ' + esc(a.last.doc_no) : ''}</span></div>`);
+  if (!a.last) R.push(`<div class="blk" style="color:var(--muted)">这一天之前没有公告，无结论。</div>`);
+  else {
+    R.push(`<div class="blk"><div class="stat"><span>状态</span><span>${esc(a.status)}</span><span>公告</span><span class="m">${a.evidence.length} 份，更正 ${a.evidence.filter((x) => x.relation.type === '更正').length} 次</span><span>性质</span><span>${Object.entries(a.evidence.reduce((m, x) => (m[x.kind] = (m[x.kind] || 0) + 1, m), {})).map(([k, n]) => `${esc(k)} ${n} 条`).join('，')}</span></div>
+      <ul class="cur-list">${a.claims.filter((c) => c.current).map((c) => { const e = byId(ev, c.current.evidence_id); return `<li><div class="row1"><span>${esc(c.key)}</span><span class="val m">${range(c.current)}</span></div>
+        <div class="q">“${esc(c.current.quote)}” <a href="${esc(e.url)}" target="_blank" rel="noopener">${esc(e.doc_no)} ↗</a></div></li>`; }).join('')}</ul></div>`);
+  }
+  if (a.conflicts.length) R.push(`<div class="ph"><b>证据冲突</b><span>${a.conflicts.length} 处</span></div><div class="blk">${a.conflicts.map((c) => `<div class="cf"><div class="t">${esc(c.kind)}</div>${esc(c.text)}
+      ${c.quotes.map((q) => `<blockquote>“${esc(q.quote)}” <span class="m" style="color:var(--muted)">${esc(byId(ev, q.evidence_id).doc_no)}</span></blockquote>`).join('')}
+      <div class="res"><b>处理（推断）</b> ${esc(c.resolution)}</div></div>`).join('')}</div>`);
+  R.push(`<div class="ph"><b>缺口</b><span>${(ev.pending || []).length} 项</span></div><div class="blk"><ul class="pend">${(ev.pending || []).map((p) => `<li><b>${/接入/.test(p) ? '未接入' : '未并入'}</b>${esc(p)}</li>`).join('') || '<li>无</li>'}</ul></div>`);
+  R.push(`<div class="foot">抽取由大模型在本地离线完成，引用已和公告原文逐字核对后写进数据文件；网页只读这份文件，不调用模型。${esc(DATA.disclaimer)}</div>`);
+  document.getElementById('right').innerHTML = R.join('');
+}
+const go = (i) => { idx = Math.max(0, Math.min(S.length - 1, i)); render(); };
+document.getElementById('prev').onclick = () => go(idx - 1);
+document.getElementById('next').onclick = () => go(idx + 1);
+document.getElementById('latest').onclick = () => go(S.length - 1);
+addEventListener('keydown', (e) => { if (e.target.closest('input,textarea')) return; if (e.key === 'ArrowLeft') go(idx - 1); if (e.key === 'ArrowRight') go(idx + 1); });
+render();
+</script>
+</body>
+</html>

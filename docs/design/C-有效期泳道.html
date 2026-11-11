@@ -1,0 +1,227 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>小样 C · 有效期泳道</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/inter@5.2.5/400.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/inter@5.2.5/600.css">
+<style>
+:root {
+  --bg: #fbfbfa; --ink: #15171a; --ink-2: #4b5058; --muted: #868b93; --line: #e3e4e2; --line-2: #efefed;
+  --accent: #0d6b62; --accent-ink: #ffffff; --past: #cfdad8; --past-ink: #4b5058; --amber: #a3650d; --amber-bg: #f7efe0; --veil: #fbfbfa;
+  --sans: Inter, -apple-system, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans SC", sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #111314; --ink: #e6e8e9; --ink-2: #b4b9be; --muted: #7d838a; --line: #2a2e31; --line-2: #1d2022;
+    --accent: #4fb5a8; --accent-ink: #0b1514; --past: #283432; --past-ink: #aeb7b5; --amber: #e0aa55; --amber-bg: #29231a; --veil: #111314;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #111314; --ink: #e6e8e9; --ink-2: #b4b9be; --muted: #7d838a; --line: #2a2e31; --line-2: #1d2022;
+  --accent: #4fb5a8; --accent-ink: #0b1514; --past: #283432; --past-ink: #aeb7b5; --amber: #e0aa55; --amber-bg: #29231a; --veil: #111314;
+}
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body { margin: 0; background: var(--bg); color: var(--ink); font: 14px/1.65 var(--sans); font-feature-settings: "tnum" 1; }
+a { color: var(--accent); text-underline-offset: 3px; }
+button { font: inherit; color: inherit; background: none; border: 0; padding: 0; cursor: pointer; }
+
+.tabs { display: flex; align-items: stretch; gap: 0; padding: 0 32px; border-bottom: 1px solid var(--line); font-size: 13px; overflow-x: auto; }
+.tabs .brand { font-weight: 600; padding: 14px 24px 12px 0; margin-right: 8px; border-right: 1px solid var(--line); white-space: nowrap; }
+.tabs a { padding: 14px 16px 12px; color: var(--ink-2); text-decoration: none; border-bottom: 2px solid transparent; white-space: nowrap; }
+.tabs a[aria-current] { color: var(--ink); border-bottom-color: var(--ink); }
+.tabs .add { color: var(--muted); }
+.tabs .sp { flex: 1; }
+.tabs button { color: var(--muted); padding: 0 0 0 16px; white-space: nowrap; }
+
+.wrap { max-width: 1240px; margin: 0 auto; padding: 28px 32px 80px; }
+.head { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 8px 32px; align-items: end; }
+.head .k { color: var(--muted); font-size: 13px; }
+.head h1 { margin: 2px 0 0; font-size: 26px; font-weight: 600; letter-spacing: -.005em; line-height: 1.35; }
+.head .st { text-align: right; font-size: 13px; color: var(--ink-2); }
+.head .st b { display: block; font-size: 18px; color: var(--ink); font-weight: 600; }
+.merge { margin: 10px 0 0; font-size: 13px; color: var(--ink-2); max-width: 820px; }
+.merge span { color: var(--muted); margin-right: 8px; }
+
+.chart { margin: 28px 0 0; border-top: 1px solid var(--ink); border-bottom: 1px solid var(--line); position: relative; user-select: none; touch-action: pan-y; }
+.chart svg { display: block; width: 100%; }
+.chart text { font-family: var(--sans); }
+.hint { display: flex; justify-content: space-between; gap: 16px; font-size: 12px; color: var(--muted); margin-top: 8px; }
+.hint button { color: var(--accent); }
+
+.cols { display: grid; grid-template-columns: minmax(0, 1fr) 360px; gap: 48px; margin-top: 36px; }
+h2 { font-size: 13px; font-weight: 600; color: var(--muted); letter-spacing: .08em; margin: 0 0 6px; }
+.ev { display: grid; grid-template-columns: 92px minmax(0, 1fr); gap: 16px; padding: 16px 0; border-top: 1px solid var(--line); }
+.ev .d { font-weight: 600; font-size: 14px; }
+.ev .d small { display: block; font-weight: 400; color: var(--muted); font-size: 12px; }
+.ev .meta { font-size: 12.5px; color: var(--muted); }
+.ev .meta b { color: var(--ink); font-weight: 600; }
+.ev h3 { margin: 2px 0 4px; font-size: 15px; font-weight: 600; }
+.ev h3 a { color: var(--ink); text-decoration: none; } .ev h3 a:hover { text-decoration: underline; }
+.ev p { margin: 0; color: var(--ink-2); }
+.ev .q { margin: 8px 0 0; padding-left: 10px; border-left: 2px solid var(--line); color: var(--ink-2); font-size: 13px; }
+.ev .times { display: flex; flex-wrap: wrap; gap: 2px 16px; margin-top: 8px; font-size: 12px; color: var(--muted); }
+.ev .times i { font-style: normal; color: var(--ink-2); }
+.miss { color: var(--muted) !important; border-bottom: 1px dotted var(--muted); }
+.ev.hl { background: linear-gradient(90deg, color-mix(in srgb, var(--accent) 10%, transparent), transparent 80%); }
+
+.card { position: sticky; top: 16px; }
+.card .date { font-size: 22px; font-weight: 600; margin: 0 0 2px; }
+.card .sub { color: var(--muted); font-size: 13px; margin-bottom: 14px; }
+.card table { width: 100%; border-collapse: collapse; font-size: 13.5px; }
+.card td { padding: 8px 0; border-top: 1px solid var(--line); vertical-align: top; }
+.card td:last-child { text-align: right; font-weight: 600; white-space: nowrap; }
+.card td small { display: block; font-weight: 400; color: var(--muted); font-size: 11.5px; }
+.cf { margin-top: 20px; padding: 12px 14px; background: var(--amber-bg); font-size: 13px; }
+.cf b { color: var(--amber); font-weight: 600; display: block; font-size: 12px; letter-spacing: .06em; margin-bottom: 2px; }
+.cf .res { margin-top: 6px; color: var(--ink-2); font-size: 12.5px; }
+.pend { margin-top: 20px; font-size: 12.5px; color: var(--ink-2); }
+.pend div { padding: 6px 0; border-top: 1px dashed var(--line); }
+.pend span { color: var(--muted); margin-right: 6px; }
+.foot { margin-top: 24px; font-size: 12px; color: var(--muted); }
+
+@media (max-width: 900px) { .cols { grid-template-columns: 1fr; } .card { position: static; } }
+@media (max-width: 640px) {
+  .tabs { padding: 0 16px; } .wrap { padding: 20px 16px 60px; }
+  .head { grid-template-columns: 1fr; } .head .st { text-align: left; }
+  .head h1 { font-size: 21px; }
+  .ev { grid-template-columns: 1fr; gap: 4px; }
+  .chart { overflow-x: auto; }
+}
+</style>
+</head>
+<body>
+<nav class="tabs" id="tabs"></nav>
+<div class="wrap">
+  <div class="head" id="head"></div>
+  <div class="chart" id="chart"></div>
+  <div class="hint"><span>在图上点击或拖动竖线，回放到任意一天。横条是一版数字从公告那天起、到被下一份公告取代为止的有效期。</span><button id="latest">回到最新</button></div>
+  <div class="cols">
+    <div><h2>证据</h2><div id="list"></div></div>
+    <aside class="card" id="card"></aside>
+  </div>
+</div>
+<script src="mock-data.js"></script>
+<script src="mock-common.js"></script>
+<script>
+const { esc, wan, range, change, md, cn, cnShort, bj, addDays, asOf, byId } = EV;
+const DATA = window.EVENTS_DATA;
+const ev = DATA.events[0];
+const today = DATA.generated_at.slice(0, 10);
+const first = ev.evidence.map((x) => x.times.disclosed).sort()[0];
+const t0 = addDays(first, -20), t1 = addDays(today, 6);
+let D = today, focus = null;
+
+const days = (a, b) => (Date.parse(b) - Date.parse(a)) / 864e5;
+const fromX = (x, L, W) => addDays(t0, Math.round(((x - L) / W) * days(t0, t1)));
+
+function tabs() {
+  const codes = {}; DATA.events.forEach((e) => (codes[e.code] = e.name));
+  document.getElementById('tabs').innerHTML = `<span class="brand">事件证据时间线</span>` +
+    Object.entries(codes).map(([c, n]) => `<a href="#" ${c === ev.code ? 'aria-current="true"' : ''}>${c} ${esc(n)}</a>`).join('') +
+    `<a class="add" href="#">＋ 关注</a><span class="sp"></span><button id="theme"></button>`;
+  EV.initTheme(document.getElementById('theme'));
+}
+
+function chart() {
+  const box = document.getElementById('chart');
+  const Wt = Math.max(box.clientWidth, 640), L = 108, R = 16, W = Wt - L - R;
+  const x = (d) => L + (days(t0, d) / days(t0, t1)) * W;
+  const lanes = ev.claims || [];
+  const top = 34, evH = 56, laneH = 52, H = top + evH + lanes.length * laneH + 8;
+  const g = [];
+  // 月份刻度
+  for (let m = new Date(t0.slice(0, 7) + '-01T00:00:00Z'); m.toISOString().slice(0, 10) <= t1; m.setUTCMonth(m.getUTCMonth() + 1)) {
+    const d = m.toISOString().slice(0, 10); if (d < t0) continue;
+    g.push(`<line x1="${x(d)}" x2="${x(d)}" y1="${top - 6}" y2="${H}" stroke="var(--line-2)"/><text x="${x(d) + 4}" y="${top - 12}" font-size="11" fill="var(--muted)">${m.getUTCMonth() === 0 ? m.getUTCFullYear() + ' 年 ' : ''}${m.getUTCMonth() + 1} 月</text>`);
+  }
+  // 公告道
+  g.push(`<text x="0" y="${top + 22}" font-size="12.5" font-weight="600" fill="var(--ink)">公告</text><line x1="${L}" x2="${L + W}" y1="${top + evH - 1}" y2="${top + evH - 1}" stroke="var(--line)"/>`);
+  ev.evidence.forEach((e, i) => {
+    if (e.times.disclosed > D) return;
+    const X = x(e.times.disclosed), up = i % 2 === 0;
+    g.push(`<g class="evm" data-ev="${e.id}" style="cursor:pointer"><line x1="${X}" x2="${X}" y1="${top + 8}" y2="${top + evH - 1}" stroke="var(--ink)"/>
+      <rect x="${X - 3.5}" y="${top + 4}" width="7" height="7" fill="var(--ink)" transform="rotate(45 ${X} ${top + 7.5})"/>
+      <text x="${X + 7}" y="${top + (up ? 22 : 40)}" font-size="11.5" fill="var(--ink-2)">${esc(e.doc_no)}</text></g>`);
+  });
+  (ev.conflicts || []).forEach((c) => {
+    if (!c.evidence_ids.every((id) => byId(ev, id).times.disclosed <= D)) return;
+    const ds = c.evidence_ids.map((id) => byId(ev, id).times.disclosed).sort();
+    const a = x(ds[0]), b = x(ds[ds.length - 1]), yy = top + evH - 9;
+    g.push(`<path d="M${a} ${yy - 5}V${yy}H${b}V${yy - 5}" fill="none" stroke="var(--amber)"/>
+      <text x="${(a + b) / 2}" y="${yy - 4}" font-size="11" text-anchor="middle" fill="var(--amber)"><title>${esc(c.text)}</title>证据冲突 · ${esc(c.kind)}</text>`);
+  });
+  // 指标道
+  lanes.forEach((c, li) => {
+    const y = top + evH + li * laneH;
+    g.push(`<text x="0" y="${y + 22}" font-size="12.5" font-weight="600" fill="var(--ink)">${esc(c.key)}</text>
+      <text x="0" y="${y + 38}" font-size="11" fill="var(--muted)">${c.versions.filter((v) => v.valid_from <= D).length || '尚无'}${c.versions.some((v) => v.valid_from <= D) ? ' 版' : ''}</text>
+      <line x1="${L}" x2="${L + W}" y1="${y + laneH}" y2="${y + laneH}" stroke="var(--line-2)"/>`);
+    let lastLabelEnd = -1;
+    c.versions.forEach((v) => {
+      if (v.valid_from > D) return;
+      const end = v.valid_to && v.valid_to <= D ? v.valid_to : (D < today ? D : t1);
+      const a = x(v.valid_from), b = Math.max(x(end), a + 2);
+      const active = !v.valid_to || D < v.valid_to;
+      const label = range(v);
+      const tw = label.length * 7.2 + 12;
+      const inside = b - a > tw;
+      g.push(`<g class="seg" data-ev="${v.evidence_id}" style="cursor:pointer"><title>${esc(v.quote)}</title>
+        <rect x="${a}" y="${y + 10}" width="${b - a}" height="20" fill="${active ? 'var(--accent)' : 'var(--past)'}"/>`);
+      if (inside) g.push(`<text x="${a + 7}" y="${y + 24.5}" font-size="12" fill="${active ? 'var(--accent-ink)' : 'var(--past-ink)'}" font-weight="${active ? 600 : 400}">${label}</text>`);
+      else { const lx = Math.max(a, lastLabelEnd + 6); g.push(`<text x="${lx}" y="${y + 45}" font-size="11" fill="var(--past-ink)">${label}</text>`); lastLabelEnd = lx + tw; }
+      g.push('</g>');
+    });
+  });
+  // 截至线
+  const cx = x(D);
+  g.push(`<line x1="${cx}" x2="${cx}" y1="${top - 26}" y2="${H}" stroke="var(--ink)" stroke-width="1.5"/>
+    <rect x="${cx - 46}" y="0" width="92" height="20" fill="var(--ink)"/><text x="${cx}" y="14" font-size="11.5" font-weight="600" text-anchor="middle" fill="var(--bg)">${D === today ? '今天 ' : ''}${md(D)}</text>`);
+  box.innerHTML = `<svg width="${Wt}" height="${H}" viewBox="0 0 ${Wt} ${H}" style="width:${Wt}px">${g.join('')}</svg>`;
+  const svg = box.querySelector('svg');
+  const pick = (ev2) => { const r = svg.getBoundingClientRect(); const px = ev2.clientX - r.left; if (px < L) return; let d = fromX(px, L, W); if (d > today) d = today; if (d < t0) d = t0; if (d !== D) { D = d; render(); } };
+  let drag = false;
+  svg.addEventListener('pointerdown', (e2) => { if (e2.target.closest('.seg,.evm')) return; drag = true; svg.setPointerCapture(e2.pointerId); pick(e2); });
+  svg.addEventListener('pointermove', (e2) => drag && pick(e2));
+  svg.addEventListener('pointerup', () => (drag = false));
+  svg.querySelectorAll('.seg,.evm').forEach((s) => s.addEventListener('click', () => { focus = s.dataset.ev; render(); document.getElementById('ev-' + focus)?.scrollIntoView({ behavior: 'smooth', block: 'center' }); }));
+}
+
+function render() {
+  const a = asOf(ev, D);
+  document.getElementById('head').innerHTML = `<div><div class="k">${esc(ev.type)} · ${esc(ev.period)}</div><h1>${esc(ev.name)} ${esc(ev.title)}</h1>
+    <p class="merge"><span>为什么算同一件事</span>${esc(ev.merge_reason || '未抽取')}</p></div>
+    <div class="st"><b>${esc(a.status)}</b>${a.last ? `${cnShort(a.last.times.disclosed)}起` : ''}</div>`;
+  chart();
+  document.getElementById('latest').style.visibility = D === today ? 'hidden' : 'visible';
+  const tm = (k, v, m) => `<span>${k} ${v ? `<i>${v}</i>` : `<i class="miss">${m}</i>`}</span>`;
+  document.getElementById('list').innerHTML = a.evidence.slice().reverse().map((x) => {
+    const t = x.times, tgt = x.relation.target ? byId(ev, x.relation.target) : null;
+    return `<div class="ev ${focus === x.id ? 'hl' : ''}" id="ev-${x.id}"><div class="d">${md(t.disclosed)}<small>${t.disclosed.slice(0, 4)}</small></div><div>
+      <div class="meta"><b>${esc(x.kind)}</b> · ${esc(x.source_tier)} 级 ${esc(x.source)} · ${esc(x.relation.type)}${tgt ? ' ' + esc(tgt.doc_no) : ''}</div>
+      <h3><a href="${esc(x.url)}" target="_blank" rel="noopener">${esc(x.doc_no)}　${esc(x.title)}</a></h3>
+      ${x.reason ? `<p>${esc(x.reason)}</p>` : `<p class="miss" style="display:inline-block">要点未抽取</p>`}
+      ${x.reason_quote ? `<div class="q">原文：“${esc(x.reason_quote)}”</div>` : ''}
+      <div class="times">${tm('发生', t.occurred && t.occurred.start.slice(0, 4) + ' 全年', '未抽取')}${tm('披露', t.disclosed, '未抽取')}${tm('落款', t.signed, '未抽取')}${tm('抓取', t.fetched && bj(t.fetched), '未记录')}${tm('更新', t.updated && bj(t.updated), '未记录')}</div>
+    </div></div>`;
+  }).join('') || `<p style="color:var(--muted)">${cn(D)} 之前没有相关公告。</p>`;
+  const C = [`<div class="date">截至 ${cn(D)}</div>`];
+  if (!a.last) C.push(`<div class="sub">还没有公告，没有可展示的结论。</div>`);
+  else {
+    C.push(`<div class="sub">有效的是 ${esc(a.last.doc_no)}（${cnShort(a.last.times.disclosed)}）这一版 · 共 ${a.evidence.length} 份公告</div>
+      <table>${a.claims.filter((c) => c.current).map((c) => { const e = byId(ev, c.current.evidence_id); const ch = c.seen.length > 1 ? change(c.seen[0], c.current) : '';
+        return `<tr><td>${esc(c.key)}<small>${ch ? '较首次预告' + ch : '首次预告'} · <a href="${esc(e.url)}" target="_blank" rel="noopener" title="${esc(c.current.quote)}">原文</a></small></td><td>${range(c.current)}</td></tr>`; }).join('')}</table>`);
+  }
+  a.conflicts.forEach((c) => C.push(`<div class="cf"><b>证据冲突 · ${esc(c.kind)}</b>${esc(c.text)}<div class="res">处理（推断）：${esc(c.resolution)}</div></div>`));
+  C.push(`<div class="pend">${(ev.pending || []).map((p) => `<div><span>${/接入/.test(p) ? '未接入' : '未并入'}</span>${esc(p)}</div>`).join('')}</div>`);
+  C.push(`<div class="foot">数字由大模型在本地离线抽取，引用已和公告原文逐字核对；网页只读结果文件，不调用模型。${esc(DATA.disclaimer)}</div>`);
+  document.getElementById('card').innerHTML = C.join('');
+}
+document.getElementById('latest').onclick = () => { D = today; render(); };
+addEventListener('resize', () => chart());
+tabs(); render();
+</script>
+</body>
+</html>

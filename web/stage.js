@@ -168,24 +168,39 @@ function chStatus() {
 }
 
 function chQA() {
-  const base = { id: 'qa', name: '摘要能核对', eyebrow: '05 · AI 摘要没法核对', title: '每一句回答都挂着证据', lede: '一般的 AI 摘要读起来很顺，但哪句是公告原话、哪句是它猜的，看不出来。' };
+  const base = { id: 'qa', name: '摘要能核对', eyebrow: '05 · AI 摘要没法核对', title: '每一句回答都挂着证据', lede: '一般的 AI 摘要读起来很顺，但哪句是公告原话、哪句是它猜的，看不出来；问“当时”的情况，它还会把后来的消息掺进去。' };
   if (!QA || !QA.items.length) {
     return { ...base, beats: [{ ms: 6000, go: { view: 'qa' }, log: [L('读取', `<code>${esc(PATHS.qa)}</code>`, '未生成', 'bad'), take('预置问答还没有生成。生成以后，这一段会回放一个问题从定位事件、取证据到逐句校验的全过程。')] }] };
   }
-  const q = QA.items.find((i) => Array.isArray(i.trace) && i.trace.length) || QA.items[0];
+  const future = (i) => (i.trace || []).flatMap((t) => t.excluded || []).filter((x) => /晚于|之后才/.test(x.reason || '')).length;
+  const items = QA.items.filter((i) => Array.isArray(i.trace));
+  const q = items.slice().sort((x, y) => future(y) - future(x))[0] || QA.items[0];
   const tr = Array.isArray(q.trace) ? q.trace : [];
   const sent = Array.isArray(q.answer) ? q.answer : [];
-  const kinds = {}; sent.forEach((s) => (kinds[s.kind] = (kinds[s.kind] || 0) + 1));
-  return {
-    ...base, title: q.question || base.title,
-    beats: [
-      { ms: 3800, go: { view: 'qa', qa: q.id, openTrace: false, ask: '' }, log: [L('问题', esc(q.question || ''), '预置'), L('时点', `截至 ${esc(q.as_of || '未记录')}`, '规则')] },
-      { ms: 5200 + tr.length * 700, go: { view: 'qa', qa: q.id, openTrace: true, selector: '.trace' },
-        log: [...tr.map((t, i) => L(`第${i + 1}步`, `<b>${esc(t.step || '')}</b> ${esc(t.detail || '')}${t.excluded && t.excluded.length ? `；排除 ${t.excluded.map((x) => esc(x.id) + '：' + esc(x.reason)).join('，')}` : ''}`,
-          t.checks && t.checks.length ? (t.checks.every((c) => c.pass) ? '校验通过' : '有未通过') : '', t.checks && t.checks.some((c) => !c.pass) ? 'bad' : 'ok')),
-        take(`回答共 ${sent.length} 句：${Object.entries(kinds).map(([k, n]) => `${esc(k)} ${n} 句`).join('，')}。每句挂证据编号，点编号看原文。这是离线生成的预置回答，网页里没有实时模型。`)] },
-    ],
-  };
+  const kinds = {}; sent.forEach((x) => (kinds[x.kind] = (kinds[x.kind] || 0) + 1));
+  const traceLog = [];
+  tr.forEach((t, i) => {
+    traceLog.push(L(`第${i + 1}步`, `<b>${esc(t.step || '')}</b> ${esc(t.detail || '')}${t.used && t.used.length ? `；用了 ${t.used.map(esc).join('、')}` : ''}`,
+      t.checks && t.checks.length ? (t.checks.every((c) => c.pass) ? '校验通过' : '有未通过') : '', t.checks && t.checks.some((c) => !c.pass) ? 'bad' : 'ok'));
+    (t.excluded || []).forEach((x) => traceLog.push(L('排除', `${esc(x.id)}：${esc(x.reason)}`, /晚于|之后才/.test(x.reason || '') ? '未来证据' : '不采用', /晚于|之后才/.test(x.reason || '') ? 'bad' : '')));
+  });
+  const nFuture = future(q);
+  const beats = [
+    { ms: 4000, go: { view: 'qa', qa: q.id, openTrace: false, ask: '' }, log: [L('问题', esc(q.question || ''), '预置'), L('时点', `截至 ${esc(q.as_of || '未记录')}${nFuture ? `，之后披露的 ${nFuture} 条证据一律不用` : ''}`, '规则')] },
+    { ms: 5600 + traceLog.length * 600, go: { view: 'qa', qa: q.id, openTrace: true, selector: '.trace' },
+      log: [...traceLog, take(`回答 ${sent.length} 句：${Object.entries(kinds).map(([k, n]) => `${esc(k)} ${n} 句`).join('，')}。每句挂证据编号，点编号看原文。${nFuture ? `回到 ${esc(q.as_of)} 问，${nFuture} 条更晚的公告被明确排除，不会“事后诸葛亮”。` : ''}`)] },
+  ];
+  // 买卖类问题：先说明不回答，再给已披露的事实
+  const no = QA.items.find((i) => (i.answer || []).some((x) => x.kind === '不回答'));
+  if (no) {
+    const refuse = no.answer.find((x) => x.kind === '不回答');
+    const facts = no.answer.filter((x) => x.kind !== '不回答');
+    beats.push({ ms: 6400, go: { view: 'qa', qa: no.id, openTrace: false },
+      log: [L('问题', esc(no.question || ''), '预置'), L('不回答', esc(refuse.text), '边界', 'bad'),
+        ...facts.map((x) => L(esc(x.kind || ''), esc(x.text), (x.evidence_ids || []).map(esc).join(' '))),
+        take('买卖和涨跌不回答，但已经披露的事实照样给出，并挂上证据。')] });
+  }
+  return { ...base, title: q.question || base.title, beats };
 }
 
 function chVerify() {
@@ -387,6 +402,18 @@ function renderEval(r) {
   return html;
 }
 
+async function addRecheck() {
+  const res = await load(PATHS.recheck);
+  const box = $('#audit-body');
+  if (!res.ok) { box.insertAdjacentHTML('beforeend', `<h3 class="sub">重抓比对</h3><div class="absent">重抓比对${miss('未生成')}：<code>${esc(PATHS.recheck)}</code>（${esc(res.error)}）</div>`); return; }
+  const r = res.data;
+  const items = Array.isArray(r.items) ? r.items : [];
+  box.insertAdjacentHTML('beforeend', `<h3 class="sub">重抓比对：公告发出后有没有被悄悄改过</h3>
+    ${kvs([['重抓的公告', esc(r.checked ?? items.length), '份'], ['正文有变化', esc(r.changed ?? items.filter((i) => i.changed).length), '份'], ['重抓失败', esc(r.failed ?? 0), '份'], r.checked_at && ['比对时间', esc((bj(r.checked_at) || '').replace('（北京时间）', '')), '北京时间']].filter(Boolean))}
+    ${r.note ? `<p class="lede">${esc(r.note)}</p>` : ''}
+    ${items.length ? `<details><summary class="lede" style="cursor:pointer">逐份看 ${items.length} 份公告的正文指纹</summary>${table(items.map((i) => ({ 事件: i.event_id, 证据: i.evidence_id, 首次指纹: i.old, 重抓指纹: i.new, 有变化: i.changed ? '是' : '否', 错误: i.error || '' })))}</details>` : ''}`);
+}
+
 async function fillReport(sel, path, name, fn) {
   const res = await load(path);
   let html;
@@ -398,7 +425,7 @@ async function fillReport(sel, path, name, fn) {
 // ---------------- 启动 ----------------
 async function init() {
   initStageTheme();
-  fillReport('#audit-body', PATHS.audit, '核查记录', renderAudit);
+  fillReport('#audit-body', PATHS.audit, '核查记录', renderAudit).then(addRecheck);
   fillReport('#eval-body', PATHS.report, '评测成绩单', renderEval);
   const res = await load(PATHS.events);
   if (!res.ok || !res.data || !Array.isArray(res.data.events) || !res.data.events.length) {

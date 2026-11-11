@@ -11,7 +11,7 @@ const $$ = (s, r = document) => [...r.querySelectorAll(s)];
 const embedded = new URLSearchParams(location.search).has('embed');
 if (embedded) document.documentElement.classList.add('embedded');
 
-let DATA = null, QA = null, QA_RES = null;
+let DATA = null, QA = null, QA_RES = null, RECHECK = null;
 const S = { view: 'event', eventId: null, D: null, claimMode: 'line', tiers: null, focus: null, qaId: null, ask: '', verifyText: '', openTrace: false };
 let readyResolve; const ready = new Promise((r) => (readyResolve = r));
 const listeners = [];
@@ -27,6 +27,8 @@ async function init() {
   DATA = res.data;
   QA_RES = await load(PATHS.qa);
   QA = QA_RES.ok && QA_RES.data && Array.isArray(QA_RES.data.items) ? QA_RES.data : null;
+  const rc = await load(PATHS.recheck);
+  RECHECK = rc.ok && rc.data && Array.isArray(rc.data.items) ? rc.data : null;
   $('#gen').textContent = DATA.generated_at ? '数据生成于 ' + bj(DATA.generated_at).replace('（北京时间）', ' 北京时间') : '数据生成时间未记录';
   fromHash();
   if (!S.eventId || !ev()) S.eventId = DATA.events[0] && DATA.events[0].id;
@@ -202,11 +204,25 @@ function claimLine(e, c, a) {
   const ch = lastTwo.length === 2 ? change(lastTwo[0], lastTwo[1]) : '';
   const vsFirst = seenNums.length > 2 ? change(seenNums[0], seenNums[seenNums.length - 1]) : '';
   const notes = c.seen.filter((v) => v.note).map((v) => `${md(v.valid_from)} 这一版：${esc(v.note)}`);
+  const gap = gapText(c, a);
   return `<div class="claim" data-claim="${esc(c.key)}"><h5>${esc(c.key)}<span>${c.seen.length ? c.seen.length + ' 版' : '尚未披露'}${ch ? '，最近一次' + ch : ''}</span>${/转/.test(vsFirst) && !/转/.test(ch) ? `<span class="flip">较第一版${vsFirst}</span>` : ''}${c.voided ? '<span class="flip">交易终止，数字作废</span>' : ''}</h5>
     ${rows || '<p class="empty" style="padding:0">这一天还没有任何版本。</p>'}
     ${seenNums.length ? `<div class="axis"><span></span><span></span><span class="cell">${ticks.map((n) => `<span class="${x(n) < 8 ? 'l' : x(n) > 92 ? 'r' : ''}" style="left:${x(n)}%">${n === 0 ? '0' : esc(human(n, c.unit))}</span>`).join('')}</span></div>` : ''}
+    ${gap}
     ${notes.length ? `<p class="vnote">${notes.join('<br>')}</p>` : ''}
     ${later > 0 ? `<p class="later">之后还有 ${later} 版，回放到更晚的日期可见。</p>` : ''}</div>`;
+}
+// 首次预告和现行数的差：只在实际数已经披露之后显示，免得回放时提前透露
+function gapText(c, a) {
+  const e = ev(); const raw = (e.claims || []).find((k) => k.key === c.key);
+  const g = raw && raw.forecast_gap;
+  if (!g || g.actual == null) return '';
+  const hit = (raw.versions || []).find((v) => v.low === g.actual || v.high === g.actual);
+  if (!hit || hit.valid_from > a.D) return '';
+  const u = g.unit || c.unit;
+  const first = rangeText({ low: g.first_low, high: g.first_high }, u);
+  const where = g.within_first_range ? '落在首次预告区间内' : `不在首次预告区间内，离较近的一端差 ${esc(human(g.gap_to_nearer_bound, u))}`;
+  return `<p class="gap"><b>首次预告和现行数</b>首次 ${esc(first)}，现行 ${esc(human(g.actual, u))}（${md(hit.valid_from)}）：${where}${g.revisions != null ? `；中间更正 ${esc(g.revisions)} 次` : ''}。<span class="muted">${esc(g.note || '只陈列已发生的事实。')}</span></p>`;
 }
 function claimTable(e, c, a) {
   return `<div class="claim" data-claim="${esc(c.key)}"><h5>${esc(c.key)}<span>单位：${esc(c.unit || '未记录')}</span></h5><div class="tblwrap"><table class="vt">
@@ -222,7 +238,7 @@ function claimTable(e, c, a) {
       else if (v.valid_to && v.valid_to <= a.D) st = `${md(v.valid_to)} 被 ${esc(docName(by))} 取代`;
       const num = v.low == null && v.high == null ? '没给数字' : v.low === v.high ? exact(v.low, '') : `${exact(v.low, '')} ~ ${exact(v.high, '')}`;
       return `<tr class="${isCur ? 'cur' : ''}"><td>第 ${esc(v.v ?? '')} 版</td><td class="m">${esc(v.valid_from)}</td><td>${esc(docName(x))}${ref(v.evidence_id)}</td><td class="num ${isCur ? '' : 'old'}">${num}</td><td>${val(v.basis)}</td><td>${st}</td></tr>`;
-    }).join('')}</tbody></table></div></div>`;
+    }).join('')}</tbody></table></div>${gapText(c, a)}</div>`;
 }
 
 function secEvidence(e, a, tiersHere) {
@@ -257,9 +273,21 @@ function item(e, x, a) {
         <span>披露<i>${esc(timeLine(x) || '') || miss()}</i></span>
         ${x.src === 'ann' ? `<span>落款<i>${t.signed ? esc(t.signed) : miss()}</i></span>` : ''}
         <span>抓取<i>${bj(t.fetched) ? esc(bj(t.fetched)) : miss('未记录')}</i></span>
-        <span>更新<i>${t.updated ? esc(bj(t.updated) || t.updated) : miss('来源未提供')}</i></span>
+        <span>更新<i>${updatedText(e, x)}</i></span>
+        ${x.snapshot && x.snapshot.sha256_16 ? `<span title="${esc((x.snapshot.of || '') + '的 SHA-256 前 16 位；' + (bj(x.snapshot.taken_at) || '') + ' 首次抓取')}">指纹<i class="m">${esc(x.snapshot.sha256_16)}</i></span>` : ''}
       </div>
     </div></li>`;
+}
+
+// 更新时间：来源自己不提供；有重抓比对记录时，写比对结果
+function updatedText(e, x) {
+  const t = x.times || {};
+  if (t.updated) return esc(bj(t.updated) || t.updated);
+  const r = RECHECK && RECHECK.items.find((i) => i.event_id === e.id && i.evidence_id === x.id);
+  if (!r) return miss('来源未提供');
+  const at = (bj(RECHECK.checked_at) || '').replace('（北京时间）', '');
+  if (r.error) return `${esc(at)} 重抓失败：${esc(r.error)}`;
+  return r.changed ? `<b>${esc(at)} 重抓发现正文有变化</b>` : `${esc(at)} 重抓比对，正文未变`;
 }
 
 function secPrices(e, a) {
@@ -319,7 +347,8 @@ function answer(q) {
   const tr = Array.isArray(q.trace) ? q.trace : null;
   return `<div class="answer" id="answer" data-event="${esc(q.event_id || '')}"><p class="qq">${esc(q.question)}</p>
     <div class="meta">${e ? esc(e.name) + ' · ' : ''}截至 ${q.as_of ? esc(q.as_of) : miss('未记录')} · 离线生成，逐句挂证据</div>
-    ${ans.length ? `<ol class="sent">${ans.map((s) => `<li><span class="kind k-${esc(s.kind)}">${s.kind ? esc(s.kind) : miss('未标')}</span><span>${esc(s.text)}${refs(s.evidence_ids)}</span></li>`).join('')}</ol>` : `<p>${miss('回答未生成')}</p>`}
+    ${ans.length ? `<ol class="sent">${ans.map((s) => `<li class="k-${esc(s.kind)}"><span class="kind k-${esc(s.kind)}">${s.kind ? esc(s.kind) : miss('未标')}</span><span>${esc(s.text)}${refs(s.evidence_ids)}</span></li>`).join('')}</ol>` : `<p>${miss('回答未生成')}</p>`}
+    <p class="legend"><b>事实</b>公告、交易所文件里有　<b>推断</b>写明依据的判断　<b>不确定</b>现有证据答不了　<b>不回答</b>超出边界（买卖建议、涨跌预测）</p>
     <details class="trace" ${S.openTrace ? 'open' : ''}><summary>它是怎么得出这个回答的（${tr ? tr.length + ' 步' : '未生成'}）</summary>
       ${tr ? `<ol>${tr.map((t) => `<li><b>${esc(t.step)}</b> ${esc(t.detail || '')}
         ${t.used && t.used.length ? `<div class="x">用了：${refs(t.used)}</div>` : ''}

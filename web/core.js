@@ -6,6 +6,7 @@ export const PATHS = {
   qa: 'data/qa.json',
   audit: 'data/audit.json',
   report: 'eval/report.json',
+  recheck: 'data/recheck.json',
 };
 
 // ---------- 读文件 ----------

@@ -209,3 +209,14 @@ export function fatal(el, res, what = '事件数据') {
 // 证据编号 → 可点的引用标记
 export const ref = (id) => `<button class="ref" data-ref="${esc(id)}" type="button">${esc(id)}</button>`;
 export const refs = (ids) => (ids && ids.length ? ids.map(ref).join('') : '');
+
+// 证据的来源类型（给人看的）：公告 / 媒体转述 / 评论 / 推测 / 传闻
+export function srcType(x) {
+  if (!x) return '证据';
+  if (x.kind === '传闻') return '传闻';
+  if (x.src === 'ann') return '公告';
+  if (x.kind === '观点') return '评论';
+  if (x.kind === '推测' || x.src === 'anomaly') return '推测';
+  if (x.src === 'news' && x.kind === '事实') return '媒体转述';
+  return SRC_NAME[x.src] || '证据';
+}

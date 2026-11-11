@@ -1,16 +1,18 @@
 // 演示页：左边 iPad 里跑工作台（workbench.html?embed），右边回放后台处理过程。
 // 每一段的例子都从数据里挑，不写死事件编号；数据变了，演示跟着变。
 import {
-  PATHS, load, esc, miss, md, rangeText, change, evidenceById, disclosedOf, today, docName, bj,
+  PATHS, load, esc, miss, md, rangeText, change, evidenceById, disclosedOf, today, docName, bj, asOf, srcType, timeLine,
 } from './core.js';
+import { renderHighlights, renderEvalSection, renderProcess } from './sections.js';
 import { verify, describe, exampleSentences } from './verify.js';
-import { loadText, locate, diffDocs, charDiff } from './source.js';
+import { loadText, locate, diffDocs, charDiff, norm } from './source.js';
 
 const $ = (s, r = document) => r.querySelector(s);
 const $$ = (s, r = document) => [...r.querySelectorAll(s)];
 const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 let DATA, QA, WB, CH = [];
+let AUDIT = null, RECHECK = null, REPORT = null, PROCESS = null;
 const P = { ci: 0, bi: 0, auto: false, timer: null, mode: 'idle', chapterOnly: false, t0: 0 };
 
 // ---------------- 主题：外层默认深色，切换时 iPad 一起切 ----------------
@@ -47,7 +49,7 @@ function overview() {
   const concl = ev.reduce((s, e) => s + (e.conclusions || []).length, 0);
   const first = ev[0];
   return {
-    id: 'intro', name: '总览', eyebrow: '00 · 先看全貌',
+    id: 'intro', name: '怎么做的', eyebrow: '00 · 先看全貌',
     title: '同一件事，被说了几遍，改了几次',
     lede: `收录了 <b>${ev.length}</b> 个真实事件。一件事会以公告、快讯、评论、研报、异动解读的形式反复出现，数字还会被公司自己改。工作台是用户看到的页面；“后台做了什么”回放这些内容是怎么来的。`,
     beats: [{
@@ -64,6 +66,20 @@ function overview() {
   };
 }
 
+// 开场：先把五个痛点抛出来，每个配一个真实例子（例子取自后面各段选中的事件）
+function chPains(chs) {
+  const P5 = [['expire', '消息会过期，但没人告诉你'], ['retell', '二手转述和一手对不上'], ['premise', '观点建立在会失效的前提上'], ['status', '状态被说粗了'], ['qa', 'AI 摘要没法核对']];
+  const lines = P5.map(([id, t], i) => { const c = chs.find((k) => k && k.id === id); return { pain: true, n: i + 1, t, ex: c && c.pain ? c.pain : '' }; });
+  const ex = chs.find((k) => k && k.id === 'expire');
+  const go = ex ? ex.beats[ex.beats.length - (ex.beats.length > 1 ? 2 : 1)].go : { view: 'event', event: DATA.events[0].id, date: today(DATA), top: true };
+  return {
+    id: 'pains', name: '痛点', eyebrow: '00 · 先说问题',
+    title: '看到一条消息，你很难知道它还算不算数',
+    lede: '一家公司的同一件事，会在几个月里被公告、快讯、评论、研报反复说，数字还会被公司自己改。下面五个问题，都是在这几个真实事件里撞到的。',
+    beats: [{ ms: 11000, go: { ...go, date: today(DATA) }, log: [...lines, take('后面每一段解决其中一个。左边是产品本身，右边回放这一步在后台是怎么做出来的。')] }],
+  };
+}
+
 function chExpire() {
   let best = null;
   DATA.events.forEach((e) => (e.claims || []).forEach((c) => {
@@ -77,6 +93,7 @@ function chExpire() {
   const flips = (e.claims || []).map((k) => { const ns = (k.versions || []).filter((v) => v.low != null); return ns.length > 1 && /转/.test(change(ns[0], ns[ns.length - 1])) ? `${k.key}${change(ns[0], ns[ns.length - 1])}` : ''; }).filter(Boolean);
   return {
     id: 'expire', name: '消息会过期', eyebrow: '01 · 消息会过期，但没人告诉你',
+    pain: `${esc(e.name)}的${esc(c.key)}有 ${vs.length} 个版本：${esc(rangeText(vs[0], unit))}（${md(vs[0].valid_from)}）→ ${esc(rangeText(vs[vs.length - 1], unit))}（${md(vs[vs.length - 1].valid_from)}）。早先的快讯上没有“已被更正”的标记。`,
     title: `${e.name}的${c.key}，前后改了 ${vs.length - 1} 次`,
     lede: `第一次看到的数字，几个月后可能已经不算数了。公司发了更正，但转载过的旧消息不会自己更新。`,
     beats: vs.map((v, i) => {
@@ -159,6 +176,7 @@ function chRetell() {
   const at = c.first_seen || (c.evidence_ids || []).map((id) => disclosedOf(evidenceById(e, id))).sort().pop();
   return {
     id: 'retell', name: '转述对不上', eyebrow: '02 · 二手转述和一手对不上',
+    pain: `${esc(e.name)}：${esc(c.text || c.kind || '')}`,
     title: `${e.name}：${c.kind || '说法不一致'}`,
     lede: '快讯、评论写的数字和日期，跟公告原文不一定一样。差得不多，就更难发现。',
     beats: [
@@ -180,6 +198,7 @@ function chPremise() {
   const same = (e.evidence || []).filter((y) => y.outdated_by === x.outdated_by && y.id !== x.id);
   return {
     id: 'premise', name: '前提会失效', eyebrow: '03 · 观点建立在会失效的前提上',
+    pain: `${esc(x.source || '')}以“${esc(x.quote || x.title || '')}”为题（${md(disclosedOf(x))}），${md(disclosedOf(by))} ${esc(docName(by))}之后，这个前提不成立了。`,
     title: `“${x.quote || x.title}”之后发生了什么`,
     lede: '研报和评论的判断，往往默认事情会按原计划走。前提变了，观点还挂在网上，没人回头标注。',
     beats: [
@@ -198,9 +217,12 @@ function chPremise() {
 function chStatus() {
   let pick = null;
   DATA.events.forEach((e) => {
-    const c = (e.conflicts || []).find((k) => /状态/.test(k.kind || ''));
+    const cs = (e.conflicts || []).filter((k) => /状态/.test(k.kind || ''));
+    // 优先选媒体说法和公告对不上的那种（这正是“说粗了”）
+    const media = (k) => (k.quotes || []).some((q) => { const x = evidenceById(e, q.evidence_id); return x && x.source_tier && x.source_tier !== 'A'; });
+    const c = cs.find(media) || cs[0];
     const h = e.status_history || [];
-    const score = (c ? 10 : 0) + h.length;
+    const score = (c ? 10 : 0) + (c && media(c) ? 20 : 0) + h.length;
     if (h.length >= 3 && (!pick || score > pick.score)) pick = { e, c, h, score };
   });
   if (!pick) return null;
@@ -209,6 +231,7 @@ function chStatus() {
   const media = c ? (c.quotes || []).map((q) => ({ q, x: evidenceById(e, q.evidence_id) })).find((o) => o.x && o.x.source_tier !== 'A') : null;
   return {
     id: 'status', name: '状态说粗了', eyebrow: '04 · 状态被说粗了',
+    pain: `${esc(e.name)}：${tail.map((s) => `${md(s.at)} ${esc(s.status)}`).join('，')}${media ? `；媒体 ${md(disclosedOf(media.x))} 的标题已经写“${esc(media.q.quote)}”` : ''}。`,
     title: tail.map((s) => s.status).join(' → '),
     lede: '“审核未通过”不等于“交易终止”。标题为了好读会把几步并成一步，可中间那几天的状态完全不同。',
     beats: tail.map((s, i) => {
@@ -223,7 +246,7 @@ function chStatus() {
 }
 
 function chQA() {
-  const base = { id: 'qa', name: '摘要能核对', eyebrow: '05 · AI 摘要没法核对', title: '每一句回答都挂着证据', lede: '一般的 AI 摘要读起来很顺，但哪句是公告原话、哪句是它猜的，看不出来；问“当时”的情况，它还会把后来的消息掺进去。' };
+  const base = { id: 'qa', name: '摘要能核对', eyebrow: '05 · AI 摘要没法核对', pain: '一段总结里哪句来自公告、哪句是模型补的，看不出来；问“当时”的情况，还可能掺进后来的消息。', title: '每一句回答都挂着证据', lede: '一般的 AI 摘要读起来很顺，但哪句是公告原话、哪句是它猜的，看不出来；问“当时”的情况，它还会把后来的消息掺进去。' };
   if (!QA || !QA.items.length) {
     return { ...base, beats: [{ ms: 6000, go: { view: 'qa' }, log: [L('读取', `<code>${esc(PATHS.qa)}</code>`, '未生成', 'bad'), take('预置问答还没有生成。生成以后，这一段会回放一个问题从定位事件、取证据到逐句校验的全过程。')] }] };
   }
@@ -308,6 +331,7 @@ function setMode() {
 function line(o) {
   if (!o) return '';
   if (o.take) return `<li class="take">${o.t}</li>`;
+  if (o.pain) return `<li class="pain"><span class="pn">${o.n}</span><span class="t"><b>${esc(o.t)}</b>${o.ex ? `<small>${o.ex}</small>` : ''}</span></li>`;
   return `<li><span class="k">${esc(o.k)}</span><span class="t">${o.t}</span><span class="r ${o.cls || ''}">${o.r || ''}</span></li>`;
 }
 let stagger = [];
@@ -477,24 +501,114 @@ async function fillReport(sel, path, name, fn) {
   $(sel).innerHTML = html;
 }
 
+// ---------------- 你点一下，右边讲这一步后台是怎么来的 ----------------
+const metric = (name) => { const r = REPORT; if (!r) return null; const sum = r.summary_by_split ? Object.entries(r.summary_by_split).map(([k, v]) => [k, (v.summary || {})[name]]).filter(([, o]) => o && o.den > 0) : []; return sum.length ? sum.map(([k, o]) => `${k} ${o.num}/${o.den}`).join('，') : null; };
+const evById = (id) => DATA.events.find((e) => e.id === id);
+async function explain(a) {
+  const out = { eyebrow: '你在操作 · 这一步对应的离线记录', title: '', lede: '', log: [], src: '回放离线处理记录' };
+  const e = a.event ? evById(a.event) : null;
+  if (a.type === 'source' || (a.type === 'nav' && a.focus)) {
+    const x = e && evidenceById(e, a.evidence || a.focus);
+    if (!x) return null;
+    const q = a.quote || x.quote || '';
+    out.title = `${srcType(x)}：${evName(e, x)}`;
+    out.lede = `${esc(x.title || '')}（${esc(timeLine(x) || '')}）`;
+    out.log.push(L('分级', `${esc(srcType(x))}，${esc(x.source_tier || '?')} 级（${esc(x.tier_note || '')}），权重 ${esc(x.weight ?? '—')}`, '规则'));
+    out.log.push(L('抽取', `模型把这条读成“${esc(x.kind || '未分类')}”，并给出引用 <q>${esc(q)}</q>`, '模型·离线'));
+    const checks = AUDIT && Array.isArray(AUDIT.checks) ? AUDIT.checks.filter((c) => c.event_id === e.id && c.evidence_id === x.id) : [];
+    const hit = checks.find((c) => norm(c.quote) === norm(q)) || checks[0];
+    out.log.push(hit ? L("校验", `引用和原文逐字比对（核查记录里的「${esc(hit.where)}」）`, hit.pass ? '通过' : '未通过', hit.pass ? 'ok' : 'bad') : L('校验', '核查记录里没有这条的单独记录', AUDIT ? '未记录' : '未生成', 'bad'));
+    const rc = RECHECK && Array.isArray(RECHECK.items) ? RECHECK.items.find((r) => r.event_id === e.id && r.evidence_id === x.id) : null;
+    if (rc) out.log.push(L('重抓', `正文指纹 <code>${esc(rc.old)}</code> → <code>${esc(rc.new)}</code>`, rc.changed ? '有变化' : '未变', rc.changed ? 'bad' : 'ok'));
+    out.log.push(x.src === 'ann' ? L('定位', '浏览器里两边去掉空白后逐字定位，黄底是原句', '浏览器') : L('全文', '新闻没有全文入库，只有标题、摘要里的这一句和链接', ''));
+    const m = metric('引用挂对证据'); if (m) out.log.push(L('评测', `引用挂对证据：${esc(m)}`, '评测'));
+  } else if (a.type === 'diff') {
+    const A = e && evidenceById(e, a.a), B = e && evidenceById(e, a.b);
+    if (!A || !B) return null;
+    out.title = `${docName(A)} → ${docName(B)}`; out.src = '浏览器里实时算';
+    const [ta, tb] = await Promise.all([loadText(A.ref), loadText(B.ref)]);
+    const df = ta.ok && tb.ok ? diffDocs(ta.paras, tb.paras) : null;
+    out.log.push(L('读取', `两份公告正文（巨潮 PDF 转出的文本）`, '规则'));
+    out.log.push(df ? L('对比', `${df.same} 句完全相同；${df.edited} 句改了内容，新增 ${df.added} 句，删去 ${df.removed} 句`, '浏览器') : L('对比', '正文没读到，没法对比', '未读到', 'bad'));
+    out.log.push(L('方法', '相同的句子只计数；其余按相似度配对，整个数字算一个单位来比', '浏览器'));
+  } else if (a.type === 'date' || a.type === 'rev') {
+    if (!e) return null;
+    const s2 = asOf(e, a.date || today(DATA));
+    const later = (e.evidence || []).length - s2.evidence.length;
+    out.title = `回放到 ${a.date}`; out.src = '浏览器里按日期筛选';
+    out.log.push(L('筛选', `只用 ${esc(a.date)} 当天及之前披露的 ${s2.evidence.length} 条证据${later ? `，之后的 ${later} 条不参与` : ''}`, '浏览器'));
+    out.log.push(s2.status ? L('状态', `${esc(s2.status.status)}（${esc(s2.status.code || '')}，${md(s2.status.at)} 起，依据 ${esc(docName(evidenceById(e, s2.status.evidence_id)))}）`, '规则') : L('状态', '这一天还没有状态', ''));
+    out.log.push(s2.conclusion ? L('结论', `用的是 ${esc(s2.conclusion.as_of)} 写的那一版，因为 ${esc(docName(evidenceById(e, s2.conclusion.evidence_id)))}；全事件共 ${(e.conclusions || []).length} 版`, '模型·离线') : L('结论', '这一天还没有结论', ''));
+    if (AUDIT && AUDIT.summary) out.log.push(L('校验', `结论和问答不引用截至日之后的证据：构建时检查 ${esc(AUDIT.summary.qa_evidence_time_checks ?? '—')} 次`, '规则'));
+    const m = metric('回放未用到未来证据'); if (m) out.log.push(L('评测', `回放未用到未来证据：${esc(m)}`, '评测'));
+  } else if (a.type === 'nav' || a.type === 'view') {
+    if (a.type === 'view' && a.view !== 'event') { out.title = a.view === 'qa' ? '问答' : '消息查验'; out.log.push(L('说明', a.view === 'qa' ? '预置问题由模型离线回答，每句挂证据，推理过程留了 trace；页面不实时调用模型' : '读数字和单位，和已收录的每一版比对，全部在浏览器里算', a.view === 'qa' ? '模型·离线' : '浏览器')); return out; }
+    if (!e) return null;
+    out.title = `${e.name} · ${e.title || ''}`;
+    out.log.push(L('合并', `判断这些证据是同一件事：${esc(e.merge_reason || '理由未抽取')}`, '模型·离线'));
+    if (e.first_source) out.log.push(L('出处', `最早的公司公告 ${esc(e.first_source.doc_no || '')}（${esc(e.first_source.disclosed || '')}）${(e.first_source.earlier_media || []).length ? `；更早的媒体转述 ${e.first_source.earlier_media.map((m2) => esc(m2.source) + ' ' + esc(m2.published_at)).join('、')}` : ''}`, '规则'));
+    if (e.evidence_mix && e.evidence_mix.counts) out.log.push(L('构成', Object.entries(e.evidence_mix.counts).map(([k, v]) => `${esc(k)} ${esc(v)}`).join(' · '), '规则'));
+    const m = metric('该合并的合并了'); if (m) out.log.push(L('评测', `该合并的合并了：${esc(m)}`, '评测'));
+  } else if (a.type === 'qa') {
+    const q = QA && QA.items.find((i) => i.id === a.id);
+    if (!q) return null;
+    out.title = q.question;
+    out.log.push(L('时点', `截至 ${esc(q.as_of || '未记录')}`, '规则'));
+    (q.trace || []).forEach((t, i) => { out.log.push(L(`第${i + 1}步`, `<b>${esc(t.step || '')}</b> ${esc(t.detail || '')}`, t.checks && t.checks.length ? (t.checks.every((c) => c.pass) ? '校验通过' : '有未通过') : '模型·离线', t.checks && t.checks.some((c) => !c.pass) ? 'bad' : '')); (t.excluded || []).forEach((x) => out.log.push(L('排除', `${esc(x.id)}：${esc(x.reason)}`, /晚于|之后才/.test(x.reason || '') ? '未来证据' : '不采用'))); });
+  } else if (a.type === 'verify' || a.type === 'ask') {
+    const r = verify(a.text || '', DATA);
+    out.title = `“${a.text}”`; out.src = '浏览器里实时算';
+    r.steps.forEach((st) => out.log.push(L(st.t.slice(0, 4), esc(st.d), '浏览器')));
+    if (a.type === 'ask') out.log.push(L('问答', '再按关键词找最接近的预置问题；都对不上就直说，不实时生成', '浏览器'));
+  } else if (a.type === 'glossary') {
+    const g = DATA.glossary;
+    out.title = '口径说明';
+    out.log.push(g ? L('口径', `${(g.sections || []).length} 节，更新于 ${esc(g.updated || '未记录')}；页面上的状态、类型、级别都用这里的词`, '规则') : L('口径', '口径说明未生成', '未生成', 'bad'));
+  } else return null;
+  return out;
+}
+let lastExplain = 0;
+async function onUser(a) {
+  const tok = ++lastExplain;
+  if (P.mode === 'auto' || P.mode === 'chapter') stop('hand');
+  else if (P.mode !== 'hand') { P.mode = 'hand'; setMode(); }
+  const x = await explain(a);
+  if (!x || tok !== lastExplain) return;
+  $('#ai-eyebrow').textContent = x.eyebrow;
+  $('#ai-title').textContent = x.title;
+  $('#ai-lede').innerHTML = x.lede || '';
+  $('#loghead-r').textContent = x.src;
+  $('#log').innerHTML = x.log.map(line).join('');
+}
+
 // ---------------- 启动 ----------------
 async function init() {
   initStageTheme();
   fillReport('#audit-body', PATHS.audit, '核查记录', renderAudit).then(addRecheck);
-  fillReport('#eval-body', PATHS.report, '评测成绩单', renderEval);
+  // 评测和过程两段不依赖事件数据，先画
+  const [rp, pr] = await Promise.all([load(PATHS.report), load('data/process.json')]);
+  REPORT = rp.ok ? rp.data : null; PROCESS = pr.ok ? pr.data : null;
+  renderProcess($('#ai-body'), pr);
+  renderEvalSection($('#eval-body'), rp, null);
   const res = await load(PATHS.events);
   if (!res.ok || !res.data || !Array.isArray(res.data.events) || !res.data.events.length) {
     const r = res.ok ? { path: res.path, error: '文件里没有事件' } : res;
     $('#stage').innerHTML = `<div class="fatal" role="alert"><h2>事件数据没有加载成功</h2><p>文件：<code>${esc(r.path)}</code></p><p>原因：${esc(r.error)}</p><p>演示不会用假数据顶替。</p></div>`;
     $('#stage').style.display = 'block'; $('.rail').hidden = true;
+    $('#hl-body').innerHTML = `<div class="absent">事件数据没有加载成功，亮点里的数字无法计算。</div>`;
     return;
   }
   DATA = res.data;
+  const [au, rc, qa0] = await Promise.all([load(PATHS.audit), load(PATHS.recheck), load(PATHS.qa)]);
+  AUDIT = au.ok ? au.data : null; RECHECK = rc.ok ? rc.data : null;
+  renderHighlights($('#hl-body'), { events: DATA, audit: au, recheck: rc, qa: qa0 });
+  renderEvalSection($('#eval-body'), rp, DATA);
   const q = await load(PATHS.qa);
   QA = q.ok && q.data && Array.isArray(q.data.items) ? q.data : null;
   $('#gen').textContent = DATA.generated_at ? `数据 ${bj(DATA.generated_at).replace('（北京时间）', ' 北京时间')}` : '';
   const ex = chExpire();
-  CH = [overview(), ex, await chSource(), chRetell(), chPremise(), chStatus(), chQA(), chVerify(), chEnd()].filter(Boolean);
+  const body = [overview(), ex, await chSource(), chRetell(), chPremise(), chStatus(), chQA(), chVerify(), chEnd()].filter(Boolean);
+  CH = [chPains(body), ...body];
   CH.forEach((c, i) => { c.eyebrow = c.eyebrow.replace(/^[0-9½]+/, String(i).padStart(2, '0')); });
   renderRail();
 
@@ -507,6 +621,7 @@ async function init() {
   // 一碰就交给人
   const hand = () => { if (P.mode === 'auto' || P.mode === 'chapter') stop('hand'); };
   ['pointerdown', 'keydown', 'wheel'].forEach((t) => frame.contentDocument.addEventListener(t, hand, { passive: true }));
+  if (WB.onAction) WB.onAction((a) => onUser(a));
   $('#steps').addEventListener('click', (e) => { const b = e.target.closest('[data-ch]'); if (!b) return; stop('chapter'); P.mode = 'chapter'; show(+b.dataset.ch, 0); schedule(); });
   $('#prev').addEventListener('click', () => { const was = P.mode; stop('paused'); if (P.bi > 0) show(P.ci, P.bi - 1, true); else if (P.ci > 0) show(P.ci - 1, 0); if (was === 'auto') { P.mode = 'auto'; schedule(); setMode(); } });
   $('#next').addEventListener('click', () => { const was = P.mode; stop('paused'); if (P.ci + 1 < CH.length) show(P.ci + 1, 0); if (was === 'auto') { P.mode = 'auto'; schedule(); setMode(); } });

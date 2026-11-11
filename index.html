@@ -11,10 +11,10 @@
 <header class="bar">
   <b>事件证据时间线<small>同花顺 AI 产品经理笔试作品</small></b>
   <nav>
-    <a href="#demo"><i>01</i>演示</a>
-    <a href="#audit"><i>02</i>核查记录</a>
-    <a href="#eval"><i>03</i>评测成绩单</a>
-    <a href="#how"><i>04</i>流程与边界</a>
+    <a href="#demo"><i>01</i>痛点与演示</a>
+    <a href="#highlights"><i>02</i>亮点</a>
+    <a href="#eval"><i>03</i>评测</a>
+    <a href="#ai"><i>04</i>我怎么用 AI 的</a>
   </nav>
   <div class="ext">
     <a href="workbench.html">工作台</a>
@@ -37,7 +37,7 @@
         <div class="eyebrow" id="ai-eyebrow">正在读取数据</div>
         <h2 id="ai-title"></h2>
         <p class="lede" id="ai-lede"></p>
-        <div class="loghead"><b>后台做了什么</b><span>离线处理记录的回放</span></div>
+        <div class="loghead"><b>后台做了什么</b><span id="loghead-r">回放离线处理记录</span></div>
         <ol class="log" id="log" aria-live="polite"></ol>
         <p class="honest">抽取和问答由大模型在本地离线完成，结果校验后写进数据文件；网页只读文件，不调用模型（静态托管放不了模型密钥）。“查一句话”是浏览器里的规则比对。</p>
       </div>
@@ -53,30 +53,31 @@
     </div>
   </section>
 
-  <section class="sec" id="audit">
-    <div class="no">02 / 核查记录</div>
-    <h2>每次生成数据，规则都把模型的输出核一遍</h2>
-    <p class="lede">模型给出的每条引用，要拿回公告正文或报道摘要逐字匹配；结论不能引用"截至日"之后才出现的证据。不通过的不进数据文件。下面是最近一次构建的记录。</p>
-    <div id="audit-body"><p class="lede">读取中…</p></div>
+  <section class="sec" id="highlights">
+    <div class="no">02 / 亮点</div>
+    <h2>每一步是规则还是模型做的，核了什么，都留了记录</h2>
+    <p class="lede">模型只做读不懂就做不准的部分：抽说法、抽数字、判断是不是同一件事、写分时点结论。抓取、分级、状态、时间和全部校验都是规则；任何一条引用对不上原文，这次就不生成数据文件。</p>
+    <div id="hl-body"><p class="lede">读取中…</p></div>
+    <details class="more"><summary>逐条看核查记录和重抓比对</summary><div id="audit-body"></div></details>
   </section>
 
   <section class="sec" id="eval">
-    <div class="no">03 / 评测成绩单</div>
-    <h2>抽得准不准，用人工标注和陷阱用例来量</h2>
-    <p class="lede">每项指标都给分子分母；没拦住的陷阱也列出来。</p>
+    <div class="no">03 / 评测</div>
+    <h2>抽得准不准：独立标注的标准答案，加上故意改坏数据的陷阱</h2>
+    <p class="lede">标准答案由另一个窗口在不看抽取结果的情况下标注，是模型标的，不是人工标的；能逐字核对原文的部分已经自查。陷阱用例是把数据故意改坏，看管线拦不拦得住。下面的数字都直接读 <code>eval/report.json</code>。</p>
     <div id="eval-body"><p class="lede">读取中…</p></div>
   </section>
 
+  <section class="sec" id="ai">
+    <div class="no">04 / 我怎么用 AI 的</div>
+    <h2>一个主窗口协调，几个窗口同时做，用 CLAUDE.md 对齐进展</h2>
+    <p class="lede">范围、取舍和每个关键决定由本人定；AI 负责执行，做错的地方也照实列出。内容读 <code>data/process.json</code>。</p>
+    <div id="ai-body"><p class="lede">读取中…</p></div>
+  </section>
+
   <section class="sec" id="how">
-    <div class="no">04 / 流程与边界</div>
-    <h2>模型只做读不懂就做不准的部分</h2>
-    <ol class="flow">
-      <li><i>规则</i><b>抓取</b>巨潮公告、扶摇新闻和异动解读、日 K 线。记下披露时间和抓取时间。</li>
-      <li><i>模型 · 离线</i><b>抽取</b>说法、数字、类型（事实/观点/推测/传闻）、谁更正了谁，每条带原文引用。</li>
-      <li><i>规则</i><b>校验</b>引用逐字匹配原文；时序检查；合规词检查。不通过就不生成文件。</li>
-      <li><i>规则</i><b>组装</b>来源分级和权重、状态、版本有效期、冲突、分时点结论。</li>
-      <li><i>网页</i><b>只读</b>页面读 data/events.json，回放、查验都在浏览器里算。</li>
-    </ol>
+    <div class="no">边界</div>
+    <h2>网页不实时调模型，也不给买卖建议</h2>
     <div class="cols">
       <div>
         <h3 class="sub">为什么网页不实时调模型</h3>

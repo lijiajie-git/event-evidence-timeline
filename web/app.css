@@ -346,6 +346,43 @@ mark.hit { background: rgba(255, 196, 0, .38); color: inherit; padding: 1px 0; b
 mark.was { background: var(--warn-soft); color: var(--ink); box-shadow: inset 0 -2px 0 var(--warn); padding: 0 1px; }
 mark.now { background: var(--cur-soft); color: var(--ink); box-shadow: inset 0 -2px 0 var(--cur); padding: 0 1px; }
 
+/* 来源类型标签、口径入口 */
+.stag { font-size: 11.5px; line-height: 1; color: var(--cur); background: var(--cur-soft); border-radius: 3px; padding: 3px 6px; margin-left: 5px; vertical-align: 1px; white-space: nowrap; }
+.stag:hover { background: var(--cur); color: var(--cur-ink); }
+.stag.inline { margin: 0 4px 0 2px; }
+.gl { width: 15px; height: 15px; border-radius: 50%; border: 1px solid var(--line); color: var(--muted); font-size: 10px; line-height: 13px; text-align: center; margin: 0 4px; vertical-align: 1px; flex: none; }
+.gl:hover { border-color: var(--cur); color: var(--cur); }
+.strack li.lab { color: var(--muted); padding-right: 10px; font-weight: 400; }
+.strack li.lab::after { display: none; }
+/* 最早出处和证据构成 */
+.origin { margin-top: 12px; display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 8px 18px; align-items: start; font-size: 13px; color: var(--ink-2); }
+.origin p { margin: 0; grid-column: 1 / -1; }
+.mix { display: flex; flex-wrap: wrap; margin: 0; border: 1px solid var(--line); border-radius: 6px; overflow: hidden; background: var(--surface); }
+.mix div { padding: 4px 10px; border-right: 1px solid var(--line-2); }
+.mix div:last-child { border-right: 0; }
+.mix dt { font-size: 11px; color: var(--muted); }
+.mix dd { margin: 0; font-weight: 600; font-size: 13px; color: var(--ink); white-space: nowrap; }
+.origin > .gl { align-self: center; }
+/* 三条速览 */
+.brief { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1px; background: var(--line); border: 1px solid var(--line); border-radius: 8px; overflow: hidden; margin-top: 18px; }
+.brief > div { background: var(--surface); padding: 10px 14px 12px; font-size: 13px; }
+.brief h3 { margin: 0 0 4px; font-size: 11.5px; font-weight: 600; letter-spacing: .08em; color: var(--muted); }
+.brief p { margin: 0 0 4px; color: var(--ink); line-height: 1.6; }
+.brief ul { margin: 0 0 4px; padding-left: 1.1em; color: var(--ink-2); }
+.brief a { font-size: 12px; }
+/* 抽屉里的同类证据切换、口径说明 */
+.sibs { display: flex; gap: 6px; flex-wrap: wrap; padding: 8px 16px; border-bottom: 1px solid var(--line); }
+.sibs button { border: 1px solid var(--line); border-radius: 6px; padding: 3px 8px; font-size: 12px; text-align: left; }
+.sibs button small { display: block; color: var(--muted); font-size: 10.5px; }
+.sibs button[aria-current="true"] { border-color: var(--cur); color: var(--cur); }
+.gloss section { padding: 4px 0 10px; border-bottom: 1px solid var(--line-2); }
+.gloss section.on h3 { color: var(--cur); }
+.gloss h3 { font-size: 14px; margin: 10px 0 6px; }
+.gloss dl { margin: 0; }
+.gloss dl div { display: grid; grid-template-columns: 7.5em minmax(0, 1fr); gap: 10px; padding: 4px 0; font-size: 13px; }
+.gloss dt { font-weight: 600; color: var(--ink); }
+.gloss dd { margin: 0; color: var(--ink-2); }
+
 /* 窄屏 */
 @media (max-width: 960px) { .qa-grid { grid-template-columns: 1fr; } }
 @media (max-width: 760px) {
@@ -375,6 +412,8 @@ mark.now { background: var(--cur-soft); color: var(--ink); box-shadow: inset 0 -
   .axis span:nth-child(1), .axis span:nth-child(2) { display: none; }
   .axis .cell { grid-column: 1 / -1; }
   .tl::before { left: 8px; }
+  .brief { grid-template-columns: 1fr; }
+  .origin { grid-template-columns: 1fr; }
   .drawer { top: 0; width: 100vw; }
   .drow { grid-template-columns: 1fr; gap: 4px; }
   .drow .old::before { content: "旧："; color: var(--muted); }

@@ -12,10 +12,10 @@
 <header class="bar">
   <b>事件证据时间线<small>同花顺 AI 产品笔试作品</small></b>
   <nav>
-    <a href="#demo"><i>01</i>演示</a>
-    <a href="#highlights"><i>02</i>怎么做的</a>
-    <a href="#eval"><i>03</i>评测</a>
-    <a href="#ai"><i>04</i>怎么用 AI</a>
+    <a href="#demo">演示</a>
+    <a href="#highlights">怎么做的</a>
+    <a href="#eval">评测</a>
+    <a href="#ai">怎么用 AI</a>
   </nav>
   <div class="bar-ext">
     <a href="workbench.html">工作台</a>
@@ -29,22 +29,23 @@
     <div class="sum">
       <h1 id="sum-h">消息会过期。</h1>
       <p class="sum-sub" id="sum-sub">同一件事，公司会改好几次数字；转载过的旧消息不会跟着改。</p>
-      <div class="sols" id="sols"></div>
-      <h4>亮点</h4>
-      <div id="hls"></div>
-      <h4>不做</h4>
-      <div class="scp"><b>边界</b><span>不预测涨跌，不给买卖建议，网页不实时调用模型。</span></div>
+      <table class="sols" id="sols"></table>
+      <div class="hls" id="hls"></div>
       <div class="cta">
         <button class="cta-1" id="go-demo" type="button">开始演示</button>
         <a class="cta-2" href="workbench.html">自己点点看</a>
-        <small id="dur"></small>
       </div>
     </div>
   </section>
 
   <section class="stage" id="demo">
     <div class="st-main" id="st-main">
-      <button class="play" id="play" type="button"><span class="play-t"><span id="mode">进入演示区后自动播放</span><span id="remain"></span></span><em id="play-act">开始</em><i class="play-bar"><u id="play-fill"></u></i></button>
+      <div class="pbar" id="pbar">
+        <span class="pb-st"><span id="mode">准备播放</span><span id="remain"></span></span>
+        <span class="pb-ctx" id="ctx"></span>
+        <span class="pb-ctl"><button id="prev" type="button">上一段</button><button class="pb-main" id="play" type="button">播放</button><button id="next" type="button">下一段</button><button id="end-btn" type="button">结束</button></span>
+        <i class="play-bar"><u id="play-fill"></u></i>
+      </div>
       <div class="dev-wrap" id="dev-wrap">
         <div class="dev-box" id="dev-box">
           <div class="device device-macbook-pro-2018 device-spacegray" id="dev">
@@ -53,6 +54,7 @@
                 <iframe id="frame" src="workbench.html?embed=full" title="工作台"></iframe>
                 <div class="spot" id="spot"></div>
                 <div class="tap" id="tap"></div>
+                <svg class="ptr" id="ptr" viewBox="0 0 16 22" aria-hidden="true"><path d="M1.5 1.5v16.2l4.1-3.9 2.6 6.2 2.9-1.2-2.6-6.1 5.6-.3z"/></svg>
               </div>
             </div>
             <div class="device-power"></div>
@@ -63,35 +65,30 @@
         <div class="eyebrow" id="s-tag"></div>
         <h2 id="s-h"></h2>
         <div class="st-rule" id="s-rule"></div>
+        <div class="st-prev" id="s-prev"></div>
         <p class="st-note" id="s-note"></p>
       </aside>
     </div>
     <div class="rail">
       <div class="rail-steps" id="rail-steps"></div>
-      <div class="rail-ctl">
-        <button id="prev" type="button">上一段</button>
-        <button id="next" type="button">下一段</button>
-        <button id="replay" type="button">重播</button>
-        <button id="end-btn" type="button">结束演示</button>
-      </div>
     </div>
   </section>
 
   <section class="sec later" id="highlights">
-    <div class="sec-no">02 / 怎么做的</div>
+    <div class="sec-no">怎么做的</div>
     <h2>模型只做读不懂就做不准的那一步</h2>
     <ol class="flow" id="flow"></ol>
     <details class="more"><summary>逐条核查记录</summary><div id="audit-body"></div></details>
   </section>
 
   <section class="sec later" id="eval">
-    <div class="sec-no">03 / 评测</div>
+    <div class="sec-no">评测</div>
     <h2>抽得准不准</h2>
     <div id="eval-body"></div>
   </section>
 
   <section class="sec later" id="ai">
-    <div class="sec-no">04 / 怎么用 AI</div>
+    <div class="sec-no">怎么用 AI</div>
     <h2>一个主窗口协调，几个窗口同时做</h2>
     <div id="ai-body"></div>
   </section>

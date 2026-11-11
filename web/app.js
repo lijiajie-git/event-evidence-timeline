@@ -273,7 +273,7 @@ function drawLanes(e, a) {
     if (d !== S.D) { S.D = d; emit({ type: 'date', event: S.eventId, date: S.D }); renderEvent(); toHash(); listeners.forEach((f) => f({ ...S })); }
   };
   let drag = false;
-  svg.addEventListener('pointerdown', (ev2) => { if (ev2.target.closest('.seg')) return; drag = true; svg.setPointerCapture(ev2.pointerId); pick(ev2); });
+  svg.addEventListener('pointerdown', (ev2) => { if (ev2.target.closest('.seg')) return; drag = true; try { svg.setPointerCapture(ev2.pointerId); } catch (err) { /* 演示页模拟的拖动没有真实指针 */ } pick(ev2); });
   svg.addEventListener('pointermove', (ev2) => drag && pick(ev2));
   svg.addEventListener('pointerup', () => (drag = false));
 }

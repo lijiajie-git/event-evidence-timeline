@@ -1,12 +1,12 @@
 {
- "generated_at": "2026-11-11T19:41:42+00:00",
+ "generated_at": "2026-11-11T19:43:06+00:00",
  "summary": {
-  "quotes_checked": 156,
-  "quotes_passed": 156,
+  "quotes_checked": 226,
+  "quotes_passed": 226,
   "quotes_blocked": 0,
   "qa_items": 10,
   "qa_evidence_time_checks": 77,
-  "builds_recorded": 3,
+  "builds_recorded": 4,
   "builds_blocked": 0
  },
  "rules": [
@@ -34,6 +34,12 @@
    "at": "2026-11-11T19:41:42+00:00",
    "ok": true,
    "quotes_checked": 156,
+   "blocked": []
+  },
+  {
+   "at": "2026-11-11T19:43:06+00:00",
+   "ok": true,
+   "quotes_checked": 226,
    "blocked": []
   }
  ],
@@ -1002,6 +1008,496 @@
    "where": "冲突 c2",
    "evidence_id": "e5",
    "quote": "五、净利润(净亏损以“-”号填列)     -58,033,664.00   -91,978,550.41    33,944,886.41",
+   "pass": true
+  },
+  {
+   "event_id": "605081-2025A-delisting",
+   "where": "e1",
+   "evidence_id": "e1",
+   "quote": "预计 2025 年年度归属于母公司所有者的净利润为-24,400.00 万元到-20,400.00 万元",
+   "pass": true
+  },
+  {
+   "event_id": "605081-2025A-delisting",
+   "where": "e2",
+   "evidence_id": "e2",
+   "quote": "本次公告为公司第一次风险提示公告",
+   "pass": true
+  },
+  {
+   "event_id": "605081-2025A-delisting",
+   "where": "a1",
+   "evidence_id": "a1",
+   "quote": "据2026年1月30日业绩预亏公告，公司预计2025年归母净利润亏损2.04亿元至2.44亿元",
+   "pass": true
+  },
+  {
+   "event_id": "605081-2025A-delisting",
+   "where": "e3",
+   "evidence_id": "e3",
+   "quote": "2025 年共确认工程项目业务收入 3.05 亿元，其中第四季度确认 2.72 亿元，占比 89.13%",
+   "pass": true
+  },
+  {
+   "event_id": "605081-2025A-delisting",
+   "where": "a2",
+   "evidence_id": "a2",
+   "quote": "据2026年3月21日风险提示公告，公司2025年度确认工程项目业务收入3.05亿元",
+   "pass": true
+  },
+  {
+   "event_id": "605081-2025A-delisting",
+   "where": "e4",
+   "evidence_id": "e4",
+   "quote": "会计师认为部分本年新增的工程收入在手续齐备性、客户履约能力等方面存在瑕疵",
+   "pass": true
+  },
+  {
+   "event_id": "605081-2025A-delisting",
+   "where": "e5",
+   "evidence_id": "e5",
+   "quote": "公司存在通过虚构工程项目、提前确认进度等方式确认工程项目收入的情况",
+   "pass": true
+  },
+  {
+   "event_id": "605081-2025A-delisting",
+   "where": "e6",
+   "evidence_id": "e6",
+   "quote": "中国证券监督管理委员会决定对公司立案",
+   "pass": true
+  },
+  {
+   "event_id": "605081-2025A-delisting",
+   "where": "e7",
+   "evidence_id": "e7",
+   "quote": "认为公司2025年扣除后的营业收入将低于3亿元，初步扣除营业收入金额为1.55亿元",
+   "pass": true
+  },
+  {
+   "event_id": "605081-2025A-delisting",
+   "where": "e8",
+   "evidence_id": "e8",
+   "quote": "同日，上海证监局向公司送达《立案告知书》",
+   "pass": true
+  },
+  {
+   "event_id": "605081-2025A-delisting",
+   "where": "a3",
+   "evidence_id": "a3",
+   "quote": "公司因涉嫌信息披露违法违规被中国证监会立案",
+   "pass": true
+  },
+  {
+   "event_id": "605081-2025A-delisting",
+   "where": "e9",
+   "evidence_id": "e9",
+   "quote": "公司前期披露的信息不存在需要更正、补充之处",
+   "pass": true
+  },
+  {
+   "event_id": "605081-2025A-delisting",
+   "where": "e10",
+   "evidence_id": "e10",
+   "quote": "相应调减营业收入合计约 3.05 亿元",
+   "pass": true
+  },
+  {
+   "event_id": "605081-2025A-delisting",
+   "where": "e11",
+   "evidence_id": "e11",
+   "quote": "为本公司出具了带强调事项段的无保留意见的审计报告",
+   "pass": true
+  },
+  {
+   "event_id": "605081-2025A-delisting",
+   "where": "e12",
+   "evidence_id": "e12",
+   "quote": "669,378,005.48",
+   "pass": true
+  },
+  {
+   "event_id": "605081-2025A-delisting",
+   "where": "e13",
+   "evidence_id": "e13",
+   "quote": "公司部分工程项目收入确认的内部控制存在重大缺陷，导致部分收入不予确认，经审计后的营业收入低于 3 亿元",
+   "pass": true
+  },
+  {
+   "event_id": "605081-2025A-delisting",
+   "where": "e14",
+   "evidence_id": "e14",
+   "quote": "公司股票已触及财务类终止上市情形",
+   "pass": true
+  },
+  {
+   "event_id": "605081-2025A-delisting",
+   "where": "e15",
+   "evidence_id": "e15",
+   "quote": "对你公司股票作出终止上市的决定",
+   "pass": true
+  },
+  {
+   "event_id": "605081-2025A-delisting",
+   "where": "e16",
+   "evidence_id": "e16",
+   "quote": "均采用净额法确认收入，不涉及合同履约成本、营业成本",
+   "pass": true
+  },
+  {
+   "event_id": "605081-2025A-delisting",
+   "where": "e17",
+   "evidence_id": "e17",
+   "quote": "虚构工程及提前确认进度等违规行为，逐项梳理并明确责任链条",
+   "pass": true
+  },
+  {
+   "event_id": "605081-2025A-delisting",
+   "where": "e18",
+   "evidence_id": "e18",
+   "quote": "本所决定终止你公司股票上市",
+   "pass": true
+  },
+  {
+   "event_id": "605081-2025A-delisting",
+   "where": "e19",
+   "evidence_id": "e19",
+   "quote": "退市整理期交易起始日为2026 年 6 月 8 日，预计最后交易日期为 2026 年 6 月 29 日",
+   "pass": true
+  },
+  {
+   "event_id": "605081-2025A-delisting",
+   "where": "e20",
+   "evidence_id": "e20",
+   "quote": "公司股票将在退市整理期交易 15 个交易日，交易期满将被终止上市",
+   "pass": true
+  },
+  {
+   "event_id": "605081-2025A-delisting",
+   "where": "a4",
+   "evidence_id": "a4",
+   "quote": "退市太和今日复牌交易，截至12时31分下跌90.46%",
+   "pass": true
+  },
+  {
+   "event_id": "605081-2025A-delisting",
+   "where": "e21",
+   "evidence_id": "e21",
+   "quote": "上海证券交易所将在 2026 年 7 月 3 日对公司股票予以摘牌，公司股票终止上市",
+   "pass": true
+  },
+  {
+   "event_id": "605081-2025A-delisting",
+   "where": "归母净利润 v1",
+   "evidence_id": "e1",
+   "quote": "归属于母公司所有者的净利润为-24,400.00 万元到-20,400.00 万元",
+   "pass": true
+  },
+  {
+   "event_id": "605081-2025A-delisting",
+   "where": "归母净利润 v2",
+   "evidence_id": "e10",
+   "quote": "归属于母公司所有者的净利润为-27,968.91万元至-32,833.07 万元",
+   "pass": true
+  },
+  {
+   "event_id": "605081-2025A-delisting",
+   "where": "归母净利润 v3",
+   "evidence_id": "e11",
+   "quote": "归属于上市公司股东的净利润为-304,009,895.57元",
+   "pass": true
+  },
+  {
+   "event_id": "605081-2025A-delisting",
+   "where": "扣非净利润 v1",
+   "evidence_id": "e1",
+   "quote": "扣除非经常性损益后的净利润为-22,000.00 万元到-18,000.00 万元",
+   "pass": true
+  },
+  {
+   "event_id": "605081-2025A-delisting",
+   "where": "扣非净利润 v2",
+   "evidence_id": "e10",
+   "quote": "扣除非经常性损益后的净利润-25,541.70 万元至-29,983.74 万元",
+   "pass": true
+  },
+  {
+   "event_id": "605081-2025A-delisting",
+   "where": "扣非净利润 v3",
+   "evidence_id": "e11",
+   "quote": "归属于上市公司股东的扣除非经常性损益的净利润为-277,627,221.33元",
+   "pass": true
+  },
+  {
+   "event_id": "605081-2025A-delisting",
+   "where": "利润总额 v1",
+   "evidence_id": "e1",
+   "quote": "利润总额-24,253.00 万元到-20,253.00 万元",
+   "pass": true
+  },
+  {
+   "event_id": "605081-2025A-delisting",
+   "where": "利润总额 v2",
+   "evidence_id": "e10",
+   "quote": "利润总额为-28,301.33 万元至-33,223.30 万元",
+   "pass": true
+  },
+  {
+   "event_id": "605081-2025A-delisting",
+   "where": "利润总额 v3",
+   "evidence_id": "e11",
+   "quote": "利润总额         -307,623,126.00",
+   "pass": true
+  },
+  {
+   "event_id": "605081-2025A-delisting",
+   "where": "营业收入 v1",
+   "evidence_id": "e1",
+   "quote": "营业收入为 38,000.00 万元到 40,000.00 万元",
+   "pass": true
+  },
+  {
+   "event_id": "605081-2025A-delisting",
+   "where": "营业收入 v2",
+   "evidence_id": "e10",
+   "quote": "营业收入 9,640.63 万元至 11,317.26 万元",
+   "pass": true
+  },
+  {
+   "event_id": "605081-2025A-delisting",
+   "where": "营业收入 v3",
+   "evidence_id": "e11",
+   "quote": "营业收入          104,789,439.81",
+   "pass": true
+  },
+  {
+   "event_id": "605081-2025A-delisting",
+   "where": "扣除后营业收入 v1",
+   "evidence_id": "e1",
+   "quote": "收入后的营业收入为 37,792.75 万元到39,792.75 万元",
+   "pass": true
+  },
+  {
+   "event_id": "605081-2025A-delisting",
+   "where": "扣除后营业收入 v2",
+   "evidence_id": "e10",
+   "quote": "收入后的营业收入为 9,452.40 万元到 11,096.29 万元",
+   "pass": true
+  },
+  {
+   "event_id": "605081-2025A-delisting",
+   "where": "扣除后营业收入 v3",
+   "evidence_id": "e11",
+   "quote": "102,743,407.91",
+   "pass": true
+  },
+  {
+   "event_id": "605081-2025A-delisting",
+   "where": "期末净资产 v1",
+   "evidence_id": "e1",
+   "quote": "预计 2025 年末净资产为 69,700.00 万元到 83,490.00 万元",
+   "pass": true
+  },
+  {
+   "event_id": "605081-2025A-delisting",
+   "where": "期末净资产 v2",
+   "evidence_id": "e10",
+   "quote": "预计 2025 年末净资产为61,582.78 万元到 72,292.82 万元",
+   "pass": true
+  },
+  {
+   "event_id": "605081-2025A-delisting",
+   "where": "期末净资产 v3",
+   "evidence_id": "e12",
+   "quote": "669,378,005.48",
+   "pass": true
+  },
+  {
+   "event_id": "605081-2025A-delisting",
+   "where": "母公司销售商品、提供劳务收到的现金 v1",
+   "evidence_id": "e3",
+   "quote": "销售商品、提供劳务收到现金达 1.51 亿元",
+   "pass": true
+  },
+  {
+   "event_id": "605081-2025A-delisting",
+   "where": "母公司销售商品、提供劳务收到的现金 v2",
+   "evidence_id": "e16",
+   "quote": "销售商品、提供劳务收到现金达 1.65 亿元",
+   "pass": true
+  },
+  {
+   "event_id": "605081-2025A-delisting",
+   "where": "市政工程项目回款 v1",
+   "evidence_id": "e3",
+   "quote": "市政道路工程项目回款为 5,208.64 万元",
+   "pass": true
+  },
+  {
+   "event_id": "605081-2025A-delisting",
+   "where": "市政工程项目回款 v2",
+   "evidence_id": "e16",
+   "quote": "市政工程项目回款为 1,995.69 万元",
+   "pass": true
+  },
+  {
+   "event_id": "605081-2025A-delisting",
+   "where": "冲突 c1",
+   "evidence_id": "e3",
+   "quote": "上述项目不存在提前确认收入或不符合收入确认的情形",
+   "pass": true
+  },
+  {
+   "event_id": "605081-2025A-delisting",
+   "where": "冲突 c1",
+   "evidence_id": "e5",
+   "quote": "公司存在通过虚构工程项目、提前确认进度等方式确认工程项目收入的情况",
+   "pass": true
+  },
+  {
+   "event_id": "605081-2025A-delisting",
+   "where": "冲突 c1",
+   "evidence_id": "e17",
+   "quote": "虚构工程及提前确认进度等违规行为",
+   "pass": true
+  },
+  {
+   "event_id": "605081-2025A-delisting",
+   "where": "冲突 c2",
+   "evidence_id": "e3",
+   "quote": "新增 15 个市政工程类项目通过竞争性谈判合作",
+   "pass": true
+  },
+  {
+   "event_id": "605081-2025A-delisting",
+   "where": "冲突 c2",
+   "evidence_id": "e3",
+   "quote": "相关收入按总额法确认依据充分",
+   "pass": true
+  },
+  {
+   "event_id": "605081-2025A-delisting",
+   "where": "冲突 c2",
+   "evidence_id": "e16",
+   "quote": "新增 3 个市政工程类项目通过竞争性谈判合作",
+   "pass": true
+  },
+  {
+   "event_id": "605081-2025A-delisting",
+   "where": "冲突 c2",
+   "evidence_id": "e16",
+   "quote": "均采用净额法确认收入",
+   "pass": true
+  },
+  {
+   "event_id": "605081-2025A-delisting",
+   "where": "冲突 c3",
+   "evidence_id": "e3",
+   "quote": "销售商品、提供劳务收到现金达 1.51 亿元",
+   "pass": true
+  },
+  {
+   "event_id": "605081-2025A-delisting",
+   "where": "冲突 c3",
+   "evidence_id": "e3",
+   "quote": "市政道路工程项目回款为 5,208.64 万元",
+   "pass": true
+  },
+  {
+   "event_id": "605081-2025A-delisting",
+   "where": "冲突 c3",
+   "evidence_id": "e16",
+   "quote": "销售商品、提供劳务收到现金达 1.65 亿元",
+   "pass": true
+  },
+  {
+   "event_id": "605081-2025A-delisting",
+   "where": "冲突 c3",
+   "evidence_id": "e16",
+   "quote": "市政工程项目回款为 1,995.69 万元",
+   "pass": true
+  },
+  {
+   "event_id": "605081-2025A-delisting",
+   "where": "冲突 c4",
+   "evidence_id": "e3",
+   "quote": "不存在内部控制失效情形",
+   "pass": true
+  },
+  {
+   "event_id": "605081-2025A-delisting",
+   "where": "冲突 c4",
+   "evidence_id": "e16",
+   "quote": "系公司前财务负责人或原实际控制人指令员工通过员工备用金形式借支公司资金",
+   "pass": true
+  },
+  {
+   "event_id": "605081-2025A-delisting",
+   "where": "冲突 c4",
+   "evidence_id": "e16",
+   "quote": "根据公司说明，公司相关员工借支备用金均支付至员工本人银行账户，相关资金用于项目相关支出",
+   "pass": true
+  },
+  {
+   "event_id": "605081-2025A-delisting",
+   "where": "冲突 c4",
+   "evidence_id": "e13",
+   "quote": "关联方非经营性占用本金余额尚有 18,708,891.42 元",
+   "pass": true
+  },
+  {
+   "event_id": "605081-2025A-delisting",
+   "where": "冲突 c5",
+   "evidence_id": "e9",
+   "quote": "公司前期披露的信息不存在需要更正、补充之处",
+   "pass": true
+  },
+  {
+   "event_id": "605081-2025A-delisting",
+   "where": "冲突 c5",
+   "evidence_id": "e10",
+   "quote": "关于 2025 年度业绩预告的更正及 2025 年年度报告",
+   "pass": true
+  },
+  {
+   "event_id": "605081-2025A-delisting",
+   "where": "冲突 c6",
+   "evidence_id": "e10",
+   "quote": "相应调减营业收入合计约 3.05 亿元",
+   "pass": true
+  },
+  {
+   "event_id": "605081-2025A-delisting",
+   "where": "冲突 c6",
+   "evidence_id": "e1",
+   "quote": "营业收入为 38,000.00 万元到 40,000.00 万元",
+   "pass": true
+  },
+  {
+   "event_id": "605081-2025A-delisting",
+   "where": "冲突 c6",
+   "evidence_id": "e10",
+   "quote": "营业收入 9,640.63 万元至 11,317.26 万元",
+   "pass": true
+  },
+  {
+   "event_id": "605081-2025A-delisting",
+   "where": "冲突 c7",
+   "evidence_id": "e10",
+   "quote": "延期至 2026 年 4 月 30 日披露",
+   "pass": true
+  },
+  {
+   "event_id": "605081-2025A-delisting",
+   "where": "冲突 c7",
+   "evidence_id": "e18",
+   "quote": "2026 年 4 月 29 日，你公司发布 2025 年年度报告",
+   "pass": true
+  },
+  {
+   "event_id": "605081-2025A-delisting",
+   "where": "冲突 c7",
+   "evidence_id": "e14",
+   "quote": "于 2026 年 4 月 29 日提交披露了《2025 年年度报告》",
    "pass": true
   },
   {

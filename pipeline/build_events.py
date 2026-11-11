@@ -160,6 +160,9 @@ hist = json.load(open("data/audit_history.json")) if os.path.exists("data/audit_
 hist.append(dict(at=now, ok=not errs, quotes_checked=len(AUD), blocked=errs)); json.dump(hist[-50:], open("data/audit_history.json", "w"), ensure_ascii=False, indent=1)
 if errs:
     print("\n".join(errs)); sys.exit(f"{len(errs)} 处未通过校验，未生成文件")
+ORDER = ["600187-2025A-forecast", "600499-2026-tefu-restructuring", "605081-2025A-delisting", "600187-2026H1-forecast", "600889-2026H1-forecast",
+         "600499-2026H1-forecast", "920685-2026-restructuring", "01122-2026-11-11-clarification", "02672-2026-11-11-clarification"]
+out.sort(key=lambda e: ORDER.index(e["id"]) if e["id"] in ORDER else len(ORDER))
 json.dump(dict(generated_at=datetime.datetime.now(datetime.timezone.utc).isoformat(timespec="seconds"),
     disclaimer="只整理公开披露信息和公开报道，不预测涨跌，不构成投资建议。",
     weights=WEIGHTS, weight_rule="低级别来源不能推翻高级别来源；同级别以后披露的为准。",

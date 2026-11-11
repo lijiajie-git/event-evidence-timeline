@@ -882,6 +882,7 @@ def main():
         gold_note="标准答案由 Claude Opus 5.5 标注，不是人工标注。数值、单位、引用可以靠原文逐字匹配复核（见 gold_check）；证据类型、是否同一事件、状态这类判断字段没有人工复核，可靠性有限。",
         groups=dict(results=R_ORDER, process=P_ORDER), summary=summary, summary_note="summary 只汇总测试集（抽取时没有参考过评测结果的事件）；开发集单列在 summary_by_split。",
         summary_by_split=by_split, inputs=inputs(),
+        first_pass=json.load(open("eval/first_pass.json")) if os.path.exists("eval/first_pass.json") else None,
         events_scored=sum(1 for e in events if "results" in e), events_total=len(events),
         events=events, unmatched_extractions=stray,
         gold_check=dict(passed=sum(r["ok"] for r in gc), total=len(gc), failures=[r for r in gc if not r["ok"]]),
@@ -927,6 +928,15 @@ def render_md(r):
     known = {e.get("extracted_file") for e in r["events"]}
     rest = [p for p in r["unmatched_extractions"] if p not in known]
     if rest: L += [f"不在评测事件表里的抽取文件：{rest}", ""]
+    fp = r.get("first_pass")
+    if fp:
+        L += ["## 首次抽取的成绩（主数字）", "", fp["note"], "",
+              f"事件 2–8 取 {fp['test_eval_round']}、抽取提交 `{fp['test_extracted_commit']}`；事件 1 取 {fp['event1']['eval_round']}、抽取提交 `{fp['event1']['extracted_commit']}`。数据在 `eval/first_pass.json`（冻结快照）。", "",
+              "| 组 | 指标 | 事件 2–8（裁决后金标） | 事件 2–8（盲标原样） | 事件 1 第一版 | 9 个事件合计（裁决后） |", "|---|---|---|---|---|---|"]
+        for k in fp["metric_order"]:
+            grp = "结果对" if k in r["groups"]["results"] else "过程对"
+            L.append(f"| {grp} | {k} | {pct(fp['summary'][k])} | {pct(fp['summary_blind_gold'][k])} | {pct(fp['event1']['summary'][k])} | {pct(fp['summary_with_event1'][k])} |")
+        L += ["", fp["blind_gold_note"], ""]
     for sp in ("测试集", "开发集"):
         b = r["summary_by_split"][sp]
         L += [f"## 汇总：{sp}", ""]

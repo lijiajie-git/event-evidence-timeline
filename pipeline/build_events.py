@@ -57,8 +57,26 @@ def prices(th, dates):
     return dict(source=d["source"], adjust="不复权", unit=dict(close="元", pct="%，相对前一交易日收盘", turnover="元"), fetched=d["fetched_at"], error=None,
                 note="只保留各次披露前后 3 个交易日的片段", markers=marks,
                 bars=[dict(date=b["date"], close=b["close"], pct=b.get("pct"), turnover=b.get("turnover")) for n, b in enumerate(bars) if n in keep])
+DRY = "--dry" in sys.argv
+FILES = [a for a in sys.argv[1:] if a.endswith(".json")] or sorted(glob.glob("pipeline/extracted/*.json"))
+SCALE = {"元": 1, "万元": 1e4, "亿元": 1e8, "%": 1, "股": 1, "万股": 1e4, "元/股": 1}
+STATUS_CODES = ["已预告", "预告更正", "已兑现", "定期报告更正", "筹划", "预案", "草案", "审核中", "未通过", "终止审核", "终止", "监管问询", "立案", "风险警示", "终止上市", "澄清", "否认"]
+INJECT = ["忽略以上", "忽略之前", "忽略上述", "系统提示", "ignore previous", "ignore all", "system prompt"]
+def nums(q): return [float(m.replace(",", "").replace("，", "")) for m in re.findall(r"-?\d[\d,，]*(?:\.\d+)?", q or "")]
+def check_value(c, v, where):
+    """数值必须能在自己的引用里找到；换算成指标单位后要等于 low/high。"""
+    raw = v.get("raw") or dict(low=v["low"], high=v["high"], unit=c.get("unit"))
+    if raw["unit"] not in SCALE or c.get("unit") not in SCALE: errs.append(f"{where}: 单位不认识 {raw['unit']} / {c.get('unit')}"); return
+    found = nums(v["quote"])
+    for k in ("low", "high"):
+        if raw[k] is None:
+            if v[k] is not None: errs.append(f"{where}: 原文没有数却给了 {k}")
+            continue
+        if not any(abs(abs(raw[k]) - abs(f)) < 1e-6 for f in found): errs.append(f"{where}: 引用里找不到数值 {raw[k]} → {v['quote']}")
+        conv = raw[k] * SCALE[raw["unit"]] / SCALE[c["unit"]]
+        if v[k] is None or abs(conv - v[k]) > 0.006: errs.append(f"{where}: 单位换算对不上，原文 {raw[k]}{raw['unit']} 应为 {round(conv, 2)}{c['unit']}，写的是 {v[k]}")
 out = []
-for path in sorted(glob.glob("pipeline/extracted/*.json")):
+for path in FILES:
     e = json.load(open(path)); th = e.get("thscode"); news = load_news(th) if th else None
     texts, ev = {}, {}
     CUR[0] = e["id"]
@@ -72,6 +90,11 @@ for path in sorted(glob.glob("pipeline/extracted/*.json")):
         x["snapshot"] = dict(sha256_16=sha(texts[x["id"]]), taken_at=meta["fetched"], of="公告正文（去空白后）" if x["src"] == "ann" else "标题加摘要（去空白后）") if texts[x["id"]] else None
         x["weight"] = WEIGHTS[x["source_tier"]]["w"]; x["tier_note"] = WEIGHTS[x["source_tier"]]["label"]
         if x.get("quote"): check(x["id"], x["quote"], texts, x["id"])
+        if x["src"] == "anomaly" and x["source_tier"] != "D": errs.append(f"{x['id']}: 异动解读的来源级别只能是 D")
+        if x["src"] == "news" and x["source_tier"] == "A": errs.append(f"{x['id']}: 新闻的来源级别不能是 A")
+        if x["src"] == "ann" and x["source_tier"] != "A": errs.append(f"{x['id']}: 公告的来源级别应为 A")
+        for w in INJECT:
+            if w.lower() in ((x.get("quote") or "") + (x.get("summary") or "")).lower(): errs.append(f"{x['id']}: 引用或摘要里有指令式文字「{w}」")
         ev[x["id"]] = x
     e["evidence"].sort(key=lambda x: x["times"]["published_at"])
     for x in e["evidence"]:
@@ -82,10 +105,13 @@ for path in sorted(glob.glob("pipeline/extracted/*.json")):
         vs = []
         for n, v in enumerate(c["versions"]):
             check(v["evidence_id"], v["quote"], texts, f"{c['key']} v{n+1}")
+            if v["evidence_id"] in ev: check_value(c, v, f"{e['id']} {c['key']} v{n+1}")
             v.update(v=n + 1, unit=c.get("unit"), valid_from=v.get("valid_from") or ev[v["evidence_id"]]["times"]["disclosed"], valid_to=None, status=v.get("status", "active"), superseded_by=None)
             vs.append(v)
         for a, b in zip(vs, vs[1:]): a.update(valid_to=b["valid_from"], status="superseded", superseded_by=b["evidence_id"])
         c["versions"] = vs
+        for a, b in zip(vs, vs[1:]):
+            if b["valid_from"] < a["valid_from"]: errs.append(f"{e['id']} {c['key']}: 第 {b['v']} 版的生效日早于第 {a['v']} 版")
         if e["type"] == "业绩预告" and len(vs) > 1 and vs[-1].get("basis", "").startswith("年报") and vs[0]["low"] is not None:
             a, lo, hi = vs[-1]["low"], vs[0]["low"], vs[0]["high"]
             c["forecast_gap"] = dict(first_low=lo, first_high=hi, actual=a, unit=c.get("unit"), within_first_range=lo <= a <= hi,
@@ -96,9 +122,13 @@ for path in sorted(glob.glob("pipeline/extracted/*.json")):
         for q in c["quotes"]: check(q["evidence_id"], q["quote"], texts, f"冲突 {c['id']}")
         c["evidence_ids"] = [q["evidence_id"] for q in c["quotes"]]
         c["first_seen"] = max(ev[i]["times"]["disclosed"] for i in c["evidence_ids"] if i in ev)
-    for s in e["status_history"]: s["at"] = ev[s["evidence_id"]]["times"]["disclosed"]
+    for s in e["status_history"]:
+        s["at"] = ev[s["evidence_id"]]["times"]["disclosed"]
+        if s.get("code") not in STATUS_CODES: errs.append(f"{e['id']}: 状态「{s['status']}」没有标准状态码，code 必须是 {STATUS_CODES} 之一")
     for c in e["conclusions"]:
         c["as_of"] = ev[c["evidence_id"]]["times"]["disclosed"]
+        for it in c.get("facts", []):
+            if not any(i in ev and ev[i]["kind"] == "事实" and ev[i]["source_tier"] in "AB" for i in it["evidence_ids"]): errs.append(f"{e['id']} {c['as_of']}: 事实句没有挂 A 或 B 级的事实类证据 → {it['text'][:24]}")
         for part in ("facts", "inferences"):
             for it in c.get(part, []):
                 for i in it["evidence_ids"]:
@@ -112,6 +142,8 @@ for path in sorted(glob.glob("pipeline/extracted/*.json")):
     e["prices"] = prices(th, [(x["id"], x["times"]["disclosed"]) for x in e["evidence"] if x["src"] == "ann"]) if th else dict(error="未提供代码", bars=[], markers=[])
     if e["prices"].get("error"): e.setdefault("pending", []).append(f"行情不可用：{e['prices']['error']}")
     out.append(e)
+if DRY:
+    print("\n".join(errs) if errs else f"试跑通过：{len(out)} 个事件，{len(AUD)} 条引用，未写入任何文件"); sys.exit(1 if errs else 0)
 QA = json.load(open("pipeline/qa.json")); EV = {e["id"]: {x["id"]: x for x in e["evidence"]} for e in out}; leak_checks = 0
 for q in QA["items"]:
     if q["event_id"] not in EV: errs.append(f"问答 {q['id']} 指向不存在的事件"); continue

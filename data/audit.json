@@ -1,12 +1,12 @@
 {
- "generated_at": "2026-11-11T19:14:14+00:00",
+ "generated_at": "2026-11-11T19:32:31+00:00",
  "summary": {
-  "quotes_checked": 58,
-  "quotes_passed": 58,
+  "quotes_checked": 67,
+  "quotes_passed": 67,
   "quotes_blocked": 0,
   "qa_items": 10,
-  "qa_evidence_time_checks": 73,
-  "builds_recorded": 1,
+  "qa_evidence_time_checks": 77,
+  "builds_recorded": 2,
   "builds_blocked": 0
  },
  "rules": [
@@ -22,6 +22,12 @@
    "at": "2026-11-11T19:14:14+00:00",
    "ok": true,
    "quotes_checked": 58,
+   "blocked": []
+  },
+  {
+   "at": "2026-11-11T19:32:31+00:00",
+   "ok": true,
+   "quotes_checked": 67,
    "blocked": []
   }
  ],
@@ -98,6 +104,13 @@
   },
   {
    "event_id": "600187-2025A-forecast",
+   "where": "e7",
+   "evidence_id": "e7",
+   "quote": "将其从非经常性损益项目中剔除，纳入经常性损益列报",
+   "pass": true
+  },
+  {
+   "event_id": "600187-2025A-forecast",
    "where": "归母净利润 v1",
    "evidence_id": "e1",
    "quote": "归属于母公司所有者的净利润-13,000万元到-10,400万元",
@@ -148,8 +161,15 @@
   {
    "event_id": "600187-2025A-forecast",
    "where": "扣非净利润 v4",
-   "evidence_id": "e4",
-   "quote": "扣除非经常性损益后的净利润-0.60亿元",
+   "evidence_id": "e5",
+   "quote": "-59,762,087.53",
+   "pass": true
+  },
+  {
+   "event_id": "600187-2025A-forecast",
+   "where": "扣非净利润 v5",
+   "evidence_id": "e7",
+   "quote": "-214,628,790.66",
    "pass": true
   },
   {
@@ -210,16 +230,51 @@
   },
   {
    "event_id": "600187-2025A-forecast",
-   "where": "冲突 c1",
+   "where": "扣除后营业收入 v1",
+   "evidence_id": "e1",
+   "quote": "收入后的营业收入为19,000万元到22,800万元",
+   "pass": true
+  },
+  {
+   "event_id": "600187-2025A-forecast",
+   "where": "扣除后营业收入 v2",
    "evidence_id": "e2",
-   "quote": "公司于2025年1月30日在上海证券交易所网站披露了《2025年年度业绩预亏公告》",
+   "quote": "收入后的营业收入为17,500万元到21,000万元",
+   "pass": true
+  },
+  {
+   "event_id": "600187-2025A-forecast",
+   "where": "扣除后营业收入 v3",
+   "evidence_id": "e3",
+   "quote": "收入后的营业收入为19,233万元",
+   "pass": true
+  },
+  {
+   "event_id": "600187-2025A-forecast",
+   "where": "扣除后营业收入 v4",
+   "evidence_id": "e5",
+   "quote": "192,331,960.24",
+   "pass": true
+  },
+  {
+   "event_id": "600187-2025A-forecast",
+   "where": "间接持有北京汇源股权比例 v1",
+   "evidence_id": "e3",
+   "quote": "间接持有北京汇源食品饮料有限公司（简称北京汇源）20.89%的股权",
+   "pass": true
+  },
+  {
+   "event_id": "600187-2025A-forecast",
+   "where": "间接持有北京汇源股权比例 v2",
+   "evidence_id": "e6",
+   "quote": "应为“间接持有北京汇源食品饮料有限公司（简称北京汇源）21.89%的股权”",
    "pass": true
   },
   {
    "event_id": "600187-2025A-forecast",
    "where": "冲突 c1",
-   "evidence_id": "n2",
-   "quote": "公司于1月29日披露2025年业绩预亏公告",
+   "evidence_id": "e2",
+   "quote": "公司于2025年1月30日在上海证券交易所网站披露了《2025年年度业绩预亏公告》",
    "pass": true
   },
   {
@@ -241,6 +296,20 @@
    "where": "冲突 c2",
    "evidence_id": "e6",
    "quote": "应为“间接持有北京汇源食品饮料有限公司（简称北京汇源）21.89%的股权”",
+   "pass": true
+  },
+  {
+   "event_id": "600187-2025A-forecast",
+   "where": "冲突 c3",
+   "evidence_id": "e7",
+   "quote": "公司于2026年4月28日披露了《2025年年度报告》及相关审计报告",
+   "pass": true
+  },
+  {
+   "event_id": "600187-2025A-forecast",
+   "where": "冲突 c3",
+   "evidence_id": "e4",
+   "quote": "停牌日期为2026年4月30日",
    "pass": true
   },
   {

@@ -1,12 +1,12 @@
 {
- "generated_at": "2026-11-11T19:51:24+00:00",
+ "generated_at": "2026-11-11T20:04:16+00:00",
  "summary": {
-  "quotes_checked": 226,
-  "quotes_passed": 226,
+  "quotes_checked": 225,
+  "quotes_passed": 225,
   "quotes_blocked": 0,
-  "qa_items": 10,
-  "qa_evidence_time_checks": 77,
-  "builds_recorded": 5,
+  "qa_items": 17,
+  "qa_evidence_time_checks": 118,
+  "builds_recorded": 6,
   "builds_blocked": 0
  },
  "rules": [
@@ -46,6 +46,12 @@
    "at": "2026-11-11T19:51:24+00:00",
    "ok": true,
    "quotes_checked": 226,
+   "blocked": []
+  },
+  {
+   "at": "2026-11-11T20:04:16+00:00",
+   "ok": true,
+   "quotes_checked": 225,
    "blocked": []
   }
  ],
@@ -654,6 +660,34 @@
   },
   {
    "event_id": "600499-2026-tefu-restructuring",
+   "where": "k2a",
+   "evidence_id": "k2a",
+   "quote": "本次发行股份购买资产的发行价格为10.80元/股",
+   "pass": true
+  },
+  {
+   "event_id": "600499-2026-tefu-restructuring",
+   "where": "k3a",
+   "evidence_id": "k3a",
+   "quote": "747,475.00万元",
+   "pass": true
+  },
+  {
+   "event_id": "600499-2026-tefu-restructuring",
+   "where": "k3b",
+   "evidence_id": "k3b",
+   "quote": "逐项审议《关于公司发行股份及支付现金购买资产并募集配套资金暨关联交易方案的议案》",
+   "pass": true
+  },
+  {
+   "event_id": "600499-2026-tefu-restructuring",
+   "where": "k5a",
+   "evidence_id": "k5a",
+   "quote": "本次发行股份购买资产的发行价格相应调整为10.50元/股",
+   "pass": true
+  },
+  {
+   "event_id": "600499-2026-tefu-restructuring",
    "where": "收购股权比例 v1",
    "evidence_id": "k1",
    "quote": "的少数股权",
@@ -676,50 +710,36 @@
   {
    "event_id": "600499-2026-tefu-restructuring",
    "where": "交易作价 v2",
-   "evidence_id": "n3",
-   "quote": "公司拟以74.75亿元的交易价格",
-   "pass": true
-  },
-  {
-   "event_id": "600499-2026-tefu-restructuring",
-   "where": "交易作价 v3",
-   "evidence_id": "k9",
+   "evidence_id": "k3a",
    "quote": "747,475.00万元",
    "pass": true
   },
   {
    "event_id": "600499-2026-tefu-restructuring",
-   "where": "冲突 c1",
-   "evidence_id": "n6",
-   "quote": "并购案遭上交所否决",
+   "where": "发行股份购买资产的发行价格 v1",
+   "evidence_id": "k2a",
+   "quote": "本次发行股份购买资产的发行价格为10.80元/股",
    "pass": true
   },
   {
    "event_id": "600499-2026-tefu-restructuring",
-   "where": "冲突 c1",
-   "evidence_id": "k7",
-   "quote": "本次交易不符合重组条件或信息披露要求",
+   "where": "发行股份购买资产的发行价格 v2",
+   "evidence_id": "k5a",
+   "quote": "本次发行股份购买资产的发行价格相应调整为10.50元/股",
    "pass": true
   },
   {
    "event_id": "600499-2026-tefu-restructuring",
-   "where": "冲突 c1",
-   "evidence_id": "k8",
-   "quote": "公司董事会将在收到决定之日起10日内对是否修改或终止本次方案作出决议",
+   "where": "发行股份数量 v1",
+   "evidence_id": "k3a",
+   "quote": "498,195,551股",
    "pass": true
   },
   {
    "event_id": "600499-2026-tefu-restructuring",
-   "where": "冲突 c2",
-   "evidence_id": "n3",
-   "quote": "公司拟以74.75亿元的交易价格",
-   "pass": true
-  },
-  {
-   "event_id": "600499-2026-tefu-restructuring",
-   "where": "冲突 c2",
-   "evidence_id": "k9",
-   "quote": "747,475.00万元",
+   "where": "发行股份数量 v2",
+   "evidence_id": "k5a",
+   "quote": "公司本次发行的股票数量总计为512,429,711股",
    "pass": true
   },
   {
@@ -1483,27 +1503,6 @@
    "where": "冲突 c6",
    "evidence_id": "e10",
    "quote": "营业收入 9,640.63 万元至 11,317.26 万元",
-   "pass": true
-  },
-  {
-   "event_id": "605081-2025A-delisting",
-   "where": "冲突 c7",
-   "evidence_id": "e10",
-   "quote": "延期至 2026 年 4 月 30 日披露",
-   "pass": true
-  },
-  {
-   "event_id": "605081-2025A-delisting",
-   "where": "冲突 c7",
-   "evidence_id": "e18",
-   "quote": "2026 年 4 月 29 日，你公司发布 2025 年年度报告",
-   "pass": true
-  },
-  {
-   "event_id": "605081-2025A-delisting",
-   "where": "冲突 c7",
-   "evidence_id": "e14",
-   "quote": "于 2026 年 4 月 29 日提交披露了《2025 年年度报告》",
    "pass": true
   },
   {

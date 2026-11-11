@@ -27,6 +27,9 @@ def resolve(x, th, news):
     if x["src"] == "news":
         i = next((i for i in news["timeline"]["items"] if i["id"] == x["ref"]), None)
         if not i: errs.append(f"找不到新闻 {x['ref']}"); return {}, None
+        m = re.search(r"/(20\d{6})/", i["jump_url"]); pub = iso(i["publish_time_ms"])
+        if m and abs((datetime.datetime.strptime(m.group(1), "%Y%m%d").date() - pub.date()).days) > 1:
+            errs.append(f"{x['id']}: 新闻时间戳 {pub.date()} 和链接里的日期 {m.group(1)} 对不上，不能用作证据")
         return dict(title=i["title"].strip(), url=i["jump_url"], source=i.get("source") or "未注明", channel="扶摇个股新闻接口",
                     published_at=iso(i["publish_time_ms"]).strftime("%Y-%m-%d %H:%M"), precision="分钟", fetched=news["fetched_at"]), norm(i["title"] + (i.get("summary") or ""))
     if x["src"] == "anomaly":

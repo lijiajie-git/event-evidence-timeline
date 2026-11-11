@@ -78,6 +78,7 @@ for path in sorted(glob.glob("pipeline/extracted/*.json")):
             v.update(v=n + 1, unit=c.get("unit"), valid_from=v.get("valid_from") or ev[v["evidence_id"]]["times"]["disclosed"], valid_to=None, status=v.get("status", "active"), superseded_by=None)
             vs.append(v)
         for a, b in zip(vs, vs[1:]): a.update(valid_to=b["valid_from"], status="superseded", superseded_by=b["evidence_id"])
+        c["versions"] = vs
     for c in e.get("conflicts", []):
         c["quotes"] = [dict(evidence_id=i, quote=q) for i, q in c["quotes"]]
         for q in c["quotes"]: check(q["evidence_id"], q["quote"], texts, f"冲突 {c['id']}")

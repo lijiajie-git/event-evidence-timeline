@@ -349,7 +349,7 @@ function show(ci, bi, instantPrev = false) {
   if (b.go && Object.keys(b.go).length) WB.go(b.go);
   const lines = b.log || [];
   const step = reduce ? 0 : Math.min(650, (b.ms * 0.55) / Math.max(1, lines.length));
-  lines.forEach((o, i) => stagger.push(setTimeout(() => { $('#log').insertAdjacentHTML('beforeend', line(o)); const lg = $('#log'); lg.scrollTop = lg.scrollHeight; }, i * step)));
+  lines.forEach((o, i) => stagger.push(setTimeout(() => { $('#log').insertAdjacentHTML('beforeend', line(o)); const lg = $('#log'); if (CH[P.ci] && CH[P.ci].id !== 'pains') lg.scrollTop = lg.scrollHeight; }, i * step)));
   renderRail(); setMode();
   progress(b.ms);
 }

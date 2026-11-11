@@ -120,7 +120,10 @@ def period_key(s):
     t = "H1" if re.search(r"半年|H1|中期", s or "", re.I) else "Q1" if re.search(r"一季|Q1", s or "", re.I) else "Q3" if re.search(r"三季|Q3", s or "", re.I) else "A" if re.search(r"年度|年报|A$", s or "") else (s or "")
     return (y, t)
 
+STATUS_CODES = ["已预告", "预告更正", "已兑现", "定期报告更正", "筹划", "预案", "草案", "审核中", "未通过", "终止审核", "终止", "监管问询", "立案", "风险警示", "终止上市", "澄清", "否认"]
+
 def canon_state(s):
+    if s in STATUS_CODES: return s
     for state, pats in STATE_RULES:
         if any(re.search(p, s or "") for p in pats): return state
     return None
@@ -264,20 +267,23 @@ def score_event(g, x, all_gold):
 
     # 结果对 3：事件状态（各检查点回放）
     st = M()
-    hist = [(date_of.get(s["evidence_id"], "9999"), s.get("status", ""), canon(key_of.get(s["evidence_id"], ""))) for s in x.get("status_history", [])]
+    hist = [(date_of.get(s["evidence_id"], "9999"), s.get("code") or s.get("status", ""), canon(key_of.get(s["evidence_id"], ""))) for s in x.get("status_history", [])]
     for cp in g.get("status_checkpoints", []):
         st["den"] += 1
-        cur = [(s, k, d) for d, s, k in hist if d <= cp["as_of"]]
-        got, gk, gd = cur[-1] if cur else (None, None, None)
-        c = canon_state(got) if got else None
+        upto = [h for h in hist if h[0] <= cp["as_of"]]
+        last_day = upto[-1][0] if upto else None
+        cands = [(s, k, d) for d, s, k in upto if d == last_day] or [(None, None, None)]
         gold_day = source(cp["evidence"], code)[0]
-        trig_ok = gk == cp["evidence"] or gd == gold_day
-        ok = c == cp["state"] and trig_ok
+        want = cp.get("accept_states", [cp["state"]])
+        judged = [(s, k, d, canon_state(s) if s else None) for s, k, d in cands]
+        ok = any(c in want and (k == cp["evidence"] or d == gold_day) for s, k, d, c in judged)
         st["num"] += ok
         if not ok:
-            why = "该时点没有状态" if not got else ("状态归类不对" if c != cp["state"] else f"状态名对上了，但触发它的是 {gk}（{gd}），应是 {cp['evidence']}（{gold_day}）")
-            st["failures"].append(dict(code="E3", as_of=cp["as_of"], expect=cp["state"], got=f"{got}（归类为 {c}）" if got else None, what=why))
-    st["note"] = "每个检查点：取截至该日最后一条状态，状态词归到标准状态后要和金标一致，且触发这条状态的证据要和金标相同或同一天披露。"
+            got, gk, gd, c = judged[-1]
+            hit = next((j for j in judged if j[3] in want), None)
+            why = "该时点没有状态" if not got else (f"状态对上了，但触发它的是 {hit[1]}（{hit[2]}），应是 {cp['evidence']}（{gold_day}）" if hit else "状态不对")
+            st["failures"].append(dict(code="E3", as_of=cp["as_of"], expect="/".join(want), got="、".join(f"{j[0]}（归类为 {j[3]}）" for j in judged if j[0]) or None, what=why))
+    st["note"] = "每个检查点：取截至该日最后一个披露日的状态（同一天有几条都看），有标准状态码 code 就直接用，没有才按关键字归类；状态要和金标一致，且触发它的证据要和金标相同或同一天披露。"
     if x.get("period") and g.get("period") and period_key(x["period"]) != period_key(g["period"]):
         st["failures"].append(dict(code="E1d", what="事件报告期不对", got=x["period"], expect=g["period"]))
     R["事件状态"] = finish(st)
@@ -681,7 +687,12 @@ def run_traps(gold):
         else: verdict = "都没拦住（已知缺口）"
         out.append(dict(id=tid, title=title, changed=what, expected=expect, pipeline=pipe, pipeline_output=o,
                         eval_detects=caught_eval, eval_new_failures=[json.loads(n) if n.startswith("{") else n for n in new][:5], verdict=verdict))
-    return dict(status="已运行", baseline=baseline, cases=out,
+    prev_commit, prev = previous_trap_verdicts()
+    for c in out:
+        pv = prev.get(c["id"]); c["previous_verdict"] = pv
+        c["change"] = None if pv is None else ("之前放行、现在拦住" if pv != "管线拦住" and c["verdict"] == "管线拦住" else
+                                              "之前拦住、现在放行" if pv == "管线拦住" and c["verdict"] != "管线拦住" else "没变")
+    return dict(status="已运行", baseline=baseline, cases=out, pipeline_commit=inputs()["pipeline_commit"], previous_pipeline_commit=prev_commit,
                 note="T12 只测规则部分；抽取模型读到注入文本会不会被带偏，需要主窗口用注入后的文本重跑一次抽取才知道，本评测没有测。")
 
 def match_gold(x, gold):
@@ -705,6 +716,39 @@ EVENT_ORDER = [
 R_ORDER = ["数值抽取精确匹配", "版本链", "事件状态", "证据类型准确率", "来源级别准确率", "该合并的合并了", "不该合并的分开了"]
 P_ORDER = ["引用逐字匹配", "引用挂对证据", "回放未用到未来证据", "冲突找出来了", "事实和推断没混"]
 
+DEV = {"600187-2025A-forecast": "主窗口按评测第一版意见改过抽取（5dab53d），之后的分数不再是独立测量，算开发集。第一版的独立分数见 eval/history.json 第一条。"}
+
+def git(*a):
+    try: return subprocess.run(["git", *a], capture_output=True, text=True, timeout=30).stdout.strip()
+    except Exception: return ""
+
+def inputs():
+    """本次评测的输入版本：pipeline/ 和 pipeline/extracted/ 最后一次提交，以及有没有未提交的改动。"""
+    return dict(pipeline_commit=git("log", "-1", "--format=%h", "--", "pipeline"), pipeline_dirty=bool(git("status", "--porcelain", "--", "pipeline")),
+                extracted_commit=git("log", "-1", "--format=%h", "--", "pipeline/extracted"), gold_commit=git("log", "-1", "--format=%h", "--", "eval/gold"),
+                gold_dirty=bool(git("status", "--porcelain", "--", "eval/gold")))
+
+def update_history(report):
+    """eval/history.json：每次输入变了就追加一条各事件各指标的分数，输入没变就覆盖最后一条。"""
+    p = "eval/history.json"
+    h = json.load(open(p)) if os.path.exists(p) else []
+    row = dict(at=report["generated_at"], inputs=report["inputs"],
+               events={e["id"]: {k: (m["num"], m["den"]) for grp in ("results", "process") for k, m in e[grp].items()} for e in report["events"] if "results" in e},
+               traps={c["id"]: c["verdict"] for c in report["traps"].get("cases", [])})
+    key = lambda r: json.dumps(r["inputs"], sort_keys=True)
+    if h and key(h[-1]) == key(row): h[-1] = row
+    else: h.append(row)
+    json.dump(h, open(p, "w"), ensure_ascii=False, indent=1)
+
+def previous_trap_verdicts():
+    """上一版管线（pipeline 提交不同的最近一次记录）下各陷阱的结论。"""
+    p = "eval/history.json"
+    if not os.path.exists(p): return None, {}
+    cur = inputs()["pipeline_commit"]
+    for r in reversed(json.load(open(p))):
+        if r.get("traps") and r["inputs"].get("pipeline_commit") != cur: return r["inputs"].get("pipeline_commit"), r["traps"]
+    return None, {}
+
 def main():
     args = sys.argv[1:]
     gold = load_gold()
@@ -719,15 +763,17 @@ def main():
         x = json.load(open(p)); g = match_gold(x, gold)
         if g: extracted[g["id"]] = (p, x)
         else: stray.append(p)
-    events, agg = [], {k: [0, 0] for k in R_ORDER + P_ORDER}
-    agg_r = [0, 0]
+    events = []
+    aggs = {sp: ({k: [0, 0] for k in R_ORDER + P_ORDER}, [0, 0]) for sp in ("测试集", "开发集")}
     for gid, no, name in EVENT_ORDER:
         g = gold.get(gid)
         stray_hit = next((p for p in stray if os.path.basename(p) == f"{gid}.json"), None)
-        row = dict(id=gid, no=no, name=name, gold="已标注" if g else "未标注", extraction="已抽取" if gid in extracted or stray_hit else "未抽取")
+        row = dict(id=gid, no=no, name=name, gold="已标注" if g else "未标注", extraction="已抽取" if gid in extracted or stray_hit else "未抽取",
+                   split="开发集" if gid in DEV else "测试集", split_note=DEV.get(gid))
         if g and gid in extracted:
             s = score_event(g, extracted[gid][1], gold)
             row.update(extracted_file=extracted[gid][0], results=s["results"], process=s["process"], compliance=s["compliance"], injection=s["injection"])
+            agg, agg_r = aggs[row["split"]]
             for k in R_ORDER: agg[k][0] += s["results"][k]["num"]; agg[k][1] += s["results"][k]["den"]
             for k in P_ORDER: agg[k][0] += s["process"][k]["num"]; agg[k][1] += s["process"][k]["den"]
             agg_r[0] += s["process"]["引用挂对证据"]["recall_num"]; agg_r[1] += s["process"]["引用挂对证据"]["recall_den"]
@@ -737,18 +783,23 @@ def main():
             row["note"] = "标准答案还没标，暂不计分" if stray_hit else "标准答案还没标"
             if stray_hit: row["extracted_file"] = stray_hit
         events.append(row)
-    summary = {k: dict(num=v[0], den=v[1], value=round(v[0] / v[1], 4) if v[1] else None) for k, v in agg.items()}
-    summary["引用挂对证据"]["recall"] = round(agg_r[0] / agg_r[1], 4) if agg_r[1] else None
-    summary["引用挂对证据"].update(recall_num=agg_r[0], recall_den=agg_r[1])
+    def summarize(agg, agg_r):
+        sm = {k: dict(num=v[0], den=v[1], value=round(v[0] / v[1], 4) if v[1] else None) for k, v in agg.items()}
+        sm["引用挂对证据"].update(recall=round(agg_r[0] / agg_r[1], 4) if agg_r[1] else None, recall_num=agg_r[0], recall_den=agg_r[1])
+        return sm
+    by_split = {sp: dict(events=[e["id"] for e in events if e["split"] == sp and "results" in e], summary=summarize(*aggs[sp])) for sp in aggs}
+    summary = by_split["测试集"]["summary"]
     traps = run_traps(gold) if "--no-traps" not in args else dict(status="本次运行跳过了陷阱用例（--no-traps）", cases=[])
     report = dict(
         schema_version=1, generated_at=datetime.datetime.now(datetime.timezone.utc).isoformat(timespec="seconds"), command=CMD,
         gold_note="标准答案由 Claude Opus 5.5 标注，不是人工标注。数值、单位、引用可以靠原文逐字匹配复核（见 gold_check）；证据类型、是否同一事件、状态这类判断字段没有人工复核，可靠性有限。",
-        groups=dict(results=R_ORDER, process=P_ORDER), summary=summary,
+        groups=dict(results=R_ORDER, process=P_ORDER), summary=summary, summary_note="summary 只汇总测试集（抽取时没有参考过评测结果的事件）；开发集单列在 summary_by_split。",
+        summary_by_split=by_split, inputs=inputs(),
         events_scored=sum(1 for e in events if "results" in e), events_total=len(events),
         events=events, unmatched_extractions=stray,
         gold_check=dict(passed=sum(r["ok"] for r in gc), total=len(gc), failures=[r for r in gc if not r["ok"]]),
         traps=traps)
+    update_history(report)
     json.dump(report, open("eval/report.json", "w"), ensure_ascii=False, indent=1)
     open("eval/report.md", "w").write(render_md(report))
     if traps["cases"]:
@@ -764,24 +815,49 @@ def fmt_fail(f):
     f = dict(f); c = f.pop("code", ""); return f"`{c}` " + "，".join(f"{k}={v}" for k, v in f.items() if v not in (None, ""))
 
 def render_md(r):
+    def table(sm):
+        out = ["| 组 | 指标 | 结果 |", "|---|---|---|"]
+        for k in r["groups"]["results"]: out.append(f"| 结果对 | {k} | {pct(sm[k])} |")
+        for k in r["groups"]["process"]:
+            s = sm[k]; extra = f"；召回 {s['recall'] * 100:.1f}%（{s['recall_num']}/{s['recall_den']}）" if k == "引用挂对证据" and s.get("recall") is not None else ""
+            out.append(f"| 过程对 | {k} | {pct(s)}{extra} |")
+        return out
+    inp = r["inputs"]
     L = [f"# 评测报告", "",
-         f"生成时间（UTC）：{r['generated_at']}。生成命令：`{r['command']}`（在仓库根目录运行）。本文所有数字都出自这条命令，原始结果在 `eval/report.json`。", "",
+         f"生成时间（UTC）：{r['generated_at']}。生成命令：`{r['command']}`（在仓库根目录运行）。本文所有数字都出自这条命令，原始结果在 `eval/report.json`，历次分数在 `eval/history.json`。",
+         f"输入版本：pipeline 提交 `{inp['pipeline_commit']}`{'（有未提交改动）' if inp['pipeline_dirty'] else ''}，抽取结果提交 `{inp['extracted_commit']}`，金标提交 `{inp['gold_commit']}`{'（有未提交改动）' if inp['gold_dirty'] else ''}。", "",
          f"> {r['gold_note']}", "",
          f"金标自检：{r['gold_check']['passed']}/{r['gold_check']['total']} 项通过（每条原文片段逐字在原文里、每个数值在自己的片段里）。", "",
-         "## 总表", "", "| 编号 | 事件 | 标准答案 | 抽取 |", "|---|---|---|---|"]
-    for e in r["events"]: L.append(f"| {e['no']} | {e['name']}（`{e['id']}`） | {e['gold']} | {e['extraction']}{'（不计分：' + e['note'] + '）' if e.get('note') and e['extraction'] == '已抽取' else ''} |")
-    L += ["", f"已计分 {r['events_scored']} 个，共 {r['events_total']} 个。没有抽取结果的事件不计分，也不按 0 分算。", ""]
+         "## 总表", "", "| 编号 | 事件 | 标准答案 | 抽取 | 分组 |", "|---|---|---|---|---|"]
+    for e in r["events"]:
+        L.append(f"| {e['no']} | {e['name']}（`{e['id']}`） | {e['gold']} | {e['extraction']}{'（不计分：' + e['note'] + '）' if e.get('note') and e['extraction'] == '已抽取' else ''} | {e['split']} |")
+    L += ["", f"已计分 {r['events_scored']} 个，共 {r['events_total']} 个。没有抽取结果的事件不计分，也不按 0 分算。",
+          "分组：**测试集**是抽取时没有参考过评测结果的事件，分数算独立测量；**开发集**是主窗口看过评测意见后改过的事件，分数只说明改对了没有。" + "".join(f" {e['id']}：{e['split_note']}" for e in r["events"] if e.get("split_note")), ""]
     known = {e.get("extracted_file") for e in r["events"]}
     rest = [p for p in r["unmatched_extractions"] if p not in known]
     if rest: L += [f"不在评测事件表里的抽取文件：{rest}", ""]
-    L += ["## 汇总（只含已计分事件）", "", "| 组 | 指标 | 结果 |", "|---|---|---|"]
-    for k in r["groups"]["results"]: L.append(f"| 结果对 | {k} | {pct(r['summary'][k])} |")
-    for k in r["groups"]["process"]:
-        s = r["summary"][k]; extra = f"；召回 {s['recall'] * 100:.1f}%（{s['recall_num']}/{s['recall_den']}）" if k == "引用挂对证据" and s.get("recall") is not None else ""
-        L.append(f"| 过程对 | {k} | {pct(s)}{extra} |")
+    for sp in ("测试集", "开发集"):
+        b = r["summary_by_split"][sp]
+        L += [f"## 汇总：{sp}", ""]
+        if not b["events"]: L += ["还没有已计分的事件。", ""]; continue
+        L += [f"包含：{', '.join(b['events'])}", ""] + table(b["summary"]) + [""]
+    try: hist = json.load(open("eval/history.json"))
+    except Exception: hist = []
+    if len(hist) > 1:
+        L += ["## 分数变化", "", "同一事件在不同抽取版本下的分数（只列有变化的指标）。", ""]
+        ids = sorted({i for h in hist for i in h["events"]})
+        for i in ids:
+            rows = [h for h in hist if i in h["events"]]
+            if len(rows) < 2: continue
+            first, last = rows[0], rows[-1]
+            L += [f"**{i}**（抽取 `{first['inputs'].get('extracted_commit')}` → `{last['inputs'].get('extracted_commit')}`）", "", "| 指标 | 之前 | 现在 |", "|---|---|---|"]
+            for k, (n, d) in last["events"][i].items():
+                n0, d0 = first["events"][i].get(k, (None, None))
+                if (n0, d0) != (n, d): L.append(f"| {k} | {n0}/{d0} | {n}/{d} |")
+            L.append("")
     for e in r["events"]:
         if "results" not in e: continue
-        L += ["", f"## 事件 {e['no']}：{e['name']}", "", f"抽取文件：`{e['extracted_file']}`；标准答案：`eval/gold/{e['id']}.json`", ""]
+        L += ["", f"## 事件 {e['no']}：{e['name']}（{e['split']}）", "", f"抽取文件：`{e['extracted_file']}`；标准答案：`eval/gold/{e['id']}.json`", ""]
         for grp, title in (("results", "结果对"), ("process", "过程对")):
             L += [f"### {title}", ""]
             for k, m in e[grp].items():
@@ -798,13 +874,19 @@ def render_md(r):
         L.append(f"- 引用里有没有注入指令：" + ("没有" if not e["injection"] else str(e["injection"])))
     t = r["traps"]
     L += ["", "## 陷阱用例", "", f"状态：{t['status']}。"]
-    if t.get("baseline"): L.append(f"基线：用未改动的 `{t['baseline']['event']}` 抽取结果跑管线，组装退出码 {t['baseline']['build_exit']}，合规退出码 {t['baseline']['compliance_exit']}。")
+    if t.get("baseline"): L.append(f"基线：用未改动的 `{t['baseline']['event']}` 抽取结果跑管线（pipeline 提交 `{t.get('pipeline_commit')}`），组装退出码 {t['baseline']['build_exit']}，合规退出码 {t['baseline']['compliance_exit']}。")
     if t["cases"]:
-        n_pipe = sum(c["verdict"] == "管线拦住" for c in t["cases"]); n_gap = sum("缺口" in c["verdict"] for c in t["cases"])
-        L += ["", f"共 {len(t['cases'])} 个：管线拦住 {n_pipe} 个，管线放行 {n_gap} 个（其中评测发现 {sum(c['verdict'].startswith('管线放行') for c in t['cases'])} 个）。用例说明见 `eval/traps/README.md`。", "",
-              "| 编号 | 陷阱 | 改了什么 | 期望 | 管线实际 | 评测能否发现 | 结论 |", "|---|---|---|---|---|---|---|"]
-        for c in t["cases"]:
-            L.append(f"| {c['id']} | {c['title']} | {c['changed']} | {c['expected']} | {c['pipeline']} | {'能' if c['eval_detects'] else '不能'} | {c['verdict']} |")
+        cs = t["cases"]
+        n_pipe = sum(c["verdict"] == "管线拦住" for c in cs); n_gap = sum("缺口" in c["verdict"] for c in cs)
+        L += ["", f"共 {len(cs)} 个：管线拦住 {n_pipe} 个，管线放行 {n_gap} 个（其中评测发现 {sum(c['verdict'].startswith('管线放行') for c in cs)} 个）。用例说明见 `eval/traps/README.md`。"]
+        up = [c["id"] for c in cs if c.get("change") == "之前放行、现在拦住"]; down = [c["id"] for c in cs if c.get("change") == "之前拦住、现在放行"]
+        if t.get("previous_pipeline_commit"):
+            L += ["", f"和上一版管线 `{t['previous_pipeline_commit']}` 比：**之前放行、现在拦住 {len(up)} 个**（{'、'.join(up) or '无'}）；之前拦住、现在放行 {len(down)} 个（{'、'.join(down) or '无'}）。"]
+        L += ["", "| 编号 | 陷阱 | 改了什么 | 期望 | 管线实际 | 评测能否发现 | 结论 | 上一版管线 |", "|---|---|---|---|---|---|---|---|"]
+        for c in cs:
+            ch = c.get("previous_verdict") or "—"
+            if c.get("change") == "之前放行、现在拦住": ch = f"**{ch} → 现在拦住**"
+            L.append(f"| {c['id']} | {c['title']} | {c['changed']} | {c['expected']} | {c['pipeline']} | {'能' if c['eval_detects'] else '不能'} | {c['verdict']} | {ch} |")
     if t.get("note"): L += ["", t["note"]]
     if r["gold_check"]["failures"]:
         L += ["", "## 金标自检未通过", ""] + [f"- {f}" for f in r["gold_check"]["failures"]]

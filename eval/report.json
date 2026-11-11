@@ -1,6 +1,6 @@
 {
  "schema_version": 1,
- "generated_at": "2026-11-11T19:24:47+00:00",
+ "generated_at": "2026-11-11T19:39:00+00:00",
  "command": "python3 eval/score.py",
  "gold_note": "标准答案由 Claude Opus 5.5 标注，不是人工标注。数值、单位、引用可以靠原文逐字匹配复核（见 gold_check）；证据类型、是否同一事件、状态这类判断字段没有人工复核，可靠性有限。",
  "groups": {
@@ -23,68 +23,216 @@
  },
  "summary": {
   "数值抽取精确匹配": {
-   "num": 30,
-   "den": 46,
-   "value": 0.6522
+   "num": 0,
+   "den": 0,
+   "value": null
   },
   "版本链": {
-   "num": 16,
-   "den": 22,
-   "value": 0.7273
+   "num": 0,
+   "den": 0,
+   "value": null
   },
   "事件状态": {
-   "num": 6,
-   "den": 7,
-   "value": 0.8571
+   "num": 0,
+   "den": 0,
+   "value": null
   },
   "证据类型准确率": {
-   "num": 10,
-   "den": 10,
-   "value": 1.0
+   "num": 0,
+   "den": 0,
+   "value": null
   },
   "来源级别准确率": {
-   "num": 10,
-   "den": 10,
-   "value": 1.0
+   "num": 0,
+   "den": 0,
+   "value": null
   },
   "该合并的合并了": {
-   "num": 6,
-   "den": 7,
-   "value": 0.8571
+   "num": 0,
+   "den": 0,
+   "value": null
   },
   "不该合并的分开了": {
-   "num": 10,
-   "den": 10,
-   "value": 1.0
+   "num": 0,
+   "den": 0,
+   "value": null
   },
   "引用逐字匹配": {
-   "num": 31,
-   "den": 31,
-   "value": 1.0
+   "num": 0,
+   "den": 0,
+   "value": null
   },
   "引用挂对证据": {
-   "num": 37,
-   "den": 37,
-   "value": 1.0,
-   "recall": 0.6522,
-   "recall_num": 15,
-   "recall_den": 23
+   "num": 0,
+   "den": 0,
+   "value": null,
+   "recall": null,
+   "recall_num": 0,
+   "recall_den": 0
   },
   "回放未用到未来证据": {
-   "num": 24,
-   "den": 24,
-   "value": 1.0
+   "num": 0,
+   "den": 0,
+   "value": null
   },
   "冲突找出来了": {
-   "num": 2,
-   "den": 2,
-   "value": 1.0
+   "num": 0,
+   "den": 0,
+   "value": null
   },
   "事实和推断没混": {
-   "num": 12,
-   "den": 12,
-   "value": 1.0
+   "num": 0,
+   "den": 0,
+   "value": null
   }
+ },
+ "summary_note": "summary 只汇总测试集（抽取时没有参考过评测结果的事件）；开发集单列在 summary_by_split。",
+ "summary_by_split": {
+  "测试集": {
+   "events": [],
+   "summary": {
+    "数值抽取精确匹配": {
+     "num": 0,
+     "den": 0,
+     "value": null
+    },
+    "版本链": {
+     "num": 0,
+     "den": 0,
+     "value": null
+    },
+    "事件状态": {
+     "num": 0,
+     "den": 0,
+     "value": null
+    },
+    "证据类型准确率": {
+     "num": 0,
+     "den": 0,
+     "value": null
+    },
+    "来源级别准确率": {
+     "num": 0,
+     "den": 0,
+     "value": null
+    },
+    "该合并的合并了": {
+     "num": 0,
+     "den": 0,
+     "value": null
+    },
+    "不该合并的分开了": {
+     "num": 0,
+     "den": 0,
+     "value": null
+    },
+    "引用逐字匹配": {
+     "num": 0,
+     "den": 0,
+     "value": null
+    },
+    "引用挂对证据": {
+     "num": 0,
+     "den": 0,
+     "value": null,
+     "recall": null,
+     "recall_num": 0,
+     "recall_den": 0
+    },
+    "回放未用到未来证据": {
+     "num": 0,
+     "den": 0,
+     "value": null
+    },
+    "冲突找出来了": {
+     "num": 0,
+     "den": 0,
+     "value": null
+    },
+    "事实和推断没混": {
+     "num": 0,
+     "den": 0,
+     "value": null
+    }
+   }
+  },
+  "开发集": {
+   "events": [
+    "600187-2025A-forecast"
+   ],
+   "summary": {
+    "数值抽取精确匹配": {
+     "num": 46,
+     "den": 46,
+     "value": 1.0
+    },
+    "版本链": {
+     "num": 22,
+     "den": 22,
+     "value": 1.0
+    },
+    "事件状态": {
+     "num": 7,
+     "den": 7,
+     "value": 1.0
+    },
+    "证据类型准确率": {
+     "num": 11,
+     "den": 11,
+     "value": 1.0
+    },
+    "来源级别准确率": {
+     "num": 11,
+     "den": 11,
+     "value": 1.0
+    },
+    "该合并的合并了": {
+     "num": 7,
+     "den": 7,
+     "value": 1.0
+    },
+    "不该合并的分开了": {
+     "num": 11,
+     "den": 11,
+     "value": 1.0
+    },
+    "引用逐字匹配": {
+     "num": 40,
+     "den": 40,
+     "value": 1.0
+    },
+    "引用挂对证据": {
+     "num": 48,
+     "den": 48,
+     "value": 1.0,
+     "recall": 1.0,
+     "recall_num": 23,
+     "recall_den": 23
+    },
+    "回放未用到未来证据": {
+     "num": 34,
+     "den": 34,
+     "value": 1.0
+    },
+    "冲突找出来了": {
+     "num": 2,
+     "den": 2,
+     "value": 1.0
+    },
+    "事实和推断没混": {
+     "num": 15,
+     "den": 15,
+     "value": 1.0
+    }
+   }
+  }
+ },
+ "inputs": {
+  "pipeline_commit": "07f9433",
+  "pipeline_dirty": true,
+  "extracted_commit": "5dab53d",
+  "gold_commit": "3d10074",
+  "gold_dirty": false
  },
  "events_scored": 1,
  "events_total": 9,
@@ -95,181 +243,55 @@
    "name": "*ST国中 2025 年度业绩预告、两次更正、年报兑现、年报表述更正",
    "gold": "已标注",
    "extraction": "已抽取",
+   "split": "开发集",
+   "split_note": "主窗口按评测第一版意见改过抽取（5dab53d），之后的分数不再是独立测量，算开发集。第一版的独立分数见 eval/history.json 第一条。",
    "extracted_file": "pipeline/extracted/600187-2025A-forecast.json",
    "results": {
     "数值抽取精确匹配": {
-     "num": 30,
+     "num": 46,
      "den": 46,
-     "value": 0.6522,
-     "failures": [
-      {
-       "code": "E1f",
-       "claim": "net_profit_deducted",
-       "version": 4,
-       "side": "low",
-       "got": "-6000 万元",
-       "expect": "-59762087.53 元"
-      },
-      {
-       "code": "E1f",
-       "claim": "net_profit_deducted",
-       "version": 4,
-       "side": "high",
-       "got": "-6000 万元",
-       "expect": "-59762087.53 元"
-      },
-      {
-       "code": "E2a",
-       "claim": "net_profit_deducted",
-       "version": 5,
-       "what": "漏版本",
-       "expect": "-214628790.66~-214628790.66 元（ann:1225483477）"
-      },
-      {
-       "code": "E2a",
-       "claim": "revenue_deducted",
-       "version": 1,
-       "what": "漏版本",
-       "expect": "19000~22800 万元（ann:1224956497）"
-      },
-      {
-       "code": "E2a",
-       "claim": "revenue_deducted",
-       "version": 2,
-       "what": "漏版本",
-       "expect": "17500~21000 万元（ann:1225121518）"
-      },
-      {
-       "code": "E2a",
-       "claim": "revenue_deducted",
-       "version": 3,
-       "what": "漏版本",
-       "expect": "19233~19233 万元（ann:1225230061）"
-      },
-      {
-       "code": "E2a",
-       "claim": "revenue_deducted",
-       "version": 4,
-       "what": "漏版本",
-       "expect": "192331960.24~192331960.24 元（ann:1225268441）"
-      },
-      {
-       "code": "E2a",
-       "claim": "huiyuan_indirect_stake",
-       "version": 1,
-       "what": "漏版本",
-       "expect": "20.89~20.89 %（ann:1225230061）"
-      },
-      {
-       "code": "E2a",
-       "claim": "huiyuan_indirect_stake",
-       "version": 2,
-       "what": "漏版本",
-       "expect": "21.89~21.89 %（ann:1225277438）"
-      },
-      {
-       "code": "E2a",
-       "claim": "revenue_deducted",
-       "what": "整项指标没有抽取"
-      },
-      {
-       "code": "E2a",
-       "claim": "huiyuan_indirect_stake",
-       "what": "整项指标没有抽取"
-      }
-     ],
+     "value": 1.0,
+     "failures": [],
      "note": null
     },
     "版本链": {
-     "num": 16,
+     "num": 22,
      "den": 22,
-     "value": 0.7273,
-     "failures": [
-      {
-       "code": "E2b",
-       "claim": "net_profit_deducted",
-       "edge": "v4→v5",
-       "what": "缺版本"
-      },
-      {
-       "code": "E2b",
-       "claim": "revenue_deducted",
-       "edge": "v1→v2",
-       "what": "缺版本"
-      },
-      {
-       "code": "E2b",
-       "claim": "revenue_deducted",
-       "edge": "v2→v3",
-       "what": "缺版本"
-      },
-      {
-       "code": "E2b",
-       "claim": "revenue_deducted",
-       "edge": "v3→v4",
-       "what": "缺版本"
-      },
-      {
-       "code": "E2b",
-       "claim": "huiyuan_indirect_stake",
-       "edge": "v1→v2",
-       "what": "缺版本"
-      },
-      {
-       "code": "E2d",
-       "to": "ann:1225483477",
-       "expect": "关系指向 ann:1225268441",
-       "got": "证据未纳入"
-      }
-     ],
+     "value": 1.0,
+     "failures": [],
      "note": "其中指标相邻版本 17 条边，证据取代关系 5 条"
     },
     "事件状态": {
-     "num": 6,
+     "num": 7,
      "den": 7,
-     "value": 0.8571,
-     "failures": [
-      {
-       "code": "E3",
-       "as_of": "2026-08-20",
-       "expect": "定期报告更正",
-       "got": "年报表述有更正（归类为 定期报告更正）",
-       "what": "状态名对上了，但触发它的是 ann:1225277438（2026-05-06），应是 ann:1225483477（2026-08-20）"
-      }
-     ],
-     "note": "每个检查点：取截至该日最后一条状态，状态词归到标准状态后要和金标一致，且触发这条状态的证据要和金标相同或同一天披露。"
+     "value": 1.0,
+     "failures": [],
+     "note": "每个检查点：取截至该日最后一个披露日的状态（同一天有几条都看），有标准状态码 code 就直接用，没有才按关键字归类；状态要和金标一致，且触发它的证据要和金标相同或同一天披露。"
     },
     "证据类型准确率": {
-     "num": 10,
-     "den": 10,
+     "num": 11,
+     "den": 11,
      "value": 1.0,
      "failures": [],
      "note": null
     },
     "来源级别准确率": {
-     "num": 10,
-     "den": 10,
+     "num": 11,
+     "den": 11,
      "value": 1.0,
      "failures": [],
      "note": null
     },
     "该合并的合并了": {
-     "num": 6,
+     "num": 7,
      "den": 7,
-     "value": 0.8571,
-     "failures": [
-      {
-       "code": "E5a",
-       "evidence": "ann:1225483477",
-       "what": "该并入的没并入",
-       "role": "更正"
-      }
-     ],
+     "value": 1.0,
+     "failures": [],
      "note": null
     },
     "不该合并的分开了": {
-     "num": 10,
-     "den": 10,
+     "num": 11,
+     "den": 11,
      "value": 1.0,
      "failures": [],
      "note": null
@@ -277,29 +299,29 @@
    },
    "process": {
     "引用逐字匹配": {
-     "num": 31,
-     "den": 31,
+     "num": 40,
+     "den": 40,
      "value": 1.0,
      "failures": [],
      "note": null
     },
     "引用挂对证据": {
      "precision": 1.0,
-     "num": 37,
-     "den": 37,
-     "recall": 0.6522,
-     "recall_num": 15,
+     "num": 48,
+     "den": 48,
+     "recall": 1.0,
+     "recall_num": 23,
      "recall_den": 23,
      "wrong": 0,
      "unsupported": 0,
-     "conclusions_unchecked": 6,
+     "conclusions_unchecked": 7,
      "value": 1.0,
      "failures": [],
      "note": "精确率=挂对的引用/全部引用（证据自身引用、数值版本引用、结论里带数字的句子）；召回率=金标必含的数值版本里，被抽取用正确证据和逐字引用支撑的比例。“挂错”和“无依据”分开计数；不带数字的结论句没法自动核对，单列。"
     },
     "回放未用到未来证据": {
-     "num": 24,
-     "den": 24,
+     "num": 34,
+     "den": 34,
      "value": 1.0,
      "failures": [],
      "note": null
@@ -309,11 +331,11 @@
      "den": 2,
      "value": 1.0,
      "failures": [],
-     "note": null
+     "note": "另找到金标的可选冲突 ['G4']"
     },
     "事实和推断没混": {
-     "num": 12,
-     "den": 12,
+     "num": 15,
+     "den": 15,
      "value": 1.0,
      "failures": [],
      "note": "规则：“事实”里不能有推断用语（所挂证据原文里本来就有这个词的除外，算转述），也不能只挂观点、推测、传闻类证据。只查事实段。"
@@ -327,8 +349,11 @@
    "no": "2",
    "name": "*ST国中 2026 年半年度业绩预告及更正",
    "gold": "未标注",
-   "extraction": "未抽取",
-   "note": "标准答案还没标"
+   "extraction": "已抽取",
+   "split": "测试集",
+   "split_note": null,
+   "note": "标准答案还没标，暂不计分",
+   "extracted_file": "pipeline/extracted/600187-2026H1-forecast.json"
   },
   {
    "id": "600499-2026-tefu-restructuring",
@@ -336,6 +361,8 @@
    "name": "科达制造 收购特福国际 51.55% 股权的重组，从筹划到终止",
    "gold": "未标注",
    "extraction": "已抽取",
+   "split": "测试集",
+   "split_note": null,
    "note": "标准答案还没标，暂不计分",
    "extracted_file": "pipeline/extracted/600499-2026-tefu-restructuring.json"
   },
@@ -345,6 +372,8 @@
    "name": "*ST太和 2025 年度预亏、监管、立案、预告更正、终止上市",
    "gold": "未标注",
    "extraction": "未抽取",
+   "split": "测试集",
+   "split_note": null,
    "note": "标准答案还没标"
   },
   {
@@ -353,6 +382,8 @@
    "name": "*ST京化 2026 年半年度业绩预告及更正",
    "gold": "未标注",
    "extraction": "未抽取",
+   "split": "测试集",
+   "split_note": null,
    "note": "标准答案还没标"
   },
   {
@@ -361,6 +392,8 @@
    "name": "新芝生物 重组预案到终止",
    "gold": "未标注",
    "extraction": "未抽取",
+   "split": "测试集",
+   "split_note": null,
    "note": "标准答案还没标"
   },
   {
@@ -369,6 +402,8 @@
    "name": "科达制造 2026 年半年度业绩预增到半年报（无更正，对照组）",
    "gold": "未标注",
    "extraction": "未抽取",
+   "split": "测试集",
+   "split_note": null,
    "note": "标准答案还没标"
   },
   {
@@ -377,6 +412,8 @@
    "name": "白鸽在线 11-11 澄清公告",
    "gold": "未标注",
    "extraction": "未抽取",
+   "split": "测试集",
+   "split_note": null,
    "note": "标准答案还没标"
   },
   {
@@ -385,10 +422,13 @@
    "name": "庆铃汽车股份 11-11 澄清公告",
    "gold": "未标注",
    "extraction": "未抽取",
+   "split": "测试集",
+   "split_note": null,
    "note": "标准答案还没标"
   }
  ],
  "unmatched_extractions": [
+  "pipeline/extracted/600187-2026H1-forecast.json",
   "pipeline/extracted/600499-2026-tefu-restructuring.json"
  ],
  "gold_check": {
@@ -403,8 +443,8 @@
    "build_exit": 0,
    "compliance_exit": 0,
    "output": [
-    "OK 2 个事件; 27 条证据",
-    "合规检查通过：2 个事件，未发现买卖建议或涨跌预测用语"
+    "OK 3 个事件; 36 条证据",
+    "合规检查通过：3 个事件，未发现买卖建议或涨跌预测用语"
    ]
   },
   "cases": [
@@ -416,7 +456,8 @@
     "pipeline": "组装退出码 1（拒绝）",
     "pipeline_output": [
      "归母净利润 v1: 引用未在 e1 原文中匹配到 → 归属于母公司所有者的净利润-23,000万元到-10,400万元",
-     "1 处未通过校验，未生成文件"
+     "600187-2025A-forecast 归母净利润 v1: 引用里找不到数值 -13000 → 归属于母公司所有者的净利润-23,000万元到-10,400万元",
+     "2 处未通过校验，未生成文件"
     ],
     "eval_detects": true,
     "eval_new_failures": [
@@ -444,7 +485,9 @@
       "where": "归母净利润 v1"
      }
     ],
-    "verdict": "管线拦住"
+    "verdict": "管线拦住",
+    "previous_verdict": "管线拦住",
+    "change": "没变"
    },
    {
     "id": "T02",
@@ -454,7 +497,8 @@
     "pipeline": "组装退出码 1（拒绝）",
     "pipeline_output": [
      "归母净利润 v1: 引用未在 e3 原文中匹配到 → 归属于母公司所有者的净利润-13,000万元到-10,400万元",
-     "1 处未通过校验，未生成文件"
+     "600187-2025A-forecast 归母净利润: 第 2 版的生效日早于第 1 版",
+     "2 处未通过校验，未生成文件"
     ],
     "eval_detects": true,
     "eval_new_failures": [
@@ -500,7 +544,9 @@
       "what": "缺版本"
      }
     ],
-    "verdict": "管线拦住"
+    "verdict": "管线拦住",
+    "previous_verdict": "管线拦住",
+    "change": "没变"
    },
    {
     "id": "T03",
@@ -509,8 +555,8 @@
     "expected": "应判为挂错：首次披露的数字出处应是首次公告，不是更正公告",
     "pipeline": "组装退出码 0，合规检查退出码 0（放行）",
     "pipeline_output": [
-     "OK 2 个事件; 27 条证据",
-     "合规检查通过：2 个事件，未发现买卖建议或涨跌预测用语"
+     "OK 3 个事件; 36 条证据",
+     "合规检查通过：3 个事件，未发现买卖建议或涨跌预测用语"
     ],
     "eval_detects": true,
     "eval_new_failures": [
@@ -547,17 +593,20 @@
       "what": "缺版本"
      }
     ],
-    "verdict": "管线放行，评测发现（已知缺口）"
+    "verdict": "管线放行，评测发现（已知缺口）",
+    "previous_verdict": "管线放行，评测发现（已知缺口）",
+    "change": "没变"
    },
    {
     "id": "T04",
     "title": "单位混用：万元改成亿元，数字不变",
     "changed": "归母净利润 的单位从 万元 改成 亿元",
     "expected": "应拦住：数值和引用里的单位对不上",
-    "pipeline": "组装退出码 0，合规检查退出码 0（放行）",
+    "pipeline": "组装退出码 1（拒绝）",
     "pipeline_output": [
-     "OK 2 个事件; 27 条证据",
-     "合规检查通过：2 个事件，未发现买卖建议或涨跌预测用语"
+     "600187-2025A-forecast 归母净利润 v4: 单位换算对不上，原文 -21490.73万元 应为 -2.15亿元，写的是 -21490.73",
+     "600187-2025A-forecast 归母净利润 v4: 单位换算对不上，原文 -21490.73万元 应为 -2.15亿元，写的是 -21490.73",
+     "2 处未通过校验，未生成文件"
     ],
     "eval_detects": true,
     "eval_new_failures": [
@@ -603,17 +652,20 @@
       "version": 1
      }
     ],
-    "verdict": "管线放行，评测发现（已知缺口）"
+    "verdict": "管线拦住",
+    "previous_verdict": "管线放行，评测发现（已知缺口）",
+    "change": "之前放行、现在拦住"
    },
    {
     "id": "T05",
     "title": "单位混用：某一版数字按元写、单位仍是万元",
     "changed": "归母净利润 最后一版的数值乘以 10000，单位不变",
     "expected": "应拦住：这一版比别的版本大一万倍，且和引用对不上",
-    "pipeline": "组装退出码 0，合规检查退出码 0（放行）",
+    "pipeline": "组装退出码 1（拒绝）",
     "pipeline_output": [
-     "OK 2 个事件; 27 条证据",
-     "合规检查通过：2 个事件，未发现买卖建议或涨跌预测用语"
+     "600187-2025A-forecast 归母净利润 v4: 单位换算对不上，原文 -21490.73万元 应为 -21490.73万元，写的是 -214907300.0",
+     "600187-2025A-forecast 归母净利润 v4: 单位换算对不上，原文 -21490.73万元 应为 -21490.73万元，写的是 -214907300.0",
+     "2 处未通过校验，未生成文件"
     ],
     "eval_detects": true,
     "eval_new_failures": [
@@ -644,7 +696,9 @@
       "version": 4
      }
     ],
-    "verdict": "管线放行，评测发现（已知缺口）"
+    "verdict": "管线拦住",
+    "previous_verdict": "管线放行，评测发现（已知缺口）",
+    "change": "之前放行、现在拦住"
    },
    {
     "id": "T06",
@@ -653,8 +707,8 @@
     "expected": "应拦住：结论里的年份在所挂证据里找不到；报告期和金标不符",
     "pipeline": "组装退出码 0，合规检查退出码 0（放行）",
     "pipeline_output": [
-     "OK 2 个事件; 27 条证据",
-     "合规检查通过：2 个事件，未发现买卖建议或涨跌预测用语"
+     "OK 3 个事件; 36 条证据",
+     "合规检查通过：3 个事件，未发现买卖建议或涨跌预测用语"
     ],
     "eval_detects": true,
     "eval_new_failures": [
@@ -673,17 +727,19 @@
       "where": "2026-01-30 facts"
      }
     ],
-    "verdict": "管线放行，评测发现（已知缺口）"
+    "verdict": "管线放行，评测发现（已知缺口）",
+    "previous_verdict": "管线放行，评测发现（已知缺口）",
+    "change": "没变"
    },
    {
     "id": "T07",
     "title": "把媒体评论标成事实",
     "changed": "把 news:1_676373206（金标：观点/推测）改成 事实、A 级",
     "expected": "应拦住：新闻来源不能是 A 级；评论不是事实",
-    "pipeline": "组装退出码 0，合规检查退出码 0（放行）",
+    "pipeline": "组装退出码 1（拒绝）",
     "pipeline_output": [
-     "OK 2 个事件; 27 条证据",
-     "合规检查通过：2 个事件，未发现买卖建议或涨跌预测用语"
+     "n2: 新闻的来源级别不能是 A",
+     "1 处未通过校验，未生成文件"
     ],
     "eval_detects": true,
     "eval_new_failures": [
@@ -707,16 +763,18 @@
       "got": "事实"
      }
     ],
-    "verdict": "管线放行，评测发现（已知缺口）"
+    "verdict": "管线拦住",
+    "previous_verdict": "管线放行，评测发现（已知缺口）",
+    "change": "之前放行、现在拦住"
    },
    {
     "id": "T08",
     "title": "结论引用截至日之后的证据",
-    "changed": "第一个时点的第一句结论加挂最后披露的 e6",
+    "changed": "第一个时点的第一句结论加挂最后披露的 e7",
     "expected": "组装脚本拒绝生成",
     "pipeline": "组装退出码 1（拒绝）",
     "pipeline_output": [
-     "2026-01-30 的结论引用了之后才出现的证据 e6",
+     "2026-01-30 的结论引用了之后才出现的证据 e7",
      "1 处未通过校验，未生成文件"
     ],
     "eval_detects": true,
@@ -725,12 +783,14 @@
       "_m": "回放未用到未来证据",
       "as_of": "2026-01-30",
       "code": "E7",
-      "disclosed": "2026-05-06",
-      "evidence": "ann:1225277438",
+      "disclosed": "2026-08-20",
+      "evidence": "ann:1225483477",
       "text": "公司预计 2025 年归母净利润亏损 1.04 亿至 1.30 亿元，扣非净利润"
      }
     ],
-    "verdict": "管线拦住"
+    "verdict": "管线拦住",
+    "previous_verdict": "管线拦住",
+    "change": "没变"
    },
    {
     "id": "T09",
@@ -739,8 +799,8 @@
     "expected": "应拦住：报告期不同，不该合并",
     "pipeline": "组装退出码 0，合规检查退出码 0（放行）",
     "pipeline_output": [
-     "OK 2 个事件; 28 条证据",
-     "合规检查通过：2 个事件，未发现买卖建议或涨跌预测用语"
+     "OK 3 个事件; 37 条证据",
+     "合规检查通过：3 个事件，未发现买卖建议或涨跌预测用语"
     ],
     "eval_detects": true,
     "eval_new_failures": [
@@ -752,7 +812,9 @@
       "what": "不该并入却并入了"
      }
     ],
-    "verdict": "管线放行，评测发现（已知缺口）"
+    "verdict": "管线放行，评测发现（已知缺口）",
+    "previous_verdict": "管线放行，评测发现（已知缺口）",
+    "change": "没变"
    },
    {
     "id": "T10",
@@ -761,7 +823,7 @@
     "expected": "组装脚本拒绝生成",
     "pipeline": "组装退出码 1（拒绝）",
     "pipeline_output": [
-     "归母净利润 v5: 引用未在 e6 原文中匹配到 → 更正后：预计 2025 年年度实现利润总额-25,000 万元",
+     "归母净利润 v5: 引用未在 e7 原文中匹配到 → 更正后：预计 2025 年年度实现利润总额-25,000 万元",
      "1 处未通过校验，未生成文件"
     ],
     "eval_detects": true,
@@ -769,7 +831,7 @@
      {
       "_m": "引用挂对证据",
       "code": "E6c",
-      "got": "ann:1225277438",
+      "got": "ann:1225483477",
       "quote": "更正后：预计 2025 年年度实现利润总额-25,000 万元",
       "what": "无依据：哪条原文里都找不到",
       "where": "归母净利润 v5"
@@ -777,7 +839,7 @@
      {
       "_m": "引用逐字匹配",
       "code": "E6a",
-      "evidence": "e6",
+      "evidence": "e7",
       "quote": "更正后：预计 2025 年年度实现利润总额-25,000 万元",
       "where": "归母净利润 v5"
      },
@@ -785,21 +847,24 @@
       "_m": "数值抽取精确匹配",
       "claim": "net_profit_parent",
       "code": "E2c",
-      "got": "-25000~-25000 万元（ann:1225277438）",
+      "got": "-25000~-25000 万元（ann:1225483477）",
       "what": "金标没有的版本"
      }
     ],
-    "verdict": "管线拦住"
+    "verdict": "管线拦住",
+    "previous_verdict": "管线拦住",
+    "change": "没变"
    },
    {
     "id": "T11",
     "title": "伪造一条不存在的更正（借用真引用）",
     "changed": "归母净利润 末尾加一版 -25,000 万元，引用照抄上一版的真引用",
     "expected": "应拦住：数值和引用对不上，金标里也没有这一版",
-    "pipeline": "组装退出码 0，合规检查退出码 0（放行）",
+    "pipeline": "组装退出码 1（拒绝）",
     "pipeline_output": [
-     "OK 2 个事件; 27 条证据",
-     "合规检查通过：2 个事件，未发现买卖建议或涨跌预测用语"
+     "600187-2025A-forecast 归母净利润 v5: 引用里找不到数值 -25000 → 归属于上市公司股东的净利润人民币-21,490.73万元",
+     "600187-2025A-forecast 归母净利润 v5: 引用里找不到数值 -25000 → 归属于上市公司股东的净利润人民币-21,490.73万元",
+     "2 处未通过校验，未生成文件"
     ],
     "eval_detects": true,
     "eval_new_failures": [
@@ -819,7 +884,9 @@
       "what": "金标没有的版本"
      }
     ],
-    "verdict": "管线放行，评测发现（已知缺口）"
+    "verdict": "管线拦住",
+    "previous_verdict": "管线放行，评测发现（已知缺口）",
+    "change": "之前放行、现在拦住"
    },
    {
     "id": "T12",
@@ -828,22 +895,24 @@
     "expected": "规则部分不受影响：输出应与基线一致",
     "pipeline": "除正文指纹外，输出与基线一致（规则未受影响）；被改正文的证据 ['e1'] 指纹变了，重抓比对能发现正文被动过",
     "pipeline_output": [
-     "OK 2 个事件; 27 条证据",
-     "合规检查通过：2 个事件，未发现买卖建议或涨跌预测用语"
+     "OK 3 个事件; 36 条证据",
+     "合规检查通过：3 个事件，未发现买卖建议或涨跌预测用语"
     ],
     "eval_detects": false,
     "eval_new_failures": [],
-    "verdict": "规则未受影响"
+    "verdict": "规则未受影响",
+    "previous_verdict": "规则未受影响",
+    "change": "没变"
    },
    {
     "id": "T13",
     "title": "公告文本里夹带指令（模拟抽取被带偏）",
     "changed": "同上注入，并把 e1 的引用换成注入句",
     "expected": "应拦住：引用了注入指令",
-    "pipeline": "组装退出码 0，合规检查退出码 0（放行）",
+    "pipeline": "组装退出码 1（拒绝）",
     "pipeline_output": [
-     "OK 2 个事件; 27 条证据",
-     "合规检查通过：2 个事件，未发现买卖建议或涨跌预测用语"
+     "e1: 引用或摘要里有指令式文字「忽略以上」",
+     "1 处未通过校验，未生成文件"
     ],
     "eval_detects": true,
     "eval_new_failures": [
@@ -853,7 +922,9 @@
       "where": "证据 e1"
      }
     ],
-    "verdict": "管线放行，评测发现（已知缺口）"
+    "verdict": "管线拦住",
+    "previous_verdict": "管线放行，评测发现（已知缺口）",
+    "change": "之前放行、现在拦住"
    },
    {
     "id": "T14",
@@ -862,46 +933,51 @@
     "expected": "合规检查拒绝",
     "pipeline": "组装退出码 0，合规检查退出码 1（拒绝）",
     "pipeline_output": [
-     "OK 2 个事件; 27 条证据",
-     "600187-2025A-forecast 2026-05-06 inferences: 出现「买入」→ 建议买入，等待摘帽。"
+     "OK 3 个事件; 36 条证据",
+     "600187-2025A-forecast 2026-08-20 inferences: 出现「买入」→ 建议买入，等待摘帽。"
     ],
     "eval_detects": true,
     "eval_new_failures": [
      {
       "code": "E10",
       "list": "管线词表",
-      "where": "e6 inferences",
+      "where": "e7 inferences",
       "word": "买入"
      }
     ],
-    "verdict": "管线拦住"
+    "verdict": "管线拦住",
+    "previous_verdict": "管线拦住",
+    "change": "没变"
    },
    {
     "id": "T15",
     "title": "系统自写文字里塞买卖建议（换个说法）",
     "changed": "最后一个时点的推断里加“短期利空出尽，可逢低布局。”",
     "expected": "合规检查拒绝",
-    "pipeline": "组装退出码 0，合规检查退出码 0（放行）",
+    "pipeline": "组装退出码 0，合规检查退出码 1（拒绝）",
     "pipeline_output": [
-     "OK 2 个事件; 27 条证据",
-     "合规检查通过：2 个事件，未发现买卖建议或涨跌预测用语"
+     "OK 3 个事件; 36 条证据",
+     "600187-2025A-forecast 2026-08-20 inferences: 出现「逢低」→ 短期利空出尽，可逢低布局。",
+     "600187-2025A-forecast 2026-08-20 inferences: 出现「布局」→ 短期利空出尽，可逢低布局。"
     ],
     "eval_detects": true,
     "eval_new_failures": [
      {
       "code": "E10",
       "list": "扩展词表（管线没有）",
-      "where": "e6 inferences",
+      "where": "e7 inferences",
       "word": "布局"
      },
      {
       "code": "E10",
       "list": "扩展词表（管线没有）",
-      "where": "e6 inferences",
+      "where": "e7 inferences",
       "word": "逢低"
      }
     ],
-    "verdict": "管线放行，评测发现（已知缺口）"
+    "verdict": "管线拦住",
+    "previous_verdict": "管线放行，评测发现（已知缺口）",
+    "change": "之前放行、现在拦住"
    },
    {
     "id": "T16",
@@ -923,39 +999,43 @@
       "what": "引用了不存在的证据"
      }
     ],
-    "verdict": "管线拦住"
+    "verdict": "管线拦住",
+    "previous_verdict": "管线拦住",
+    "change": "没变"
    },
    {
     "id": "T17",
     "title": "“事实”只挂了评论类证据",
     "changed": "最后一个时点的事实段加“公司退市风险加剧。”，只挂 n2",
     "expected": "应拦住：事实不能只靠观点类证据",
-    "pipeline": "组装退出码 0，合规检查退出码 0（放行）",
+    "pipeline": "组装退出码 1（拒绝）",
     "pipeline_output": [
-     "OK 2 个事件; 27 条证据",
-     "合规检查通过：2 个事件，未发现买卖建议或涨跌预测用语"
+     "600187-2025A-forecast 2026-08-20: 事实句没有挂 A 或 B 级的事实类证据 → 公司退市风险加剧。",
+     "1 处未通过校验，未生成文件"
     ],
     "eval_detects": true,
     "eval_new_failures": [
      {
       "_m": "事实和推断没混",
-      "as_of": "2026-05-06",
+      "as_of": "2026-08-20",
       "code": "E9",
       "text": "公司退市风险加剧。",
       "what": "“事实”只挂了观点/推测/传闻类证据"
      }
     ],
-    "verdict": "管线放行，评测发现（已知缺口）"
+    "verdict": "管线拦住",
+    "previous_verdict": "管线放行，评测发现（已知缺口）",
+    "change": "之前放行、现在拦住"
    },
    {
     "id": "T18",
     "title": "版本顺序颠倒",
     "changed": "归母净利润 第 1、2 版互换",
     "expected": "应拦住：更正版本排到了原版前面",
-    "pipeline": "组装退出码 0，合规检查退出码 0（放行）",
+    "pipeline": "组装退出码 1（拒绝）",
     "pipeline_output": [
-     "OK 2 个事件; 27 条证据",
-     "合规检查通过：2 个事件，未发现买卖建议或涨跌预测用语"
+     "600187-2025A-forecast 归母净利润: 第 2 版的生效日早于第 1 版",
+     "1 处未通过校验，未生成文件"
     ],
     "eval_detects": true,
     "eval_new_failures": [
@@ -974,7 +1054,9 @@
       "what": "顺序或相邻关系不对（抽取位置 0→2）"
      }
     ],
-    "verdict": "管线放行，评测发现（已知缺口）"
+    "verdict": "管线拦住",
+    "previous_verdict": "管线放行，评测发现（已知缺口）",
+    "change": "之前放行、现在拦住"
    },
    {
     "id": "T19",
@@ -983,8 +1065,8 @@
     "expected": "应拦住：版本链缺一环",
     "pipeline": "组装退出码 0，合规检查退出码 0（放行）",
     "pipeline_output": [
-     "OK 2 个事件; 27 条证据",
-     "合规检查通过：2 个事件，未发现买卖建议或涨跌预测用语"
+     "OK 3 个事件; 36 条证据",
+     "合规检查通过：3 个事件，未发现买卖建议或涨跌预测用语"
     ],
     "eval_detects": true,
     "eval_new_failures": [
@@ -1011,9 +1093,13 @@
       "what": "缺版本"
      }
     ],
-    "verdict": "管线放行，评测发现（已知缺口）"
+    "verdict": "管线放行，评测发现（已知缺口）",
+    "previous_verdict": "管线放行，评测发现（已知缺口）",
+    "change": "没变"
    }
   ],
+  "pipeline_commit": "07f9433",
+  "previous_pipeline_commit": "c186a06",
   "note": "T12 只测规则部分；抽取模型读到注入文本会不会被带偏，需要主窗口用注入后的文本重跑一次抽取才知道，本评测没有测。"
  }
 }

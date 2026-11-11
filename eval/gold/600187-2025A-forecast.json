@@ -1,0 +1,160 @@
+{
+ "id": "600187-2025A-forecast",
+ "name": "*ST国中 2025 年年度业绩：预亏、两次更正、年报兑现、年报表述更正、非经常性损益更正",
+ "code": "600187",
+ "period": "2025A",
+ "event_type": "业绩预告",
+ "labeled_by": "Claude Opus 5.5（模型标注，不是人工标注）",
+ "labeled_at": "2026-11-11",
+ "blind": "标注时没有打开 pipeline/extracted/600187-2025A-forecast.json 和 data/events.json；只看过抽取文件的字段名（值已屏蔽），用来对齐格式。",
+ "sources_read": ["data/raw/text/1224956497.txt", "data/raw/text/1224956491.txt", "data/raw/text/1224987859.txt", "data/raw/text/1225230055.txt", "data/raw/text/1225121518.txt", "data/raw/text/1225230061.txt", "data/raw/text/1225268441.txt", "data/raw/text/1225268438.txt", "data/raw/text/1225277438.txt", "data/raw/text/1225483477.txt", "data/raw/news/600187.SH.json（标题和摘要）"],
+ "scope_note": "任务说明给的时间窗是 1-30 至 5-06。原文显示 8-20 公司又发了《关于 2025 年年度报告非经常性损益更正的公告》，把 2025 年扣非净利润从 -59,762,087.53 元改成 -214,628,790.66 元，属于同一件事（2025 年年度业绩）。标准答案把它列为必含证据，并标 outside_brief_window=true；报告里单独说明。",
+ "evidence": [
+  {"key": "ann:1224956497", "membership": "required", "kind": "事实", "tier": "A", "role": "首次披露", "disclosed": "2026-01-30",
+   "quote": "预计 2025 年年度实现归属于母公司所有者的净利润-13,000 万元到-10,400 万元，与上年同期相比，将出现亏损"},
+  {"key": "ann:1225121518", "membership": "required", "kind": "事实", "tier": "A", "role": "更正", "disclosed": "2026-04-18",
+   "quote": "更正后的业绩预告情况：预计 2025 年年度实现利润总额-13,900 万元到-11,200 万元"},
+  {"key": "ann:1225230061", "membership": "required", "kind": "事实", "tier": "A", "role": "更正", "disclosed": "2026-04-29",
+   "quote": "更正后的业绩预告情况：预计 2025 年年度实现利润总额-19,651 万元"},
+  {"key": "ann:1225268441", "membership": "required", "kind": "事实", "tier": "A", "role": "兑现", "disclosed": "2026-04-30", "equivalent": ["ann:1225268476"],
+   "quote": "公司2025年度合并报表实现归属于上市公司股东的净利润人民币 -21,490.73万元", "note": "年报摘要；年报全文 1225268476 视为同一条证据"},
+  {"key": "ann:1225268438", "membership": "required", "kind": "事实", "tier": "A", "role": "状态变化", "disclosed": "2026-04-30",
+   "quote": "公司股票将于 2026 年 4 月 30 日停牌一天，于 2026 年 5 月 6 日起实施退市风险警示", "note": "年报兑现后的直接后果：实施 *ST 和其他风险警示"},
+  {"key": "ann:1225277438", "membership": "required", "kind": "事实", "tier": "A", "role": "更正", "disclosed": "2026-05-06",
+   "quote": "20.89%的股权”的表述有误，应为“间接持有北京汇源食品饮料有限公司（简称北京汇源）21.89%的股权”", "note": "更正年报、审计报告、4-29 再次更正公告里的持股比例；另把关联资金往来表的单位从“万元”更正为“元”"},
+  {"key": "ann:1225483477", "membership": "required", "kind": "事实", "tier": "A", "role": "更正", "disclosed": "2026-08-20", "outside_brief_window": true,
+   "quote": "对原列入非经常性损益的的长期股权投资减值准备项目进行更正，将其从非经常性损益项目中剔除，纳入经常性损益列报"},
+
+  {"key": "ann:1224956491", "membership": "optional", "kind": "事实", "tier": "A", "role": "风险提示", "disclosed": "2026-01-30", "quote": "本公司股票可能被上海证券交易所实施退市风险警示"},
+  {"key": "ann:1224987859", "membership": "optional", "kind": "事实", "tier": "A", "role": "风险提示", "disclosed": "2026-02-28", "quote": "本次风险提示公告为公司股票可能被实施退市风险警示的第二次风险提示公告"},
+  {"key": "ann:1225042358", "membership": "optional", "kind": "事实", "tier": "A", "role": "风险提示", "disclosed": "2026-03-28", "quote": null},
+  {"key": "ann:1225230055", "membership": "optional", "kind": "事实", "tier": "A", "role": "其他", "disclosed": "2026-04-29", "quote": "公司将 2025 年年度报告的披露时间延期至 2026 年 4 月 30 日"},
+  {"key": "ann:1225268448", "membership": "optional", "kind": "事实", "tier": "A", "role": "其他", "disclosed": "2026-04-30", "quote": null, "note": "计提减值准备公告，正文未下载"},
+  {"key": "ann:1225268436", "membership": "optional", "kind": "事实", "tier": "A", "role": "其他", "disclosed": "2026-04-30", "quote": null},
+  {"key": "ann:1225268456", "membership": "optional", "kind": "事实", "tier": "A", "role": "其他", "disclosed": "2026-04-30", "quote": null},
+  {"key": "ann:1225268474", "membership": "optional", "kind": "事实", "tier": "A", "role": "其他", "disclosed": "2026-04-30", "quote": null},
+  {"key": "ann:1225268433", "membership": "optional", "kind": "事实", "tier": "A", "role": "其他", "disclosed": "2026-04-30", "quote": null},
+  {"key": "ann:1225277429", "membership": "optional", "kind": "事实", "tier": "A", "role": "更正", "disclosed": "2026-05-06", "quote": null, "note": "年报修订版"},
+  {"key": "ann:1225277487", "membership": "optional", "kind": "事实", "tier": "A", "role": "更正", "disclosed": "2026-05-06", "quote": null},
+  {"key": "ann:1225277489", "membership": "optional", "kind": "事实", "tier": "A", "role": "更正", "disclosed": "2026-05-06", "quote": null},
+  {"key": "ann:1225277421", "membership": "optional", "kind": "事实", "tier": "A", "role": "更正", "disclosed": "2026-05-06", "quote": null},
+  {"key": "ann:1225277463", "membership": "optional", "kind": "事实", "tier": "A", "role": "更正", "disclosed": "2026-05-06", "quote": null},
+  {"key": "ann:1225433443", "membership": "optional", "kind": "事实", "tier": "A", "role": "监管问询回复", "disclosed": "2026-07-21", "quote": null, "note": "年报问询函部分回复，可以并入也可以单列为后续事件"},
+  {"key": "ann:1225433435", "membership": "optional", "kind": "事实", "tier": "A", "role": "监管问询回复", "disclosed": "2026-07-21", "quote": null},
+  {"key": "ann:1225483493", "membership": "optional", "kind": "事实", "tier": "A", "role": "监管问询回复", "disclosed": "2026-08-20", "quote": null},
+  {"key": "ann:1225483474", "membership": "optional", "kind": "事实", "tier": "A", "role": "监管问询回复", "disclosed": "2026-08-20", "quote": null},
+
+  {"key": "news:100_55964293", "membership": "optional", "kind": "事实", "tier": "A", "role": "风险提示", "disclosed": "2026-01-30", "quote": "国中水务：公司股票可能被实施退市风险警示的风险提示公告", "note": "上交所网站上的公告原件，经新闻接口转来"},
+  {"key": "news:100_56464361", "membership": "optional", "kind": "事实", "tier": "A", "role": "风险提示", "disclosed": "2026-02-28", "quote": null},
+  {"key": "news:100_56925061", "membership": "optional", "kind": "事实", "tier": "A", "role": "风险提示", "disclosed": "2026-03-28", "quote": null},
+  {"key": "news:100_57877959", "membership": "optional", "kind": "事实", "tier": "A", "role": "兑现", "disclosed": "2026-04-30", "quote": null},
+  {"key": "news:100_57877903", "membership": "optional", "kind": "事实", "tier": "A", "role": "兑现", "disclosed": "2026-04-30", "quote": null},
+  {"key": "news:1_674405679", "membership": "optional", "kind": "事实", "tier": "B", "role": "转述", "disclosed": "2026-01-29", "quote": "国中水务公告，预计2025年年度实现归属于母公司所有者的净利润为-1.3亿元到-1.04亿元"},
+  {"key": "news:1_674406137", "membership": "optional", "kind": "事实", "tier": "B", "role": "转述", "disclosed": "2026-01-29", "quote": "预计2025年度实现归属于母公司所有者的净利润亏损1.3亿元到1.04亿元"},
+  {"key": "news:1_674406410", "membership": "optional", "kind": "事实", "tier": "B", "role": "转述", "disclosed": "2026-01-29", "quote": "净利润同比下降398.31%至338.65%", "note": "同比是接口方自己算的，和公告的上年同期 4,357.92 万元对得上"},
+  {"key": "news:1_674412333", "membership": "optional", "kind": "事实", "tier": "B", "accept_kind": ["事实", "观点"], "accept_tier": ["B", "C"], "role": "转述", "disclosed": "2026-01-29", "quote": "刚刚，6家公司发布利空！", "note": "正文是转述，标题“利空”是定性判断，两种标法都接受"},
+  {"key": "news:1_676084956", "membership": "optional", "kind": "事实", "tier": "B", "role": "转述", "disclosed": "2026-04-17", "quote": "更正后，预计2025年年度实现归属于母公司所有者的净利润为-1.55亿元到-1.3亿元"},
+  {"key": "news:1_676085159", "membership": "optional", "kind": "事实", "tier": "B", "role": "转述", "disclosed": "2026-04-17", "quote": "净利润同比下降455.67%至398.31%"},
+  {"key": "news:1_676348208", "membership": "optional", "kind": "事实", "tier": "B", "role": "转述", "disclosed": "2026-04-28", "quote": "归属于上市公司股东的净利润为-2.15亿"},
+  {"key": "news:1_676373206", "membership": "optional", "kind": "观点", "tier": "C", "accept_tier": ["C", "B"], "role": "评论", "disclosed": "2026-04-29", "quote": "国中水务半月内两度下修业绩预告 亏损扩大退市风险加剧", "note": "“退市风险加剧”是媒体判断"},
+  {"key": "news:1_676394432", "membership": "optional", "kind": "事实", "tier": "B", "role": "转述", "disclosed": "2026-04-29", "quote": "公司股票自2026年4月30日起停牌一天，并于2026年5月6日起实施退市风险警示"},
+  {"key": "news:1_676394705", "membership": "optional", "kind": "事实", "tier": "B", "accept_kind": ["事实", "观点"], "accept_tier": ["B", "C", "D"], "role": "转述", "disclosed": "2026-04-29", "quote": "近五年总体财务状况低于行业平均水平", "note": "前半句转述年报，后半句是接口方模型的评价，混合体"},
+  {"key": "news:1_676395364", "membership": "optional", "kind": "事实", "tier": "B", "role": "转述", "disclosed": "2026-04-29", "quote": "扣非净利润为-5,976.21万元"},
+  {"key": "news:1_676437966", "membership": "optional", "kind": "事实", "tier": "B", "accept_kind": ["事实", "观点"], "accept_tier": ["B", "C"], "role": "综述", "disclosed": "2026-05-01", "quote": null},
+  {"key": "news:1_674123599", "membership": "optional", "kind": "推测", "tier": "C", "accept_kind": ["推测", "观点"], "accept_tier": ["C", "D"], "role": "背景", "disclosed": "2026-01-19", "quote": "粤民投与文盛达成和解 汇源果汁回A有望？", "added_after_adjudication": true, "note": "盲标时没列；看到抽取后回原文裁决补入，见 adjudication.md A4。讲的是汇源股权纠纷和解，是减值的背景，标题带问号"},
+  {"key": "anomaly:2026-01-30|跌停", "membership": "optional", "kind": "推测", "tier": "D", "role": "异动归因", "disclosed": "2026-01-30", "quote": "据2026年1月30日风险提示公告，公司预计2025年度归母净利润亏损1.04亿元至1.3亿元"},
+  {"key": "anomaly:2026-02-02|大跌", "membership": "optional", "kind": "推测", "tier": "D", "role": "异动归因", "disclosed": "2026-02-02", "quote": null},
+  {"key": "anomaly:2026-05-06|跌停", "membership": "optional", "kind": "推测", "tier": "D", "role": "异动归因", "disclosed": "2026-05-06", "quote": null},
+  {"key": "anomaly:2026-05-07|跌停", "membership": "optional", "kind": "推测", "tier": "D", "role": "异动归因", "disclosed": "2026-05-07", "quote": null},
+  {"key": "anomaly:2026-05-08|跌停", "membership": "optional", "kind": "推测", "tier": "D", "role": "异动归因", "disclosed": "2026-05-08", "quote": "公司2025年度归母净利润-2.15亿元、扣非后净利润-0.60亿元"}
+ ],
+ "exclude": [
+  {"key": "ann:1225414043", "reason": "2026 年半年度业绩预告，报告期不同（事件 2）"},
+  {"key": "ann:1225480593", "reason": "2026 年半年度业绩预告更正（事件 2）"},
+  {"key": "ann:1225485841", "reason": "2026 年半年度报告（事件 2）"},
+  {"key": "ann:1225485836", "reason": "2026 年半年度报告摘要（事件 2）"},
+  {"key": "ann:1225268446", "reason": "2026 年第一季度报告，报告期不同"},
+  {"key": "news:1_678012683", "reason": "2026 年半年度业绩预告快讯（事件 2）"},
+  {"key": "news:1_678014033", "reason": "2026 年半年度业绩预告报道（事件 2）"},
+  {"key": "news:1_679138024", "reason": "2026 年半年报快讯（事件 2）"},
+  {"key": "news:1_676394430", "reason": "2026 年一季报快讯"}
+ ],
+ "claims": [
+  {"key": "total_profit", "label": "利润总额", "required": true, "unit": "万元", "versions": [
+   {"evidence": "ann:1224956497", "low": -11000, "high": -8800, "unit": "万元", "basis": "预告", "quote": "预计 2025 年年度实现利润总额-11,000 万元到-8,800 万元"},
+   {"evidence": "ann:1225121518", "low": -13900, "high": -11200, "unit": "万元", "basis": "预告更正", "quote": "预计 2025 年年度实现利润总额-13,900 万元到-11,200 万元"},
+   {"evidence": "ann:1225230061", "low": -19651, "high": -19651, "unit": "万元", "basis": "预告再次更正", "quote": "预计 2025 年年度实现利润总额-19,651 万元"},
+   {"evidence": "ann:1225268441", "alt_evidence": ["ann:1225268476", "ann:1225268438"], "low": -196514386.50, "high": -196514386.50, "unit": "元", "basis": "经审计年报", "quote": "利润总额           -196,514,386.50"}
+  ]},
+  {"key": "net_profit_parent", "label": "归母净利润", "required": true, "unit": "万元", "versions": [
+   {"evidence": "ann:1224956497", "low": -13000, "high": -10400, "unit": "万元", "basis": "预告", "quote": "归属于母公司所有者的净利润-13,000 万元到-10,400 万元"},
+   {"evidence": "ann:1225121518", "low": -15500, "high": -13000, "unit": "万元", "basis": "预告更正", "quote": "实现归属于母公司所有者的净利润-15,500 万元到-13,000 万元"},
+   {"evidence": "ann:1225230061", "low": -21491, "high": -21491, "unit": "万元", "basis": "预告再次更正", "quote": "实现归属于母公司所有者的净利润-21,491 万元"},
+   {"evidence": "ann:1225268441", "alt_evidence": ["ann:1225268476", "ann:1225268438"], "low": -21490.73, "high": -21490.73, "unit": "万元", "basis": "经审计年报", "quote": "公司2025年度合并报表实现归属于上市公司股东的净利润人民币 -21,490.73万元"}
+  ]},
+  {"key": "net_profit_deducted", "label": "扣非归母净利润", "required": true, "unit": "万元", "versions": [
+   {"evidence": "ann:1224956497", "low": 900, "high": 1080, "unit": "万元", "basis": "预告", "quote": "归属于母公司所有者的扣除非经常性损益后的净利润为 900 万元到 1,080 万元"},
+   {"evidence": "ann:1225121518", "low": -3600, "high": -2900, "unit": "万元", "basis": "预告更正", "quote": "常性损益后的净利润为-3,600 万元到-2,900 万元"},
+   {"evidence": "ann:1225230061", "low": -5976, "high": -5976, "unit": "万元", "basis": "预告再次更正", "quote": "扣除非经常性损益后的净利润为-5,976 万元"},
+   {"evidence": "ann:1225268441", "alt_evidence": ["ann:1225268476", "ann:1225268438"], "low": -59762087.53, "high": -59762087.53, "unit": "元", "basis": "经审计年报", "quote": "东的扣除非经常性        -59,762,087.53"},
+   {"evidence": "ann:1225483477", "low": -214628790.66, "high": -214628790.66, "unit": "元", "basis": "年报非经常性损益更正", "outside_brief_window": true, "quote": "归属于上市公司股东的扣除非\n -214,628,790.66"}
+  ]},
+  {"key": "revenue", "label": "营业收入", "required": true, "unit": "万元", "versions": [
+   {"evidence": "ann:1224956497", "low": 21000, "high": 25200, "unit": "万元", "basis": "预告", "quote": "预计 2025 年年度实现营业收入 21,000 万元到 25,200 万元"},
+   {"evidence": "ann:1225121518", "low": 20000, "high": 24000, "unit": "万元", "basis": "预告更正", "quote": "预计 2025 年年度实现营业收入 20,000 万元到 24,000 万元"},
+   {"evidence": "ann:1225230061", "low": 22282, "high": 22282, "unit": "万元", "basis": "预告再次更正", "quote": "预计 2025 年年度实现营业收入 22,282 万元"},
+   {"evidence": "ann:1225268441", "alt_evidence": ["ann:1225268476", "ann:1225268438"], "low": 222815735.23, "high": 222815735.23, "unit": "元", "basis": "经审计年报", "quote": "营业收入            222,815,735.23"}
+  ]},
+  {"key": "revenue_deducted", "label": "扣除后营业收入", "required": true, "unit": "万元", "versions": [
+   {"evidence": "ann:1224956497", "low": 19000, "high": 22800, "unit": "万元", "basis": "预告", "quote": "不具备商业实质的收入后的营业收入为 19,000 万元到 22,800 万元"},
+   {"evidence": "ann:1225121518", "low": 17500, "high": 21000, "unit": "万元", "basis": "预告更正", "quote": "收入后的营业收入为 17,500 万元到 21,000 万元"},
+   {"evidence": "ann:1225230061", "low": 19233, "high": 19233, "unit": "万元", "basis": "预告再次更正", "quote": "的收入后的营业收入为 19,233 万元"},
+   {"evidence": "ann:1225268441", "alt_evidence": ["ann:1225268476", "ann:1225268438"], "low": 192331960.24, "high": 192331960.24, "unit": "元", "basis": "经审计年报", "quote": "关的业务收入和不\n 192,331,960.24"}
+  ]},
+  {"key": "huiyuan_indirect_stake", "label": "间接持有北京汇源股权比例", "required": true, "unit": "%", "versions": [
+   {"evidence": "ann:1225230061", "alt_evidence": ["ann:1225268441", "ann:1225268476", "ann:1225268436"], "low": 20.89, "high": 20.89, "unit": "%", "basis": "再次更正公告和年报原表述", "quote": "间接持有北京汇源食品饮料有限公司（简称北京汇源）20.89%的股权"},
+   {"evidence": "ann:1225277438", "low": 21.89, "high": 21.89, "unit": "%", "basis": "公司更正", "quote": "应为“间接持有北京汇源食品饮料有限公司（简称北京汇源）21.89%的股权”"}
+  ]},
+  {"key": "lt_investment_impairment", "label": "对诸暨文盛汇长期股权投资减值", "required": false, "unit": "万元", "versions": [
+   {"evidence": "ann:1224956497", "low": 24222, "high": 24222, "unit": "万元", "basis": "预告（约数）", "quote": "对该长期股权投资减值约 24,222"},
+   {"evidence": "ann:1225230061", "low": 15486.67, "high": 15486.67, "unit": "万元", "basis": "预告再次更正", "quote": "计提资产减值损失 15，486.67 万元", "note": "原文数字里用的是全角逗号“15，486.67”，解析数字时容易出错"}
+  ]},
+  {"key": "investment_income_wenshenghui", "label": "对诸暨文盛汇投资收益", "required": false, "unit": "万元", "versions": [
+   {"evidence": "ann:1224956497", "low": 15835, "high": 15835, "unit": "万元", "basis": "预告", "quote": "投资有限公司的投资收益 15,835 万元"},
+   {"evidence": "ann:1225230061", "low": 0, "high": 0, "unit": "万元", "basis": "预告再次更正（不再确认）", "quote": "现 2025 年度不再确认投资收益"}
+  ]}
+ ],
+ "supersessions": [
+  {"from": "ann:1224956497", "to": "ann:1225121518", "type": "更正", "quote": "公司于 2025 年 1 月 30 日在上海证券交易所网站披露了《2025 年年度业绩预亏公告》"},
+  {"from": "ann:1225121518", "to": "ann:1225230061", "type": "更正", "quote": "公司于 2026 年 4 月 18 日在上海证券交易所网站披露了《2025 年年度业绩预告更正公告》"},
+  {"from": "ann:1225230061", "to": "ann:1225268441", "type": "兑现", "quote": "公司2025年度合并报表实现归属于上市公司股东的净利润人民币 -21,490.73万元", "accept_targets": ["ann:1225230061", "ann:1225121518", "ann:1224956497"]},
+  {"from": "ann:1225230061", "to": "ann:1225277438", "type": "更正", "quote": "2026 年 4 月 29 日\n\n披露的《2025 年年度业绩预告再次更正公告》（公告编号：临 2026-015）", "accept_targets": ["ann:1225230061", "ann:1225268441", "ann:1225268476", "ann:1225268436"]},
+  {"from": "ann:1225268441", "to": "ann:1225483477", "type": "更正", "quote": "对公司2025年年度报告中非经常性损益及相关财务信息进行更正", "accept_targets": ["ann:1225268441", "ann:1225268476"], "outside_brief_window": true}
+ ],
+ "status_checkpoints": [
+  {"as_of": "2026-01-30", "state": "已预告", "evidence": "ann:1224956497", "quote": "预计 2025 年年度实现归属于母公司所有者的净利润-13,000 万元到-10,400 万元"},
+  {"as_of": "2026-04-17", "state": "已预告", "evidence": "ann:1224956497", "quote": "预计 2025 年年度实现归属于母公司所有者的净利润-13,000 万元到-10,400 万元", "note": "第一次更正前一天，用来查回放有没有提前用到更正"},
+  {"as_of": "2026-04-18", "state": "预告更正", "evidence": "ann:1225121518", "quote": "2025 年年度业绩预告更正公告"},
+  {"as_of": "2026-04-29", "state": "预告更正", "evidence": "ann:1225230061", "quote": "2025 年年度业绩预告再次更正公告"},
+  {"as_of": "2026-04-30", "state": "已兑现", "evidence": "ann:1225268441", "quote": "公司2025年度合并报表实现归属于上市公司股东的净利润人民币 -21,490.73万元"},
+  {"as_of": "2026-05-06", "state": "定期报告更正", "evidence": "ann:1225277438", "quote": "关于 2025 年年度报告及相关公告的更正公告"},
+  {"as_of": "2026-08-20", "state": "定期报告更正", "evidence": "ann:1225483477", "quote": "关于 2025 年年度报告非经常性损益更正的公告", "outside_brief_window": true}
+ ],
+ "conflicts": [
+  {"id": "G1", "required": true, "evidence": ["ann:1225230061", "ann:1225277438"], "match_any": ["20.89", "21.89"],
+   "text": "4-29 再次更正公告（及 4-30 年报、审计报告）写间接持有北京汇源 20.89%，5-06 公司更正为 21.89%。", "resolved_by": "ann:1225277438", "resolution": "公司更正",
+   "quotes": [["ann:1225230061", "间接持有北京汇源食品饮料有限公司（简称北京汇源）20.89%的股权"], ["ann:1225277438", "应为“间接持有北京汇源食品饮料有限公司（简称北京汇源）21.89%的股权”"]]},
+  {"id": "G2", "required": true, "evidence": ["ann:1225121518", "ann:1224956497"], "match_any": ["2025 年 1 月 30", "2025年1月30", "2025-01-30"],
+   "text": "4-18 更正公告说首次预告是“2025 年 1 月 30 日”披露的，实际是 2026 年 1 月 30 日（公告编号临 2026-003，落款 2026 年 1 月 30 日）。公司没有更正这处笔误。", "resolved_by": null, "resolution": "系统推断：按公告编号和落款日期判断是年份笔误",
+   "quotes": [["ann:1225121518", "公司于 2025 年 1 月 30 日在上海证券交易所网站披露了《2025 年年度业绩预亏公告》"], ["ann:1224956497", "2026 年 1 月 30 日"]]},
+  {"id": "G3", "required": false, "evidence": ["ann:1225268441", "ann:1225483477"], "match_any": ["-214,628,790.66", "-21,462", "-2.15亿", "非经常性损益"],
+   "text": "年报扣非净利润 -59,762,087.53 元，8-20 公司更正为 -214,628,790.66 元（减值从非经常性损益剔除）。属于公司更正，也可以只在版本链里体现。", "resolved_by": "ann:1225483477", "resolution": "公司更正",
+   "quotes": [["ann:1225483477", "归属于上市公司股东的扣除非\n -214,628,790.66      -59,762,087.53"]]},
+  {"id": "G4", "required": false, "evidence": ["ann:1225483477", "ann:1225230055"], "match_any": ["4月28日", "4 月 28 日"],
+   "text": "8-20 更正公告说年报是 2026 年 4 月 28 日披露的；4-29 的延期公告写年报延期至 4 月 30 日披露，巨潮披露日也是 4-30。", "resolved_by": null, "resolution": "系统推断：以延期公告和巨潮披露日为准",
+   "quotes": [["ann:1225483477", "公司于2026年4月28日披露了《2025年年度报告》及相关审计报告"], ["ann:1225230055", "公司将 2025 年年度报告的披露时间延期至 2026 年 4 月 30 日"]]},
+  {"id": "G5", "required": false, "evidence": ["ann:1225268441", "ann:1225268438"], "match_any": ["特殊普通合伙"],
+   "text": "年报摘要写审计机构是“深圳旭泰会计师事务所（普通合伙）”，同日的风险警示公告写“（特殊普通合伙）”。", "resolved_by": null, "resolution": "未解决，影响小",
+   "quotes": [["ann:1225268441", "深圳旭泰会计师事务所（普通合伙）为本公司出具了保留意见的审计报告"], ["ann:1225268438", "经深圳旭泰会计师事务所（特殊普通合伙）"]]}
+ ]
+}

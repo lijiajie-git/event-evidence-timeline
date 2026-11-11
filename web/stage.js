@@ -47,7 +47,7 @@ function pickExpire() {
 function hero(px) {
   if (!px) { $('#hero-table').innerHTML = ''; return; }
   const { e, c, vs } = px; const unit = c.unit || vs[0].unit;
-  const short = (x) => (x && x.title ? cut(x.title.replace(/^.*?(公司|关于)/, '').replace(/^关于/, ''), 15) : docName(x));
+  const short = (x) => docName(x);
   $('#hero-table').innerHTML = `<table class="vtable"><caption>${esc(e.name)}的${esc(c.key)}，前后 ${vs.length} 个版本</caption>
     <thead><tr><th>披露日</th><th>来源</th><th>${esc(c.key)}</th></tr></thead><tbody>
     ${vs.map((v) => `<tr><td>${md(v.valid_from)}</td><td class="s">${esc(short(evidenceById(e, v.evidence_id)))}</td><td class="v">${esc(money(v, unit, c.key))}</td></tr>`).join('')}

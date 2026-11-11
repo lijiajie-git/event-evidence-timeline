@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>事件证据时间线</title>
 <meta name="description" content="同一件事在公告和报道里怎么变的：最早怎么说，后来改了什么，现在算数的是哪一版。">
-<link rel="stylesheet" href="web/stage.css">
+<link rel="stylesheet" href="web/stage.css?v=dev">
 </head>
 <body>
 <header class="bar">
@@ -77,6 +77,14 @@
   <p class="links"><a href="workbench.html">工作台</a><a href="https://github.com/lijiajie-git/event-evidence-timeline" target="_blank" rel="noopener">GitHub</a><button id="theme" type="button"></button></p>
 </footer>
 <noscript><p style="padding:20px">这个页面需要 JavaScript 才能读取数据文件。</p></noscript>
-<script type="module" src="web/stage.js"></script>
+<!-- 版本号：仓库里是 v=dev，发布时由 .github/workflows/pages.yml 换成提交号，浏览器就不会拿旧脚本配新页面。
+     模块之间的 import 也走这张表，所以被引用的模块同样带版本号。 -->
+<script type="importmap">{"imports": {
+  "./web/core.js": "./web/core.js?v=dev",
+  "./web/verify.js": "./web/verify.js?v=dev",
+  "./web/source.js": "./web/source.js?v=dev",
+  "./web/sections.js": "./web/sections.js?v=dev"
+}}</script>
+<script type="module" src="web/stage.js?v=dev"></script>
 </body>
 </html>

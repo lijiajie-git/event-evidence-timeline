@@ -129,7 +129,7 @@ function head(e, a) {
   const f = e.first_source;
   const counts = {}; a.evidence.forEach((x) => { const k = srcType(x); counts[k] = (counts[k] || 0) + 1; });
   const bits = [];
-  if (f && f.disclosed && f.disclosed <= a.D) bits.push(`最早出处 <button class="lnk" data-tag-ids="${esc(f.evidence_id)}" data-tag-ev="${esc(e.id)}">${esc(f.doc_no ? (/^临/.test(f.doc_no) ? f.doc_no : '公告 ' + f.doc_no) : '公告')}</button>，${md(f.disclosed)}`);
+  if (f && f.disclosed && f.disclosed <= a.D) bits.push(`最早出处 <button class="lnk" data-tag-ids="${esc(f.evidence_id)}" data-tag-ev="${esc(e.id)}">${esc(docName(evidenceById(e, f.evidence_id)) || f.doc_no || '公告')}</button>，${md(f.disclosed)}`);
   ['公告', '媒体转述', '评论', '推测', '传闻'].forEach((k) => counts[k] && bits.push(`${k} ${counts[k]}`));
   if (a.conflicts.length) bits.push(`冲突 ${a.conflicts.length}`);
   bits.push(`<button class="lnk" data-merge aria-expanded="${!!S.mergeOpen}">为什么算同一件事 ›</button>`);

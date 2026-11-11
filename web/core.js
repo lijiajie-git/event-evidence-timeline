@@ -181,11 +181,12 @@ export function tierLabel(x, weights) {
   return { tier: t || null, label: x.tier_note || (w && w.label) || null, weight: x.weight ?? (w && w.w) ?? null };
 }
 export const SRC_NAME = { ann: '公告', news: '新闻', anomaly: '异动解读', report: '研报', qa: '互动问答' };
+// 指代一条证据的短名字：统一用数据里的 label（公告编号、整理过的短标题或来源名），不自己截标题
 export function docName(x) {
   if (!x) return '未知证据';
-  if (x.doc_no) return /^临|公告/.test(x.doc_no) ? x.doc_no : '公告 ' + x.doc_no;
-  if (x.src === 'ann' && x.title) return x.title.replace(/^.*?(关于|公司)/, '').slice(0, 12);
-  return x.source || x.id;
+  const l = x.label || x.doc_no;
+  if (l) return /^\d{4}\s*[-–]\s*\d+$/.test(l) ? '公告 ' + l : l;
+  return x.source || (x.src === 'ann' ? '公告' : '证据');
 }
 export function timeLine(x) {
   const t = x.times || {};

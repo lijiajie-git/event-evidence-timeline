@@ -45,39 +45,76 @@ export function renderEvalSection(el, res, events) {
   if (!res || !res.ok || !isObj(res.data)) { el.innerHTML = absent('评测成绩单', res || { path: 'eval/report.json' }); return; }
   const r = res.data;
   const names = Object.fromEntries(((events && events.events) || []).map((e) => [e.id, `${e.name} · ${e.title || e.type || ''}`]));
-  const split = isObj(r.summary_by_split) ? r.summary_by_split : (isObj(r.summary) ? { 全部: { summary: r.summary } } : {});
-  const splitNames = Object.keys(split);
-  const groups = isObj(r.groups) ? r.groups : { 指标: Object.keys((split[splitNames[0]] || {}).summary || {}) };
-  const gname = { results: '结果对不对', process: '过程守没守规矩' };
+  const fp = isObj(r.first_pass) ? r.first_pass : null;
+  const order = (fp && Array.isArray(fp.metric_order) && fp.metric_order.length) ? fp.metric_order
+    : (isObj(r.groups) ? Object.values(r.groups).flat() : Object.keys(r.summary || {}));
   const scored = (o) => o && o.den > 0;
   const bar = (o) => (scored(o) ? `<span class="mb"><span class="mbf ${o.value < 1 ? 'low' : ''}" style="width:${Math.max(2, o.value * 100)}%"></span></span><span class="mv">${pct(o.value)}</span><span class="mn">${esc(o.num)}/${esc(o.den)}</span>` : '<span class="mnone">还没有打分</span>');
-  const splitDesc = splitNames.map((k) => {
-    const ids = (split[k] && split[k].events) || [];
-    const evNotes = (r.events || []).filter((e) => e.split === k && e.split_note).map((e) => e.split_note);
-    return `<div class="split"><b>${esc(k)}</b><span>${ids.length ? `${ids.length} 个事件：${ids.map((id) => esc(names[id] || id)).join('；')}` : '还没有事件'}</span>${evNotes.length ? `<small>${evNotes.map(esc).join(' ')}</small>` : ''}</div>`;
-  }).join('');
-  const table = Object.entries(groups).map(([g, list]) => `<h3 class="sub">${esc(gname[g] || g)}</h3>
-    <div class="mt"><div class="mrow head"><span>指标</span>${splitNames.map((k) => `<span>${esc(k)}</span>`).join('')}</div>
-    ${list.map((m) => `<div class="mrow"><span class="mname">${esc(m)}</span>${splitNames.map((k) => { const o = ((split[k] || {}).summary || {})[m]; return `<span class="mcell"><em class="sl">${esc(k)}</em>${bar(o)}${o && o.recall != null && scored(o) ? `<small>召回 ${esc(o.recall_num)}/${esc(o.recall_den)}</small>` : ''}</span>`; }).join('')}</div>`).join('')}</div>`).join('');
+  const big = (o, label, sub) => `<div><span class="big">${scored(o) ? pct(o.value) : '—'}</span><small>${label}${scored(o) ? `：${esc(o.num)}/${esc(o.den)}` : '：还没有打分'}</small>${sub ? `<small class="sub">${sub}</small>` : ''}</div>`;
+  // 多列指标表：cols = [[列名, summary对象, 列说明]]；notesFrom 取 changed_by_adjudication
+  const mtable = (cols, notesFrom) => `<div class="mt"><div class="mrow head" style="grid-template-columns: 11em repeat(${cols.length}, minmax(0, 1fr))"><span>指标</span>${cols.map(([k]) => `<span>${esc(k)}</span>`).join('')}</div>
+    ${order.map((m) => { const note = notesFrom && notesFrom[m] && notesFrom[m].changed_by_adjudication; return `<div class="mrow ${note ? 'diff' : ''}" style="grid-template-columns: 11em repeat(${cols.length}, minmax(0, 1fr))"><span class="mname">${esc(m)}</span>${cols.map(([k, sum]) => { const o = sum && sum[m]; return `<span class="mcell"><em class="sl">${esc(k)}</em>${bar(o)}${o && o.recall != null && scored(o) ? `<small>召回 ${esc(o.recall_num)}/${esc(o.recall_den)}</small>` : ''}</span>`; }).join('')}${note ? `<span class="mnote">裁决改动：${esc(note)}</span>` : ''}</div>`; }).join('')}</div>`;
+
   // 陷阱
   const traps = r.traps && Array.isArray(r.traps.cases) ? r.traps.cases : [];
   const cat = (t) => (/放行|没拦住|未拦住/.test(t.verdict || '') ? 'leak' : /拦住/.test(t.verdict || '') ? 'caught' : 'other');
   const cnt = (c) => traps.filter((t) => cat(t) === c).length;
-  const trapHtml = traps.length ? `<h3 class="sub">陷阱用例：故意把数据改坏，看管线拦不拦得住</h3>
+
+  let html = r.gold_note ? `<div class="absent caveat"><b>先说清楚：</b>${esc(r.gold_note)}</div>` : '';
+  if (fp) {
+    const S = fp.summary || {}, SB = fp.summary_blind_gold || {}, E1 = fp.event1 || null, W = fp.summary_with_event1 || {};
+    const nTest = Array.isArray(fp.test_events) ? fp.test_events.length : null;
+    html += `<div class="eval-head">
+      ${big(S['数值抽取精确匹配'], `数值抽取，首次抽取 ${nTest ?? '?'} 个事件`, '裁决后的标准答案')}
+      ${big(W['数值抽取精确匹配'], '数值抽取，9 个事件首次合计', '加上事件 1 第一版')}
+      ${E1 ? big((E1.summary || {})['数值抽取精确匹配'], '事件 1 第一版', '第一轮查出问题的那一版') : ''}
+      ${traps.length ? `<div><span class="big">${cnt('caught')}/${traps.length}</span><small>陷阱被管线拦住</small></div>` : ''}
+    </div>
+    ${fp.note ? `<p class="fpnote">${esc(fp.note.replace(/现在\s*summary\s*里的/g, '修订后的').replace(/summary_by_split|summary/g, '修订后的分数'))}</p>` : ''}
+    <h3 class="sub">首次抽取的成绩（主数字）</h3>
+    <p class="lede small">${nTest ?? '?'} 个事件，每个都是第一次抽取、没参考评测意见时的结果（抽取提交 <code>${esc(fp.test_extracted_commit || '未记录')}</code>，${esc(fp.test_eval_round || '评测轮次未记录')}）：${(fp.test_events || []).map((id) => esc(names[id] || id)).join('；')}。</p>
+    ${mtable([['裁决后的标准答案', S], ['按盲标原样', SB]], SB)}
+    ${fp.blind_gold_note ? `<p class="lede small">${esc(fp.blind_gold_note.replace(/summary_blind_gold|summary/g, (x) => (x === 'summary' ? '裁决后' : '按盲标原样')))}</p>` : ''}`;
+    if (E1) {
+      // 事件 1：第一版 → 修订后（修订后不是独立测量）
+      const cur = (r.events || []).find((e) => e.id === E1.id);
+      const now = cur ? { ...(cur.results || {}), ...(cur.process || {}) } : {};
+      const moved = order.filter((m) => { const a = (E1.summary || {})[m], b = now[m]; return scored(a) && scored(b) && a.value !== b.value; });
+      html += `<h3 class="sub">事件 1 第一版：评测第一轮就是在它身上查出问题的</h3>
+        <p class="lede small">${esc(names[E1.id] || E1.id)} · 抽取提交 <code>${esc(E1.extracted_commit || '')}</code> · ${esc(E1.eval_round || '')}。${esc(E1.note || '')}</p>
+        ${moved.length ? `<div class="shift">${moved.map((m) => { const a = E1.summary[m], b = now[m]; return `<div class="sr"><span class="mname">${esc(m)}</span><span class="from">${pct(a.value)}<small>${esc(a.num)}/${esc(a.den)} 第一版</small></span><span class="arr">→</span><span class="to">${pct(b.value)}<small>${esc(b.num)}/${esc(b.den)} 修订后，不是独立测量</small></span></div>`; }).join('')}</div>
+          <p class="lede small">评测推动的改进：漏抽的版本和指标补上了，管线加了数值和引用对应、版本时序、来源级别等检查。修订后的分数是改完再测同一个事件，只能说明问题修掉了，不能当成抽取准确率。</p>` : ''}
+        <h3 class="sub">9 个事件首次抽取合计（含事件 1 第一版）</h3>
+        ${fp.with_event1_note ? `<p class="lede small">${esc(fp.with_event1_note)}</p>` : ''}
+        ${mtable([['裁决后的标准答案', W], ['按盲标原样', fp.summary_with_event1_blind_gold || {}]], fp.summary_with_event1_blind_gold || null)}`;
+    }
+  } else {
+    html += `<div class="absent">首次抽取成绩${miss('未生成')}（report.json 里没有 first_pass），下面只有修订之后的分数，不能代表首次抽取的准确率。</div>`;
+  }
+
+  // 修订之后：开发集 / 测试集
+  const split = isObj(r.summary_by_split) ? r.summary_by_split : (isObj(r.summary) ? { 全部: { summary: r.summary } } : {});
+  const splitNames = Object.keys(split);
+  const splitDesc = splitNames.map((k) => {
+    const ids = (split[k] && split[k].events) || [];
+    const evNotes = [...new Set((r.events || []).filter((e) => e.split === k && e.split_note).map((e) => e.split_note))];
+    return `<div class="split"><b>${esc(k)}</b><span>${ids.length ? `${ids.length} 个事件：${ids.map((id) => esc(names[id] || id)).join('；')}` : '还没有事件'}</span>${evNotes.length ? `<small>${evNotes.map(esc).join(' ')}</small>` : ''}</div>`;
+  }).join('');
+  html += `<details class="more after"><summary>按评测意见修订之后的分数（开发集 / 测试集，不是独立测量）</summary>
+    <p class="lede small">改过抽取的事件归入开发集，它们的分数是改完再测，不再独立；测试集只剩没改过的事件，所以分数偏高，不能代表抽取有多准。</p>
+    <div class="splits">${splitDesc}</div>${mtable(splitNames.map((k) => [k, (split[k] || {}).summary || {}]), null)}</details>`;
+
+  if (traps.length) {
+    html += `<h3 class="sub">陷阱用例：故意把数据改坏，看管线拦不拦得住</h3>
     <div class="traps">${traps.map((t) => `<span class="tp ${cat(t)}" title="${esc(`${t.id} ${t.title || ''}：${t.verdict || ''}`)}">${esc(t.id)}</span>`).join('')}</div>
     <p class="legend"><span class="tp caught"></span>管线拦住 ${cnt('caught')}　<span class="tp leak"></span>管线放行、评测发现 ${cnt('leak')}　<span class="tp other"></span>其他 ${cnt('other')}</p>
     ${cnt('leak') ? `<ul class="leaks">${traps.filter((t) => cat(t) === 'leak').map((t) => `<li><b>${esc(t.id)} ${esc(t.title || '')}</b>：${esc(t.changed || '')}</li>`).join('')}</ul>` : ''}
-    ${r.traps.note ? `<p class="lede small">${esc(r.traps.note)}</p>` : ''}` : '';
-  // 哪里没过
+    ${r.traps.note ? `<p class="lede small">${esc(r.traps.note)}</p>` : ''}`;
+  }
   const fails = (r.events || []).flatMap((e) => ['results', 'process'].flatMap((g) => Object.entries(e[g] || {}).flatMap(([m, o]) => (o.failures || []).map((f) => ({ e, m, f })))));
-  const failHtml = fails.length ? `<h3 class="sub">没过的地方（${fails.length} 处）</h3><ul class="fails">${fails.slice(0, 12).map(({ e, m, f }) => `<li><span>${esc(e.split || '')}</span><b>${esc(m)}</b> ${esc(f.what || f.code || '')}${f.claim ? ' · ' + esc(f.claim) : ''}${f.got ? ` · 抽到 ${esc(f.got)}` : ''}${f.expect ? ` · 应为 ${esc(f.expect)}` : ''}<small>${esc(names[e.id] || e.id)}</small></li>`).join('')}</ul>${fails.length > 12 ? `<p class="lede small">还有 ${fails.length - 12} 处，见 <code>eval/report.md</code>。</p>` : ''}` : '<h3 class="sub">没过的地方</h3><p class="lede small">这一版没有扣分项。</p>';
-  el.innerHTML = `${r.gold_note ? `<div class="absent caveat"><b>先说清楚：</b>${esc(r.gold_note)}</div>` : ''}
-    <div class="eval-head"><div><span class="big">${esc(r.events_scored ?? '?')}/${esc(r.events_total ?? '?')}</span><small>个事件已打分</small></div>
-      ${r.gold_check ? `<div><span class="big">${esc(r.gold_check.passed)}/${esc(r.gold_check.total)}</span><small>标准答案自查（逐字可复核的部分）</small></div>` : ''}
-      ${traps.length ? `<div><span class="big">${cnt('caught')}/${traps.length}</span><small>陷阱被管线拦住</small></div>` : ''}
-      ${r.generated_at ? `<div><span class="big sm">${esc(bjs(r.generated_at))}</span><small>成绩单生成时间</small></div>` : ''}</div>
-    ${r.summary_by_split ? `<p class="lede small">分两组算：测试集是抽取时没有参考过评测结果的事件；开发集是按评测意见改过抽取的事件，分数不再算独立测量。</p>` : ''}
-    <div class="splits">${splitDesc}</div>${table}${trapHtml}${failHtml}`;
+  html += fails.length ? `<h3 class="sub">现在还没过的地方（${fails.length} 处）</h3><ul class="fails">${fails.slice(0, 12).map(({ e, m, f }) => `<li><span>${esc(e.split || '')}</span><b>${esc(m)}</b> ${esc(f.what || f.code || '')}${f.claim ? ' · ' + esc(f.claim) : ''}${f.got ? ` · 抽到 ${esc(f.got)}` : ''}${f.expect ? ` · 应为 ${esc(f.expect)}` : ''}<small>${esc(names[e.id] || e.id)}</small></li>`).join('')}</ul>${fails.length > 12 ? `<p class="lede small">还有 ${fails.length - 12} 处，见 <code>eval/report.md</code>。</p>` : ''}` : '';
+  if (r.generated_at) html += `<p class="lede small">成绩单生成于 ${esc(bjs(r.generated_at))}${r.gold_check ? `；标准答案自查 ${esc(r.gold_check.passed)}/${esc(r.gold_check.total)}（逐字可复核的部分）` : ''}。</p>`;
+  el.innerHTML = html;
 }
 
 // ---------------- 我怎么用 AI 的 ----------------

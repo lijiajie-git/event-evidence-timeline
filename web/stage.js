@@ -502,7 +502,14 @@ async function fillReport(sel, path, name, fn) {
 }
 
 // ---------------- 你点一下，右边讲这一步后台是怎么来的 ----------------
-const metric = (name) => { const r = REPORT; if (!r) return null; const sum = r.summary_by_split ? Object.entries(r.summary_by_split).map(([k, v]) => [k, (v.summary || {})[name]]).filter(([, o]) => o && o.den > 0) : []; return sum.length ? sum.map(([k, o]) => `${k} ${o.num}/${o.den}`).join('，') : null; };
+const metric = (name) => {
+  const r = REPORT; if (!r) return null;
+  // 主数字用首次抽取成绩；没有时才退回修订后的分数，并注明
+  const fp = r.first_pass && r.first_pass.summary && r.first_pass.summary[name];
+  if (fp && fp.den > 0) return `首次抽取 ${fp.num}/${fp.den}`;
+  const sum = r.summary_by_split ? Object.entries(r.summary_by_split).map(([k, v]) => [k, (v.summary || {})[name]]).filter(([, o]) => o && o.den > 0) : [];
+  return sum.length ? sum.map(([k, o]) => `${k} ${o.num}/${o.den}`).join('，') + '（修订后，不是独立测量）' : null;
+};
 const evById = (id) => DATA.events.find((e) => e.id === id);
 async function explain(a) {
   const out = { eyebrow: '你在操作 · 这一步对应的离线记录', title: '', lede: '', log: [], src: '回放离线处理记录' };

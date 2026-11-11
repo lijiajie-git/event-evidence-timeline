@@ -799,9 +799,9 @@ EVENT_ORDER = [
 R_ORDER = ["数值抽取精确匹配", "版本链", "事件状态", "证据类型准确率", "来源级别准确率", "该合并的合并了", "不该合并的分开了"]
 P_ORDER = ["引用逐字匹配", "引用挂对证据", "回放未用到未来证据", "冲突找出来了", "事实和推断没混"]
 
-DEV = {"600187-2025A-forecast": "主窗口按评测第一版意见改过抽取（5dab53d），之后的分数不再是独立测量，算开发集。第一版的独立分数见 eval/history.json 第一条。",
-       "600499-2026-tefu-restructuring": "主窗口按评测第三轮裁决改过抽取（4954d75），从测试集移到开发集。改之前作为测试集的分数见 eval/history.json 里抽取提交 8254dba 那条。",
-       "605081-2025A-delisting": "主窗口按评测第三轮裁决改过抽取（4954d75），从测试集移到开发集。改之前作为测试集的分数见 eval/history.json 里抽取提交 8254dba 那条。"}
+DEV = {"600187-2025A-forecast": "第一版抽取评测后，按评测意见修订过（抽取提交 5dab53d），之后的分数不再是独立测量，归入开发集。第一版的独立分数见首次抽取成绩。",
+       "600499-2026-tefu-restructuring": "按评测第三轮的裁决修订过（抽取提交 4954d75），从测试集移到开发集。修订前作为测试集的分数见首次抽取成绩。",
+       "605081-2025A-delisting": "按评测第三轮的裁决修订过（抽取提交 4954d75），从测试集移到开发集。修订前作为测试集的分数见首次抽取成绩。"}
 
 def git(*a):
     try: return subprocess.run(["git", *a], capture_output=True, text=True, timeout=30).stdout.strip()
@@ -924,7 +924,7 @@ def render_md(r):
     for e in r["events"]:
         L.append(f"| {e['no']} | {e['name']}（`{e['id']}`） | {e['gold']} | {e['extraction']}{'（不计分：' + e['note'] + '）' if e.get('note') and e['extraction'] == '已抽取' else ''} | {e['split']} |")
     L += ["", f"已计分 {r['events_scored']} 个，共 {r['events_total']} 个。没有抽取结果的事件不计分，也不按 0 分算。",
-          "分组：**测试集**是抽取时没有参考过评测结果的事件，分数算独立测量；**开发集**是主窗口看过评测意见后改过的事件，分数只说明改对了没有。" + "".join(f" {e['id']}：{e['split_note']}" for e in r["events"] if e.get("split_note")), ""]
+          "分组：**测试集**是抽取时没有参考过评测结果的事件，分数算独立测量；**开发集**是看过评测意见后修订过的事件，分数只说明改对了没有。" + "".join(f" {e['id']}：{e['split_note']}" for e in r["events"] if e.get("split_note")), ""]
     known = {e.get("extracted_file") for e in r["events"]}
     rest = [p for p in r["unmatched_extractions"] if p not in known]
     if rest: L += [f"不在评测事件表里的抽取文件：{rest}", ""]
@@ -948,7 +948,7 @@ def render_md(r):
     prev = next((h for h in reversed(hist) if h.get("splits") and h["splits"] != cur_split), None)
     if prev:
         moved = [i for i, sp in cur_split.items() if prev["splits"].get(i) and prev["splits"][i] != sp]
-        L += ["## 分组变化", "", f"和抽取提交 `{prev['inputs'].get('extracted_commit')}` 那次评测比，{('、'.join(f'`{i}`' for i in moved)) or '无'} 从测试集移到了开发集（主窗口看过评测裁决后改了它们的抽取）。移动前的测试集汇总是当时的独立测量，留在下面。",
+        L += ["## 分组变化", "", f"和抽取提交 `{prev['inputs'].get('extracted_commit')}` 那次评测比，{('、'.join(f'`{i}`' for i in moved)) or '无'} 从测试集移到了开发集（看过评测裁决后修订了抽取）。移动前的测试集汇总是当时的独立测量，留在下面。",
               "", "**注意选择偏差**：被移走的正是出过错、照着裁决改过的事件，剩下的测试集都是第一次就没出错的，所以“现在测试集”的分数偏高。说抽取有多准，应当引用“移动前测试集”这一列（再参考 `adjudication.md` 里按盲标原样计分的修正）。", "",
               "| 指标 | 移动前测试集 | 现在测试集 |", "|---|---|---|"]
         for k in r["groups"]["results"] + r["groups"]["process"]:

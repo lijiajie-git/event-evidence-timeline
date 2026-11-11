@@ -1,6 +1,6 @@
 {
  "schema_version": 1,
- "generated_at": "2026-11-11T20:15:15+00:00",
+ "generated_at": "2026-11-11T20:15:27+00:00",
  "command": "python3 eval/score.py",
  "gold_note": "标准答案由 Claude Opus 5.5 标注，不是人工标注。数值、单位、引用可以靠原文逐字匹配复核（见 gold_check）；证据类型、是否同一事件、状态这类判断字段没有人工复核，可靠性有限。",
  "groups": {
@@ -619,7 +619,7 @@
    "gold": "已标注",
    "extraction": "已抽取",
    "split": "开发集",
-   "split_note": "主窗口按评测第一版意见改过抽取（5dab53d），之后的分数不再是独立测量，算开发集。第一版的独立分数见 eval/history.json 第一条。",
+   "split_note": "第一版抽取评测后，按评测意见修订过（抽取提交 5dab53d），之后的分数不再是独立测量，归入开发集。第一版的独立分数见首次抽取成绩。",
    "extracted_file": "pipeline/extracted/600187-2025A-forecast.json",
    "results": {
     "数值抽取精确匹配": {
@@ -837,7 +837,7 @@
    "gold": "已标注",
    "extraction": "已抽取",
    "split": "开发集",
-   "split_note": "主窗口按评测第三轮裁决改过抽取（4954d75），从测试集移到开发集。改之前作为测试集的分数见 eval/history.json 里抽取提交 8254dba 那条。",
+   "split_note": "按评测第三轮的裁决修订过（抽取提交 4954d75），从测试集移到开发集。修订前作为测试集的分数见首次抽取成绩。",
    "extracted_file": "pipeline/extracted/600499-2026-tefu-restructuring.json",
    "results": {
     "数值抽取精确匹配": {
@@ -946,7 +946,7 @@
    "gold": "已标注",
    "extraction": "已抽取",
    "split": "开发集",
-   "split_note": "主窗口按评测第三轮裁决改过抽取（4954d75），从测试集移到开发集。改之前作为测试集的分数见 eval/history.json 里抽取提交 8254dba 那条。",
+   "split_note": "按评测第三轮的裁决修订过（抽取提交 4954d75），从测试集移到开发集。修订前作为测试集的分数见首次抽取成绩。",
    "extracted_file": "pipeline/extracted/605081-2025A-delisting.json",
    "results": {
     "数值抽取精确匹配": {

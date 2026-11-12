@@ -7,7 +7,6 @@ import { loadText, locate } from './source.js';
 const $ = (s, r = document) => r.querySelector(s);
 const $$ = (s, r = document) => [...r.querySelectorAll(s)];
 const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
-const MAX_POINTS = 5;
 
 export function renderHL(box, { hl, recheck, report, px, example }) {
   if (!hl || !Array.isArray(hl.groups) || !hl.groups.length) {
@@ -16,15 +15,15 @@ export function renderHL(box, { hl, recheck, report, px, example }) {
   }
   box.innerHTML = hl.groups.map((g) => {
     const pts = Array.isArray(g.points) ? g.points : [];
-    const li = (p) => `<li>${esc(p.text)}</li>`;
-    const more = pts.slice(MAX_POINTS);
+    // 每条只显示一句 text；detail 和出处点开这一条才看到
+    const li = (p) => (p.detail || p.source)
+      ? `<li><details><summary>${esc(p.text)}</summary><p>${esc(p.detail || '')}${p.source ? `<small>出处：${esc(p.source)}</small>` : ''}</p></details></li>`
+      : `<li><span class="pt">${esc(p.text)}</span></li>`;
     return `<article class="hg" id="hl-${esc(g.id)}" data-g="${esc(g.id)}">
       <div class="hg-t">
         <h3>${esc(g.title)}</h3>
         <p class="hg-line">${esc(g.line || '')}</p>
-        <ul>${pts.slice(0, MAX_POINTS).map(li).join('')}</ul>
-        ${more.length ? `<details><summary>另外 ${more.length} 条</summary><ul>${more.map(li).join('')}</ul></details>` : ''}
-        <p class="hg-src">出处：${[...new Set(pts.map((p) => p.source).filter(Boolean))].map(esc).join('；')}</p>
+        <ul class="pts">${pts.map(li).join('')}</ul>
       </div>
       <div class="hg-f" aria-hidden="true">${figure(g, { recheck, report, px, example })}</div>
     </article>`;
@@ -150,7 +149,7 @@ function figEval(g, { report }) {
 // 自己动手：四个小操作，各带一个“去试试”
 function figHands(g, { px, example }) {
   const pts = g.points || [];
-  const name = (i) => esc(String((pts[i] || {}).text || '').split(/[：:，,]/)[0]);
+  const name = (i) => esc(String((pts[i] || {}).text || '').replace(/[。.]$/, ''));
   let links = ['workbench.html', 'workbench.html', 'workbench.html', 'workbench.html#v=verify'];
   if (px) {
     const { e, vs } = px, v1 = vs[0], flip = vs.find((v) => Math.sign((v.low ?? 0) + (v.high ?? 0)) !== Math.sign((v1.low ?? 0) + (v1.high ?? 0))) || vs[1];

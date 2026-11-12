@@ -489,3 +489,15 @@ h3.sub { font-size: 15px; font-weight: 600; margin: 20px 0 8px; }
   .hg .au-doc mark { background-size: 100% 100% !important; }
   .hg .au-line path { stroke-dashoffset: 0 !important; }
 }
+
+/* 亮点要点：一条一行，点开才看补充和出处 */
+.pts li { padding: 0; color: var(--txt); }
+.pts li::before { top: 22px; }
+.pts .pt, .pts summary { display: block; padding: 9px 26px 9px 16px; font-size: 15px; line-height: 1.5; }
+.pts summary { list-style: none; cursor: pointer; position: relative; color: var(--txt); }
+.pts summary::-webkit-details-marker { display: none; }
+.pts summary::after { content: "+"; position: absolute; right: 4px; top: 8px; color: var(--dim); font-size: 15px; }
+.pts details[open] summary::after { content: "−"; }
+.pts summary:hover { color: var(--amber); }
+.pts details p { padding: 0 26px 11px 16px; font-size: 13.5px; line-height: 1.6; color: var(--dim); }
+.pts details small { display: block; margin-top: 4px; font-size: 12px; opacity: .75; }

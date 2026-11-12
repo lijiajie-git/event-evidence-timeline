@@ -43,6 +43,10 @@ async function init() {
   if (!S.D) S.D = today(DATA);
   bind();
   render();
+  // 演示页“去试试”的深链接：#…&src=证据编号&sq=引用 打开原文；#…&da=证据&db=证据 打开两版对比
+  const hp = new URLSearchParams(location.hash.slice(1));
+  if (hp.get('src')) openSource(S.eventId, hp.get('src'), hp.get('sq') || '');
+  else if (hp.get('da') && hp.get('db')) openDiff(S.eventId, hp.get('da'), hp.get('db'));
   readyResolve(true);
 }
 

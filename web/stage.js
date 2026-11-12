@@ -5,6 +5,7 @@
 import { PATHS, load, esc, md, change, evidenceById, disclosedOf, today, docName, moneyText } from './core.js';
 import { exampleSentences, verify, describe } from './verify.js';
 import { renderHighlights, renderEvalSection, renderProcess, renderAudit } from './sections.js';
+import { renderHL } from './highlights.js';
 
 const $ = (s, r = document) => r.querySelector(s);
 const $$ = (s, r = document) => [...r.querySelectorAll(s)];
@@ -18,7 +19,7 @@ const mobile = () => innerWidth <= 1000;
 // 屏幕里 1 个 CSS 像素在屏幕坐标里是多少：电脑外框里缩到 572/1120，手机上不缩
 const S = () => (mobile() ? 1 : 572 / 1120);
 
-let DATA, QA, AUDIT, REPORT, W, WB, CH = [];
+let DATA, QA, AUDIT, REPORT, W, WB, CH = [], EXAMPLE = '';
 const P = { ci: 0, bi: 0, mode: 'idle', token: 0, scripting: false };
 const CAM = { K: 1, ox: 0, oy: 0 };
 
@@ -55,7 +56,9 @@ function brief(px) {
     traps.length ? `${traps.length} 个改坏数据的陷阱拦住 ${caught} 个` : '',
     '可回到任意一天看当时的结论',
   ].filter(Boolean);
-  $('#hls').innerHTML = `<p data-grow>${hl.map(esc).join('；')}。</p><p data-grow class="nodo">不预测涨跌，不给买卖建议，网页不实时调用模型。</p>`;
+  const words = [['data', '数据先过一遍'], ['audit', '每句都能核'], ['eval', '独立评测'], ['hands', '能自己查']];
+  $('#hls').innerHTML = `<p data-grow class="hl-words"><span>亮点</span>${words.map(([id, t]) => `<a href="#hl-${id}">${t}</a>`).join('')}</p><p data-grow class="nodo">不预测涨跌，不给买卖建议，网页不实时调用模型。</p>`;
+  void hl;
 
   // 原件：最早那份公告里的两句，蓝笔批注后来的改动
   const paper = $('#paper');
@@ -82,19 +85,34 @@ function brief(px) {
   $('#paper-skip').onclick = () => drawPen(true);
 }
 let penDone = false;
+// 用纸内的排版位置（offsetLeft/offsetTop 累加）算圈和引线，不受纸的轻微旋转和页面滚动影响
+function offIn(el, root) { let x = 0, y = 0; for (let n = el; n && n !== root; n = n.offsetParent) { x += n.offsetLeft; y += n.offsetTop; } return { x, y }; }
+function penPlace() {
+  const paper = $('#paper'), tgt = $('#tgt'), notes = $('#notes'), paths = $$('#pen path');
+  if (!paper || !tgt || !notes || paths.length < 2) return;
+  // 目标文字可能折行：取第一行的框
+  const r0 = tgt.getClientRects()[0];
+  const o = offIn(tgt, paper);
+  const x = o.x, y = o.y, w = r0 ? r0.width : tgt.offsetWidth, h = r0 ? r0.height : tgt.offsetHeight;
+  const cx = x + w / 2, cy = y + h / 2, rx = w / 2 + 10, ry = h / 2 + 5;
+  // 手画的圈：起笔和收笔错开一点
+  paths[0].setAttribute('d', `M ${cx + rx * .2} ${cy - ry - 2} C ${cx + rx + 8} ${cy - ry}, ${cx + rx + 6} ${cy + ry + 2}, ${cx} ${cy + ry + 1} S ${cx - rx - 6} ${cy - ry + 3}, ${cx - rx * .1} ${cy - ry - 4}`);
+  const n = offIn(notes, paper);
+  paths[1].setAttribute('d', `M ${cx - 10} ${cy + ry + 2} C ${cx - 18} ${cy + ry + 20}, ${n.x + 4} ${n.y - 14}, ${n.x + 2} ${n.y + 2}`);
+}
 async function drawPen(instant) {
   if (penDone && !instant) return;
   if (instant) penDone = true;
   const paper = $('#paper'), tgt = $('#tgt'), svg = $('#pen'), notes = $$('#notes > div');
   if (!tgt || !svg) return;
-  const pr = paper.getBoundingClientRect(), r = tgt.getBoundingClientRect();
-  const x = r.left - pr.left, y = r.top - pr.top, w = r.width, h = r.height;
-  const cx = x + w / 2, cy = y + h / 2, rx = w / 2 + 10, ry = h / 2 + 5;
-  // 手画的圈：起笔和收笔错开一点
-  const circle = `M ${cx + rx * .2} ${cy - ry - 2} C ${cx + rx + 8} ${cy - ry}, ${cx + rx + 6} ${cy + ry + 2}, ${cx} ${cy + ry + 1} S ${cx - rx - 6} ${cy - ry + 3}, ${cx - rx * .1} ${cy - ry - 4}`;
-  const nr = $('#notes').getBoundingClientRect();
-  const lead = `M ${cx - 10} ${cy + ry + 2} C ${cx - 18} ${cy + ry + 20}, ${nr.left - pr.left + 4} ${nr.top - pr.top - 14}, ${nr.left - pr.left + 2} ${nr.top - pr.top + 2}`;
-  if (!svg.childElementCount) svg.innerHTML = `<path pathLength="1" class="off" d="${circle}"/><path pathLength="1" class="off" d="${lead}"/>`;
+  if (document.fonts && !instant) await document.fonts.ready;
+  if (!svg.childElementCount) {
+    svg.innerHTML = '<path pathLength="1" class="off"/><path pathLength="1" class="off"/>';
+    penPlace();
+    // 窗口宽度变了、字体晚到了，纸里的文字会挪位置：跟着重算
+    new ResizeObserver(penPlace).observe(paper);
+    if (document.fonts) document.fonts.ready.then(penPlace);
+  }
   const paths = $$('path', svg);
   if (instant || reduce) { paths.forEach((p) => p.classList.remove('off')); notes.forEach((n) => n.classList.remove('off')); $$('[data-grow]').forEach((n) => n.classList.remove('off')); $('#paper-skip').classList.add('done'); return; }
   $$('[data-grow]').forEach((n) => n.classList.add('off'));
@@ -188,7 +206,7 @@ async function tap(sel) {
 async function type(sel, text) {
   const e = el(sel); if (!e) return;
   await tap(sel);
-  e.focus(); e.value = '';
+  e.focus({ preventScroll: true }); e.value = '';
   for (const ch of text) { e.value += ch; await sleep(42); }
 }
 // 一直点“下一次披露”，直到截至日到达目标。框选不动，指针来回点
@@ -502,7 +520,7 @@ function chEnd() {
   return { name: '小结', beats: [{
     act: 700, end: true, h: '刚才看到的',
     rule: '一句旧消息查出是第几版；各版本都留着，能点回原文；回到哪天就只看那天的证据。',
-    note: '<span class="end-btns"><a href="#eval" id="to-eval">看评测 ↓</a><a href="workbench.html">自己操作工作台</a></span>',
+    note: '<span class="end-btns"><a href="#hl" id="to-eval">看亮点 ↓</a><a href="workbench.html">自己操作工作台</a></span>',
     run: async () => { ptr(null, null, false); spot(null); P.scripting = true; WB.go({ view: 'event', event: DATA.events[0].id, date: today(DATA), top: true }); P.scripting = false; W.scrollTo(0, 0); revealSections(); } }] };
 }
 
@@ -518,7 +536,7 @@ function narrate(c, b) {
     $('#s-tag').textContent = c.name; $('#s-h').textContent = b.h; $('#s-rule').innerHTML = b.rule; $('#s-note').innerHTML = b.note;
     $('#s-prev').innerHTML = b.prev || '';
     if (b.ctx) $('#ctx').textContent = ctxOf(b.ctx); else if (b.ctxText) $('#ctx').textContent = b.ctxText;
-    const te = $('#to-eval'); if (te) te.onclick = (ev) => { ev.preventDefault(); revealSections(); $('#eval').scrollIntoView({ behavior: reduce ? 'auto' : 'smooth' }); };
+    const te = $('#to-eval'); if (te) te.onclick = (ev) => { ev.preventDefault(); revealSections(); $('#hl').scrollIntoView({ behavior: reduce ? 'auto' : 'smooth' }); };
     void s.offsetWidth; s.classList.remove('fade');
   }, reduce ? 0 : 180);
 }
@@ -545,7 +563,13 @@ async function show(ci, bi) {
   let r;
   try { r = await b.run(tok); } catch (err) { /* 屏幕里找不到元素时跳过这一拍 */ console.warn(err); }
   if (tok !== P.token) return;
-  if (b.end) { finish(); return; }
+  if (b.end) {
+    const wasAuto = P.mode === 'auto';
+    finish();
+    // 自动播完：小结留一会儿，再滚到亮点页（人已经往别处滚了就不动）
+    if (wasAuto) { await sleep(dwell(b)); const r = $('#demo').getBoundingClientRect(); if (P.mode === 'done' && Math.abs(r.top) < innerHeight * .5) $('#hl').scrollIntoView({ behavior: reduce ? 'auto' : 'smooth' }); }
+    return;
+  }
   if (P.mode === 'auto') { await sleep(r === false ? 0 : dwell(b)); if (tok === P.token && P.mode === 'auto') advance(); }
 }
 function advance() {
@@ -626,7 +650,7 @@ function fit() {
 
 // ---------------- 启动 ----------------
 async function init() {
-  const [ev, qa, au, rp, pr, rc] = await Promise.all([load(PATHS.events), load(PATHS.qa), load(PATHS.audit), load(PATHS.report), load('data/process.json'), load(PATHS.recheck)]);
+  const [ev, qa, au, rp, pr, rc, hj] = await Promise.all([load(PATHS.events), load(PATHS.qa), load(PATHS.audit), load(PATHS.report), load('data/process.json'), load(PATHS.recheck), load('data/highlights.json')]);
   AUDIT = au.ok ? au.data : null; REPORT = rp.ok ? rp.data : null;
   QA = qa.ok && qa.data && Array.isArray(qa.data.items) ? qa.data : null;
   renderProcess($('#ai-body'), pr);
@@ -645,6 +669,7 @@ async function init() {
     // 查验用的那句话：首屏那张纸上被圈出来的第一版
     const exs = exampleSentences(DATA);
     const ex = exs.find((s) => { const r = verify(s, DATA); return r.verdict === 'match' && r.matches[0].claim === px.c && r.matches[0].v === px.vs[0]; }) || exs[0];
+    EXAMPLE = ex;
     const r = ex ? verify(ex, DATA) : null;
     let res = '没有匹配到';
     if (r && r.verdict === 'match') { const m = r.matches[0]; const d = describe(m, today(DATA)); const by = m.v.superseded_by ? evidenceById(m.ev, m.v.superseded_by) : null; res = `第 ${d.n} 版，${md(m.v.valid_to)} 被${esc(docName(by))}取代；现在是 <b>${esc(money(d.cur, m.claim.unit, m.claim.key))}</b>`; }
@@ -653,6 +678,7 @@ async function init() {
   brief(px);
   buildBoard();
   requestAnimationFrame(() => drawPen(false));
+  renderHL($('#hl-body'), { hl: hj.ok ? hj.data : null, recheck: rc.ok ? rc.data : null, report: REPORT, px, example: EXAMPLE });
 
   const frame = $('#frame');
   await new Promise((r) => (frame.contentWindow && frame.contentWindow.WB ? r() : frame.addEventListener('load', r, { once: true })));
@@ -671,7 +697,7 @@ async function init() {
   $('#go-demo').onclick = () => { $('#demo').scrollIntoView({ behavior: reduce ? 'auto' : 'smooth' }); setTimeout(() => { if (P.mode !== 'auto') start(P.mode === 'idle' || P.mode === 'done'); }, reduce ? 0 : 600); };
   $('#prev').onclick = () => { const was = P.mode; const ci = P.bi > 0 ? P.ci : Math.max(0, P.ci - 1); setMode(was === 'auto' ? 'auto' : 'paused'); show(ci, 0); };
   $('#next').onclick = () => { const was = P.mode; if (P.ci + 1 < CH.length) { setMode(was === 'auto' ? 'auto' : 'paused'); show(P.ci + 1, 0); } else finish(); };
-  $('#end-btn').onclick = () => { finish(); $('#eval').scrollIntoView({ behavior: reduce ? 'auto' : 'smooth' }); };
+  $('#end-btn').onclick = () => { finish(); $('#hl').scrollIntoView({ behavior: reduce ? 'auto' : 'smooth' }); };
   $('#rail-steps').onclick = (e2) => { const b = e2.target.closest('[data-ch]'); if (!b) return; setMode(P.mode === 'auto' ? 'auto' : 'paused'); show(+b.dataset.ch, 0); };
   setInterval(() => { if (P.mode === 'auto') setMode(); }, 1000);
   // 进入演示区自动开始一次

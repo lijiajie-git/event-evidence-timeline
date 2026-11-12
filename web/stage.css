@@ -262,3 +262,79 @@ h3.sub { font-size: 15px; font-weight: 600; margin: 20px 0 8px; }
   .paper-svg path.off { stroke-dashoffset: 0; }
   .paper .notes div.off { opacity: 1; transform: none; }
 }
+
+/* ———— 评测板：演示里“评测”一段时盖在屏幕上，和工作台同一套纸色 ———— */
+.evb { position: absolute; left: 0; top: 0; width: 1120px; height: 700px; transform-origin: 0 0; transform: scale(calc(572 / 1120)); z-index: 3;
+  --p: #f6f3ec; --i1: #1d1c1a; --i2: #6f6a60; --rl: #ddd6c8; --cur: #24466e; --warn: #8a5410; --wbg: #f1e6d0;
+  background: var(--p); color: var(--i1); font: 15px/1.6 var(--sans); opacity: 0; visibility: hidden; transition: opacity .5s, visibility .5s; }
+.evb.on { opacity: 1; visibility: visible; }
+.evb-in { height: 100%; display: flex; flex-direction: column; padding: 26px 42px 18px; }
+.evb header { display: flex; align-items: baseline; gap: 18px; border-bottom: 1px solid var(--i1); padding-bottom: 10px; }
+.evb h3 { font: 600 26px/1.2 "Songti SC", "Noto Serif SC", "STSong", serif; }
+.evb header p { font-size: 14px; color: var(--i2); }
+.evb-grid { flex: 1; min-height: 0; display: grid; grid-template-columns: 1fr 1.25fr; grid-template-rows: auto auto; align-content: start; align-items: start; gap: 18px 40px; padding-top: 14px; }
+.evb section { min-width: 0; opacity: .32; transition: opacity .6s; }
+.evb section.go, .evb footer.go { opacity: 1; }
+.evb h4 { font-size: 15px; font-weight: 600; padding-bottom: 6px; border-bottom: 1px solid var(--rl); margin-bottom: 6px; }
+.evb h4 small { font-weight: 400; color: var(--i2); font-size: 13px; margin-left: 10px; }
+
+#evb-gold ol { list-style: none; font-size: 13.5px; line-height: 1.75; }
+#evb-gold li { display: flex; gap: 8px; align-items: center; white-space: nowrap; overflow: hidden; }
+#evb-gold li span { overflow: hidden; text-overflow: ellipsis; }
+.evb .tk { flex: none; width: 13px; height: 13px; border: 1px solid var(--rl); border-radius: 2px; position: relative; }
+.evb .tk::after { content: ""; position: absolute; left: 3.5px; top: 0; width: 4px; height: 8px; border: solid var(--cur); border-width: 0 2px 2px 0; transform: rotate(45deg) scale(0); }
+.evb .go .tk::after { animation: tick .3s both; animation-delay: calc(var(--i) * .1s + .2s); }
+@keyframes tick { to { transform: rotate(45deg) scale(1); } }
+.evb .big { margin-top: 8px; font-size: 14px; color: var(--i2); }
+.evb .big b { font: 600 30px/1 "Songti SC", "STSong", serif; color: var(--cur); margin-right: 4px; font-variant-numeric: tabular-nums; }
+
+.evb .mr { display: grid; grid-template-columns: 9.6em 1fr 5.6em 3.6em; align-items: center; gap: 10px; padding: 3px 0; font-size: 13.5px; }
+.evb .mk { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.evb .bar { height: 7px; background: var(--rl); position: relative; overflow: hidden; }
+.evb .bar u { position: absolute; inset: 0; background: var(--cur); transform-origin: left; transform: scaleX(0); transition: transform 1s cubic-bezier(.3, .7, .2, 1); transition-delay: calc(var(--i) * .1s); }
+.evb .go > .mr .bar u { transform: scaleX(var(--v)); }
+.evb .mr.bad .bar { background: repeating-linear-gradient(-45deg, var(--wbg) 0 3px, #e3d2b0 3px 5px); }
+.evb .mn { text-align: right; font-variant-numeric: tabular-nums; color: var(--i2); }
+.evb .mn b { color: var(--i1); font-weight: 600; }
+.evb .mr em { font-style: normal; text-align: right; font-weight: 600; font-variant-numeric: tabular-nums; opacity: 0; transition: opacity .4s; transition-delay: calc(var(--i) * .1s + .7s); }
+.evb .go > .mr em { opacity: 1; }
+.evb .mr.bad em { color: var(--warn); }
+
+.evb .tl { position: relative; height: 54px; margin-top: 10px; font-size: 12px; color: var(--i2); }
+.evb .tl .ln { position: absolute; left: 0; right: 0; top: 18px; height: 1px; background: var(--i2); }
+.evb .tl .dot { position: absolute; top: 13px; width: 11px; height: 11px; margin-left: -5px; border-radius: 50%; background: var(--cur); }
+.evb .tl .dot.future { background: var(--i2); }
+.evb #evb-p2.go .tl .dot.future { animation: drop .5s both; animation-delay: calc(1.2s + (var(--i) - 5) * .12s); }
+@keyframes drop { to { opacity: .18; transform: translateY(8px); } }
+.evb .tl .asof { position: absolute; top: 2px; height: 34px; width: 0; border-left: 2px solid var(--i1); transform: scaleY(0); transform-origin: top; transition: transform .4s .8s; }
+.evb #evb-p2.go .tl .asof { transform: none; }
+.evb .tl-a { position: absolute; top: 36px; transform: translateX(-50%); color: var(--i1); white-space: nowrap; }
+.evb .tl-b { position: absolute; right: 0; top: -2px; color: var(--i2); opacity: 0; transition: opacity .4s 1.8s; }
+.evb #evb-p2.go .tl-b { opacity: 1; }
+
+.evb .cells { display: grid; grid-template-columns: repeat(10, 1fr); gap: 6px; margin-top: 4px; }
+.evb .c { display: inline-flex; align-items: center; justify-content: center; height: 28px; font-size: 12px; border: 1px solid var(--rl); color: var(--i2); }
+.evb .go .cells .c { animation: flip .45s both; animation-delay: calc(var(--i) * .07s); }
+@keyframes flip { from { transform: rotateX(90deg); opacity: 0; } }
+.evb .c.caught { background: var(--cur); border-color: var(--cur); color: #fff; }
+.evb .c.found { background: var(--wbg); border-color: var(--warn); color: var(--warn); }
+.evb .c.na, .evb .c.leak { border-style: dashed; }
+.evb .lg { display: flex; flex-wrap: wrap; gap: 4px 16px; margin-top: 8px; font-size: 13px; color: var(--i2); }
+.evb .lg span { display: inline-flex; align-items: center; gap: 6px; }
+.evb .lg .c { width: 12px; height: 12px; animation: none !important; }
+.evb .lg2 { margin-top: 4px; font-size: 12.5px; color: var(--warn); }
+
+#evb-split { display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 18px; margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--rl); font-size: 14px; opacity: .32; transition: opacity .6s; }
+#evb-split .sp { padding: 2px 10px; border: 1px solid var(--rl); }
+#evb-split .sp.t { border-color: var(--cur); color: var(--cur); font-weight: 600; }
+#evb-split.go .sp.d { animation: slide .6s both .2s; }
+@keyframes slide { from { transform: translateX(-60px); opacity: 0; } }
+#evb-split small { color: var(--i2); font-size: 13px; }
+@media (max-width: 1000px) { .evb { transform: none; } }
+@media (prefers-reduced-motion: reduce) { .evb .bar u { transform: scaleX(var(--v)); } .evb .mr em, .evb .tl-b { opacity: 1; } .evb .tk::after { transform: rotate(45deg) scale(1); } .evb section, #evb-split { opacity: 1; } }
+
+.evb .mk small { font-size: 11px; color: var(--i2); margin-left: 6px; border: 1px solid var(--rl); padding: 0 4px; border-radius: 2px; }
+#evb-p2 .tl { opacity: .35; transition: opacity .5s; }
+#evb-p2.go .tl { opacity: 1; }
+.evb #evb-p2:not(.go) .tl .asof { transform: scaleY(0); }
+#evb-split small { flex-basis: 100%; font-size: 12px; line-height: 1.5; }

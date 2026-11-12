@@ -108,9 +108,15 @@ async function drawPen(instant) {
 
 // ---------------- 屏幕里的操作 ----------------
 const D = () => W.document;
-function el(sel) { return typeof sel === 'function' ? sel() : D().querySelector(sel); }
+function el(sel) { return typeof sel === 'function' ? sel() : sel[0] === '@' ? document.querySelector(sel.slice(1)) : D().querySelector(sel); }
 function rectOf(sel, pad = 6) {
   const e = el(sel); if (!e) return null;
+  if (e.ownerDocument === document) {
+    // 评测板（选择器以 @ 开头）：按它自己的缩放换算成屏幕坐标
+    const b = $('#evb').getBoundingClientRect(), r = e.getBoundingClientRect();
+    const k = mobile() ? 1 : 572 / b.width;
+    return { x: (r.left - b.left - pad) * k, y: (r.top - b.top - pad) * k, w: (r.width + pad * 2) * k, h: (r.height + pad * 2) * k };
+  }
   const r = e.getBoundingClientRect(), s = S();
   const l = Math.max(0, r.left - pad), t = Math.max(0, r.top - pad), rr = Math.min(W.innerWidth, r.right + pad), b = Math.min(W.innerHeight, r.bottom + pad);
   if (b <= t || rr <= l) return null;
@@ -398,6 +404,100 @@ function chMore(px) {
   return beats.length ? { name: '另外几个例子', beats } : null;
 }
 
+// ---------------- 评测：屏幕里换成一块评测板，镜头逐块推过去 ----------------
+// 文案来自评测窗口（共享笔记 评测-演示文案-2026-11-11.md）；数字全部从 eval/report.json 读：
+// first_pass.summary（首次抽取成绩，冻结快照）、first_pass.summary_blind_gold、groups、gold_check、traps.cases、summary_by_split、events。
+// 顶层 summary 是修订后的测试集，不当主数字。
+const pct = (m) => (m && m.den ? Math.round(m.num / m.den * 1000) / 10 + '%' : '—');
+const fpSum = () => (REPORT && REPORT.first_pass && REPORT.first_pass.summary) || null;
+const M = (k) => { const f = fpSum(); return f && f[k] ? f[k] : null; };
+const nd = (k, src) => { const m = src ? (src[k] || null) : M(k); return m ? `${m.num}/${m.den}` : '未生成'; };
+const trapCls = (c) => (/管线拦住/.test(c.verdict || '') ? 'caught' : /放行/.test(c.verdict || '') ? (c.eval_detects ? 'found' : 'leak') : 'na');
+// 模型判断类的指标（没有人工复核），在板上标一个“判断”
+const JUDGE = /证据类型|来源级别|合并|分开|状态|冲突/;
+function buildBoard() {
+  const box = $('#evb'); if (!box) return;
+  const r = REPORT;
+  if (!r || !fpSum()) { box.innerHTML = '<div class="evb-in"><header><h3>评测</h3><p>eval/report.json 里没有首次抽取成绩（first_pass），这里不显示分数。</p></header></div>'; return; }
+  const groups = r.groups || { results: [], process: [] };
+  const evs = Array.isArray(r.events) ? r.events : [];
+  const split = r.summary_by_split || {}, tN = ((split['测试集'] || {}).events || []).length, dN = ((split['开发集'] || {}).events || []).length;
+  const dev = evs.filter((e) => e.split === '开发集'), test = r.first_pass.test_events || [];
+  const gc = r.gold_check || {};
+  const cases = (r.traps && Array.isArray(r.traps.cases)) ? r.traps.cases : [];
+  const n = (k) => cases.filter((c) => trapCls(c) === k).length;
+  const row = (k, i) => {
+    const m = M(k); if (!m) return '';
+    return `<div class="mr ${m.num < m.den ? 'bad' : ''}" style="--i:${i}"><span class="mk">${esc(k)}${JUDGE.test(k) ? '<small>判断</small>' : ''}</span><i class="bar"><u style="--v:${(m.num / m.den).toFixed(4)}"></u></i><span class="mn"><b data-to="${m.num}">${m.num}</b>/${m.den}</span><em>${pct(m)}</em></div>`;
+  };
+  const proc = groups.process || [];
+  const nm = (e) => esc(cut(String(e.name || '').replace(/\s+/g, ' '), 24));
+  box.innerHTML = `<div class="evb-in">
+    <header><h3>评测</h3><p>标准答案由另一个 Claude Opus 会话先盲标；主数字是每个事件第一次抽取、没参考评测意见时的成绩。</p></header>
+    <div class="evb-grid">
+      <section id="evb-gold"><h4>标准答案<small>${evs.length} 个事件</small></h4>
+        <ol>${evs.map((e, i) => `<li style="--i:${i}"><i class="tk"></i><span>${nm(e)}</span></li>`).join('')}</ol>
+        <p class="big"><b data-to="${gc.passed ?? 0}">${gc.passed ?? '—'}</b><span> / ${gc.total ?? '—'} 处数字和引用回原文核对通过</span></p></section>
+      <section id="evb-res"><h4>结果对不对<small>首次抽取 · ${test.length} 个事件</small></h4>
+        ${(groups.results || []).map(row).join('')}</section>
+      <section id="evb-proc"><h4>过程对不对<small>同一批事件</small></h4>
+        <div id="evb-p1">${proc.slice(0, 2).map(row).join('')}</div>
+        <div id="evb-p2">${proc.slice(2).map((k, i) => row(k, i + 2)).join('')}
+        <div class="tl" aria-hidden="true"><i class="ln"></i>${[6, 17, 29, 41, 52, 68, 80, 92].map((x, i) => `<i class="dot ${x > 60 ? 'future' : ''}" style="left:${x}%;--i:${i}"></i>`).join('')}<i class="asof" style="left:60%"></i><span class="tl-a" style="left:60%">截至这天</span><span class="tl-b">更晚披露的证据不进当时的结论</span></div></div></section>
+      <section id="evb-trap"><h4>改坏数据的陷阱<small>${cases.length} 个</small></h4>
+        <div class="cells">${cases.map((c, i) => `<span class="c ${trapCls(c)}" style="--i:${i}" title="${esc(c.title || '')}">${esc(c.id || '')}</span>`).join('')}</div>
+        <p class="lg"><span><i class="c caught"></i>管线拦住 ${n('caught')}</span><span><i class="c found"></i>只有评测发现 ${n('found')}</span>${n('na') + n('leak') ? `<span><i class="c na"></i>其他 ${n('na') + n('leak')}</span>` : ''}</p>
+        <p class="lg2">${cases.filter((c) => trapCls(c) === 'found').map((c) => esc(c.title)).join('；')}</p></section>
+    </div>
+    <footer id="evb-split"><span class="sp t">测试集 ${tN} 个事件</span><span class="sp d">开发集 ${dN} 个：${dev.map((e) => '事件 ' + esc(e.no)).join('、')}</span><small>${esc(r.gold_note || '')}</small></footer>
+  </div>`;
+}
+function boardGo(id) {
+  const t = $(id); if (!t) return;
+  const sec = t.closest('section') || t;
+  [t, sec].forEach((x) => { x.classList.remove('go'); void x.offsetWidth; x.classList.add('go'); });
+  $$('[data-to]', t).forEach((b) => {
+    const to = +b.dataset.to; if (reduce || !to) { b.textContent = to; return; }
+    const t0 = performance.now(), f = () => { const k = Math.min(1, (performance.now() - t0) / 1100); b.textContent = Math.round(to * (1 - Math.pow(1 - k, 3))); if (k < 1) setTimeout(f, 30); }; f();
+  });
+}
+function chEval() {
+  if (!REPORT || !fpSum()) return null;
+  const r = REPORT, fp = r.first_pass, cases = (r.traps && r.traps.cases) || [];
+  const caught = cases.filter((c) => trapCls(c) === 'caught').length, found = cases.filter((c) => trapCls(c) === 'found').length;
+  const gc = r.gold_check || {}, evs = r.events || [], dev = evs.filter((e) => e.split === '开发集');
+  const split = r.summary_by_split || {}, tN = ((split['测试集'] || {}).events || []).length, dN = ((split['开发集'] || {}).events || []).length;
+  const cite = M('引用挂对证据') || {};
+  const ctxText = `评测 · ${r.events_total ?? evs.length} 个事件`;
+  const beat = (id, i, h, rule, note, act = 1500) => ({
+    act, ctxText, h, rule, note,
+    run: async () => {
+      ptr(null, null, false);
+      if (i === 0) { $$('#evb .go').forEach((x) => x.classList.remove('go')); spot(null); await sleep(600); }
+      spot('@' + id, 10); await sleep(CAM_MS); boardGo(id);
+    } });
+  return { name: '评测', board: true, beats: [
+    beat('#evb-gold', 0, '标准答案先盲标，标完才打开抽取结果',
+      `${r.events_total ?? evs.length} 个事件，${gc.passed}/${gc.total} 处数字和引用回原文核对通过`,
+      '标注者是另一个 Claude Opus 会话，非人工；类型、状态等判断没人复核。', 2100),
+    beat('#evb-res', 1, '结果对：数字、版本、状态逐项和答案比',
+      `数值 ${nd('数值抽取精确匹配')}，版本链 ${nd('版本链')}，状态 ${nd('事件状态')}`,
+      `${(fp.test_events || []).length} 个事件第一次抽取时的成绩，抽取时没参考过评测意见。`),
+    beat('#evb-p1', 2, '每句话都要点得回原文，而且挂对那一条',
+      `引用逐字匹配 ${nd('引用逐字匹配')}，挂对证据 ${nd('引用挂对证据')}`,
+      `挂对是指数字确实出自那条证据；该引的版本召回 ${cite.recall_num ?? '—'}/${cite.recall_den ?? '—'}。`),
+    beat('#evb-p2', 3, '回放某一天时，只用那天之前的证据',
+      `未用到未来 ${nd('回放未用到未来证据')}，事实推断没混 ${nd('事实和推断没混')}`,
+      `冲突找出 ${nd('冲突找出来了')}；按最初盲标的答案算是 ${nd('冲突找出来了', fp.summary_blind_gold || {})}，分歧逐条回原文裁决。`),
+    beat('#evb-trap', 4, `故意改坏 ${cases.length} 处，看管线能不能拦住`,
+      `管线拦住 ${caught} 个，另 ${found} 个只有评测能发现`,
+      '仍放行的是首次出处、年份、报告期、漏版本，记为已知缺口。'),
+    beat('#evb-split', 5, '改过的事件移进开发集，不再算独立成绩',
+      `测试集 ${tN} 个事件，开发集 ${dN} 个（${dev.map((e) => '事件 ' + esc(e.no)).join('、')}）`,
+      '现在测试集全对，是因为出错的被移走了；主数字仍用首次成绩。', 1000),
+  ] };
+}
+
 function chEnd() {
   return { name: '小结', beats: [{
     act: 700, end: true, h: '刚才看到的',
@@ -417,7 +517,7 @@ function narrate(c, b) {
   setTimeout(() => {
     $('#s-tag').textContent = c.name; $('#s-h').textContent = b.h; $('#s-rule').innerHTML = b.rule; $('#s-note').innerHTML = b.note;
     $('#s-prev').innerHTML = b.prev || '';
-    if (b.ctx) $('#ctx').textContent = ctxOf(b.ctx);
+    if (b.ctx) $('#ctx').textContent = ctxOf(b.ctx); else if (b.ctxText) $('#ctx').textContent = b.ctxText;
     const te = $('#to-eval'); if (te) te.onclick = (ev) => { ev.preventDefault(); revealSections(); $('#eval').scrollIntoView({ behavior: reduce ? 'auto' : 'smooth' }); };
     void s.offsetWidth; s.classList.remove('fade');
   }, reduce ? 0 : 180);
@@ -441,6 +541,7 @@ async function show(ci, bi) {
   P.ci = ci; P.bi = bi;
   const c = CH[ci], b = c.beats[bi];
   narrate(c, b); rail(); setMode();
+  $('#evb').classList.toggle('on', !!c.board);
   let r;
   try { r = await b.run(tok); } catch (err) { /* 屏幕里找不到元素时跳过这一拍 */ console.warn(err); }
   if (tok !== P.token) return;
@@ -504,7 +605,15 @@ function onUser(a) {
 function fit() {
   const box = $('#dev-box'), dev = $('#dev'), wrap = $('#dev-wrap');
   box.style.transform = '';
-  if (mobile()) { box.style.width = box.style.height = ''; dev.style.transform = ''; return; }
+  const evb = $('#evb');
+  if (mobile()) {
+    box.style.width = box.style.height = ''; dev.style.transform = '';
+    // 手机上评测板按屏幕宽度整体缩小
+    const sc = $('#screen').clientWidth / 1120;
+    evb.style.transform = `scale(${sc})`; evb.style.height = $('#screen').clientHeight / sc + 'px';
+    return;
+  }
+  evb.style.transform = evb.style.height = '';
   const DW = 740, DH = 448;
   const r = wrap.getBoundingClientRect();
   const k = Math.max(.6, Math.min(r.width / DW, (r.height - 10) / DH, 1.9));
@@ -539,9 +648,10 @@ async function init() {
     const r = ex ? verify(ex, DATA) : null;
     let res = '没有匹配到';
     if (r && r.verdict === 'match') { const m = r.matches[0]; const d = describe(m, today(DATA)); const by = m.v.superseded_by ? evidenceById(m.ev, m.v.superseded_by) : null; res = `第 ${d.n} 版，${md(m.v.valid_to)} 被${esc(docName(by))}取代；现在是 <b>${esc(money(d.cur, m.claim.unit, m.claim.key))}</b>`; }
-    CH = [chCheck(px, ex, res), chVersions(px), chBack(px), chSource(px), chDiff(px), chAsk(px), chMore(px), chEnd()].filter(Boolean);
-  } else CH = [chMore({ e: DATA.events[0] }), chEnd()].filter(Boolean);
+    CH = [chCheck(px, ex, res), chVersions(px), chBack(px), chSource(px), chDiff(px), chAsk(px), chMore(px), chEval(), chEnd()].filter(Boolean);
+  } else CH = [chMore({ e: DATA.events[0] }), chEval(), chEnd()].filter(Boolean);
   brief(px);
+  buildBoard();
   requestAnimationFrame(() => drawPen(false));
 
   const frame = $('#frame');
@@ -550,6 +660,8 @@ async function init() {
   if (!WB || !(await WB.ready)) { $('#s-h').textContent = '屏幕里的工作台没有加载成功'; return; }
   ['pointerdown', 'keydown', 'wheel'].forEach((t) => W.document.addEventListener(t, (ev2) => { if (!P.scripting && ev2.isTrusted && P.mode === 'auto') { P.token++; setMode('hand'); spot(null); } }, { passive: true }));
   if (WB.onAction) WB.onAction(onUser);
+  // 评测板上点一下：停下演示，收起评测板，把屏幕交给人
+  $('#evb').addEventListener('pointerdown', () => { if (P.mode === 'auto') { P.token++; setMode('hand'); } spot(null); $('#evb').classList.remove('on'); });
 
   addEventListener('resize', fit); fit();
   rail(); setMode('idle');

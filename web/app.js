@@ -93,7 +93,7 @@ function renderSide() {
 
 // ---------- 事件页 ----------
 const HONEST = () => `<footer class="foot">
-  <p>标准答案是另一个模型独立标注的，不是人工标注。</p>
+  <p>标准答案是另一个 Claude Opus 会话先盲标的，不是人工标注。</p>
   <p>网页不实时调用模型，问答是离线生成的。</p>
   <p>${esc(DATA.disclaimer || '只整理公开信息，不构成投资建议。')}</p></footer>`;
 

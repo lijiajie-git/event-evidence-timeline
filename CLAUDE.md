@@ -42,6 +42,7 @@
 | `data/audit.json` | 每次构建的核查记录 |
 | `data/recheck.json` | 重抓公告比对正文指纹的结果 |
 | `data/process.json` | 这个作品是怎么用 AI 做出来的 |
+| `data/highlights.json` | 四组亮点（数据、核查、评测、动手查）的事实和数字，由 `pipeline/build_highlights.py` 从各份记录里算 |
 | `eval/report.json` | 评测成绩单 |
 
 ## 进展（2026-11-11）

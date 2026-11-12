@@ -1,6 +1,6 @@
 {
- "checked_at": "2026-11-11T19:14:58+00:00",
- "checked": 14,
+ "checked_at": "2026-11-12T00:17:12+00:00",
+ "checked": 64,
  "changed": 0,
  "failed": 0,
  "items": [
@@ -65,6 +65,16 @@
    "error": null
   },
   {
+   "event_id": "600187-2025A-forecast",
+   "evidence_id": "e7",
+   "ref": "1225483477",
+   "first_snapshot": "2026-11-11T18:35:40+00:00",
+   "old": "716354635b4bd702",
+   "new": "716354635b4bd702",
+   "changed": false,
+   "error": null
+  },
+  {
    "event_id": "600499-2026-tefu-restructuring",
    "evidence_id": "k1",
    "ref": "1224934284",
@@ -86,6 +96,16 @@
   },
   {
    "event_id": "600499-2026-tefu-restructuring",
+   "evidence_id": "k2a",
+   "ref": "1224954525",
+   "first_snapshot": "2026-11-11T18:53:04+00:00",
+   "old": "d48c256efd1b224b",
+   "new": "d48c256efd1b224b",
+   "changed": false,
+   "error": null
+  },
+  {
+   "event_id": "600499-2026-tefu-restructuring",
    "evidence_id": "k3",
    "ref": "1225091538",
    "first_snapshot": "2026-11-11T18:35:40+00:00",
@@ -96,11 +116,41 @@
   },
   {
    "event_id": "600499-2026-tefu-restructuring",
+   "evidence_id": "k3a",
+   "ref": "1225091532",
+   "first_snapshot": "2026-11-11T18:35:40+00:00",
+   "old": "679a4523e0411986",
+   "new": "679a4523e0411986",
+   "changed": false,
+   "error": null
+  },
+  {
+   "event_id": "600499-2026-tefu-restructuring",
+   "evidence_id": "k3b",
+   "ref": "1225236594",
+   "first_snapshot": "2026-11-11T18:35:40+00:00",
+   "old": "3530a0142674b11a",
+   "new": "3530a0142674b11a",
+   "changed": false,
+   "error": null
+  },
+  {
+   "event_id": "600499-2026-tefu-restructuring",
    "evidence_id": "k4",
    "ref": "1225304470",
    "first_snapshot": "2026-11-11T18:35:40+00:00",
    "old": "27d4a2c15fc284da",
    "new": "27d4a2c15fc284da",
+   "changed": false,
+   "error": null
+  },
+  {
+   "event_id": "600499-2026-tefu-restructuring",
+   "evidence_id": "k5a",
+   "ref": "1225424347",
+   "first_snapshot": "2026-11-11T18:35:40+00:00",
+   "old": "f5b8220af562e0bb",
+   "new": "f5b8220af562e0bb",
    "changed": false,
    "error": null
   },
@@ -141,6 +191,456 @@
    "first_snapshot": "2026-11-11T18:35:40+00:00",
    "old": "9e4660b34a660e98",
    "new": "9e4660b34a660e98",
+   "changed": false,
+   "error": null
+  },
+  {
+   "event_id": "605081-2025A-delisting",
+   "evidence_id": "e1",
+   "ref": "1224957246",
+   "first_snapshot": "2026-11-11T18:35:40+00:00",
+   "old": "2d82be25e222eeb0",
+   "new": "2d82be25e222eeb0",
+   "changed": false,
+   "error": null
+  },
+  {
+   "event_id": "605081-2025A-delisting",
+   "evidence_id": "e2",
+   "ref": "1224957248",
+   "first_snapshot": "2026-11-11T18:35:40+00:00",
+   "old": "1d549be9bba829a4",
+   "new": "1d549be9bba829a4",
+   "changed": false,
+   "error": null
+  },
+  {
+   "event_id": "605081-2025A-delisting",
+   "evidence_id": "e3",
+   "ref": "1225019534",
+   "first_snapshot": "2026-11-11T18:35:40+00:00",
+   "old": "cfe92602e3cf926e",
+   "new": "cfe92602e3cf926e",
+   "changed": false,
+   "error": null
+  },
+  {
+   "event_id": "605081-2025A-delisting",
+   "evidence_id": "e4",
+   "ref": "1225103012",
+   "first_snapshot": "2026-11-11T18:35:40+00:00",
+   "old": "9b4f739dead9ceb3",
+   "new": "9b4f739dead9ceb3",
+   "changed": false,
+   "error": null
+  },
+  {
+   "event_id": "605081-2025A-delisting",
+   "evidence_id": "e5",
+   "ref": "1225133701",
+   "first_snapshot": "2026-11-11T18:35:40+00:00",
+   "old": "cbd7cbf3cc328fd8",
+   "new": "cbd7cbf3cc328fd8",
+   "changed": false,
+   "error": null
+  },
+  {
+   "event_id": "605081-2025A-delisting",
+   "evidence_id": "e6",
+   "ref": "1225133682",
+   "first_snapshot": "2026-11-11T18:35:40+00:00",
+   "old": "8bf09856cbc669b8",
+   "new": "8bf09856cbc669b8",
+   "changed": false,
+   "error": null
+  },
+  {
+   "event_id": "605081-2025A-delisting",
+   "evidence_id": "e7",
+   "ref": "1225133709",
+   "first_snapshot": "2026-11-11T18:35:40+00:00",
+   "old": "5480c2f2e074face",
+   "new": "5480c2f2e074face",
+   "changed": false,
+   "error": null
+  },
+  {
+   "event_id": "605081-2025A-delisting",
+   "evidence_id": "e8",
+   "ref": "1225133706",
+   "first_snapshot": "2026-11-11T18:35:40+00:00",
+   "old": "f9913eb0525e1fdd",
+   "new": "f9913eb0525e1fdd",
+   "changed": false,
+   "error": null
+  },
+  {
+   "event_id": "605081-2025A-delisting",
+   "evidence_id": "e9",
+   "ref": "1225211359",
+   "first_snapshot": "2026-11-11T18:35:40+00:00",
+   "old": "ad6d564101da7d12",
+   "new": "ad6d564101da7d12",
+   "changed": false,
+   "error": null
+  },
+  {
+   "event_id": "605081-2025A-delisting",
+   "evidence_id": "e10",
+   "ref": "1225250617",
+   "first_snapshot": "2026-11-11T18:35:40+00:00",
+   "old": "c55757d9ee8fa129",
+   "new": "c55757d9ee8fa129",
+   "changed": false,
+   "error": null
+  },
+  {
+   "event_id": "605081-2025A-delisting",
+   "evidence_id": "e11",
+   "ref": "1225267974",
+   "first_snapshot": "2026-11-11T18:35:40+00:00",
+   "old": "2b96a9e59eee4f50",
+   "new": "2b96a9e59eee4f50",
+   "changed": false,
+   "error": null
+  },
+  {
+   "event_id": "605081-2025A-delisting",
+   "evidence_id": "e12",
+   "ref": "1225267992",
+   "first_snapshot": "2026-11-11T18:35:40+00:00",
+   "old": "da82a56b61190caf",
+   "new": "da82a56b61190caf",
+   "changed": false,
+   "error": null
+  },
+  {
+   "event_id": "605081-2025A-delisting",
+   "evidence_id": "e13",
+   "ref": "1225268009",
+   "first_snapshot": "2026-11-11T18:35:40+00:00",
+   "old": "670ebe951fb38c79",
+   "new": "670ebe951fb38c79",
+   "changed": false,
+   "error": null
+  },
+  {
+   "event_id": "605081-2025A-delisting",
+   "evidence_id": "e14",
+   "ref": "1225268019",
+   "first_snapshot": "2026-11-11T18:35:40+00:00",
+   "old": "da5d95357762624b",
+   "new": "da5d95357762624b",
+   "changed": false,
+   "error": null
+  },
+  {
+   "event_id": "605081-2025A-delisting",
+   "evidence_id": "e15",
+   "ref": "1225268266",
+   "first_snapshot": "2026-11-11T18:35:40+00:00",
+   "old": "133b4853e64a3914",
+   "new": "133b4853e64a3914",
+   "changed": false,
+   "error": null
+  },
+  {
+   "event_id": "605081-2025A-delisting",
+   "evidence_id": "e16",
+   "ref": "1225310428",
+   "first_snapshot": "2026-11-11T18:35:40+00:00",
+   "old": "b83e76bcf4411ba0",
+   "new": "b83e76bcf4411ba0",
+   "changed": false,
+   "error": null
+  },
+  {
+   "event_id": "605081-2025A-delisting",
+   "evidence_id": "e17",
+   "ref": "1225310364",
+   "first_snapshot": "2026-11-11T18:35:40+00:00",
+   "old": "a96649af79845760",
+   "new": "a96649af79845760",
+   "changed": false,
+   "error": null
+  },
+  {
+   "event_id": "605081-2025A-delisting",
+   "evidence_id": "e18",
+   "ref": "1225340564",
+   "first_snapshot": "2026-11-11T18:35:40+00:00",
+   "old": "6211baccb2f8103a",
+   "new": "6211baccb2f8103a",
+   "changed": false,
+   "error": null
+  },
+  {
+   "event_id": "605081-2025A-delisting",
+   "evidence_id": "e19",
+   "ref": "1225340563",
+   "first_snapshot": "2026-11-11T18:35:40+00:00",
+   "old": "c216d29ee4687714",
+   "new": "c216d29ee4687714",
+   "changed": false,
+   "error": null
+  },
+  {
+   "event_id": "605081-2025A-delisting",
+   "evidence_id": "e20",
+   "ref": "1225355314",
+   "first_snapshot": "2026-11-11T18:35:40+00:00",
+   "old": "4ffe0f914563cfd4",
+   "new": "4ffe0f914563cfd4",
+   "changed": false,
+   "error": null
+  },
+  {
+   "event_id": "605081-2025A-delisting",
+   "evidence_id": "e21",
+   "ref": "1225396959",
+   "first_snapshot": "2026-11-11T18:35:40+00:00",
+   "old": "17d19e44829eae36",
+   "new": "17d19e44829eae36",
+   "changed": false,
+   "error": null
+  },
+  {
+   "event_id": "600187-2026H1-forecast",
+   "evidence_id": "e1",
+   "ref": "1225414043",
+   "first_snapshot": "2026-11-11T18:35:40+00:00",
+   "old": "4a4d4bf4329e541f",
+   "new": "4a4d4bf4329e541f",
+   "changed": false,
+   "error": null
+  },
+  {
+   "event_id": "600187-2026H1-forecast",
+   "evidence_id": "e2",
+   "ref": "1225480593",
+   "first_snapshot": "2026-11-11T18:35:40+00:00",
+   "old": "7c781a46e7c4d221",
+   "new": "7c781a46e7c4d221",
+   "changed": false,
+   "error": null
+  },
+  {
+   "event_id": "600187-2026H1-forecast",
+   "evidence_id": "e3",
+   "ref": "1225485836",
+   "first_snapshot": "2026-11-11T18:35:40+00:00",
+   "old": "c88dee427da8582c",
+   "new": "c88dee427da8582c",
+   "changed": false,
+   "error": null
+  },
+  {
+   "event_id": "600187-2026H1-forecast",
+   "evidence_id": "e4",
+   "ref": "1225485841",
+   "first_snapshot": "2026-11-11T18:35:40+00:00",
+   "old": "8345c24fec158c50",
+   "new": "8345c24fec158c50",
+   "changed": false,
+   "error": null
+  },
+  {
+   "event_id": "600889-2026H1-forecast",
+   "evidence_id": "e1",
+   "ref": "1225408186",
+   "first_snapshot": "2026-11-11T18:35:40+00:00",
+   "old": "df182ef9412d86ef",
+   "new": "df182ef9412d86ef",
+   "changed": false,
+   "error": null
+  },
+  {
+   "event_id": "600889-2026H1-forecast",
+   "evidence_id": "e2",
+   "ref": "1225450112",
+   "first_snapshot": "2026-11-11T18:35:40+00:00",
+   "old": "f298fbc61400f0f1",
+   "new": "f298fbc61400f0f1",
+   "changed": false,
+   "error": null
+  },
+  {
+   "event_id": "600889-2026H1-forecast",
+   "evidence_id": "e3",
+   "ref": "1225476623",
+   "first_snapshot": "2026-11-11T18:35:40+00:00",
+   "old": "9825226eb2b2561a",
+   "new": "9825226eb2b2561a",
+   "changed": false,
+   "error": null
+  },
+  {
+   "event_id": "600889-2026H1-forecast",
+   "evidence_id": "e4",
+   "ref": "1225476643",
+   "first_snapshot": "2026-11-11T18:35:40+00:00",
+   "old": "5e8d7c2dad0c355b",
+   "new": "5e8d7c2dad0c355b",
+   "changed": false,
+   "error": null
+  },
+  {
+   "event_id": "600889-2026H1-forecast",
+   "evidence_id": "e5",
+   "ref": "1225476634",
+   "first_snapshot": "2026-11-11T18:35:40+00:00",
+   "old": "22121112807e74c2",
+   "new": "22121112807e74c2",
+   "changed": false,
+   "error": null
+  },
+  {
+   "event_id": "600499-2026H1-forecast",
+   "evidence_id": "e1",
+   "ref": "1225415455",
+   "first_snapshot": "2026-11-11T18:35:40+00:00",
+   "old": "c3b13e8939e1ca7d",
+   "new": "c3b13e8939e1ca7d",
+   "changed": false,
+   "error": null
+  },
+  {
+   "event_id": "600499-2026H1-forecast",
+   "evidence_id": "e3",
+   "ref": "1225498055",
+   "first_snapshot": "2026-11-11T18:35:40+00:00",
+   "old": "601d7345ce944559",
+   "new": "601d7345ce944559",
+   "changed": false,
+   "error": null
+  },
+  {
+   "event_id": "600499-2026H1-forecast",
+   "evidence_id": "e4",
+   "ref": "1225498065",
+   "first_snapshot": "2026-11-11T18:35:40+00:00",
+   "old": "9d6e567efdb06c99",
+   "new": "9d6e567efdb06c99",
+   "changed": false,
+   "error": null
+  },
+  {
+   "event_id": "920685-2026-restructuring",
+   "evidence_id": "k1",
+   "ref": "1225425881",
+   "first_snapshot": "2026-11-11T18:35:40+00:00",
+   "old": "0e89f9d2e3141f41",
+   "new": "0e89f9d2e3141f41",
+   "changed": false,
+   "error": null
+  },
+  {
+   "event_id": "920685-2026-restructuring",
+   "evidence_id": "k2",
+   "ref": "1225437257",
+   "first_snapshot": "2026-11-11T18:35:40+00:00",
+   "old": "85727a2350fa2162",
+   "new": "85727a2350fa2162",
+   "changed": false,
+   "error": null
+  },
+  {
+   "event_id": "920685-2026-restructuring",
+   "evidence_id": "k3",
+   "ref": "1225446923",
+   "first_snapshot": "2026-11-11T18:35:40+00:00",
+   "old": "d2afaf8fa80e6b20",
+   "new": "d2afaf8fa80e6b20",
+   "changed": false,
+   "error": null
+  },
+  {
+   "event_id": "920685-2026-restructuring",
+   "evidence_id": "k4",
+   "ref": "1225446922",
+   "first_snapshot": "2026-11-11T18:35:40+00:00",
+   "old": "385622d45a41d7a6",
+   "new": "385622d45a41d7a6",
+   "changed": false,
+   "error": null
+  },
+  {
+   "event_id": "920685-2026-restructuring",
+   "evidence_id": "k5",
+   "ref": "1225526696",
+   "first_snapshot": "2026-11-11T18:35:40+00:00",
+   "old": "652dec70e76481a9",
+   "new": "652dec70e76481a9",
+   "changed": false,
+   "error": null
+  },
+  {
+   "event_id": "920685-2026-restructuring",
+   "evidence_id": "k6",
+   "ref": "1225570631",
+   "first_snapshot": "2026-11-11T18:35:40+00:00",
+   "old": "66cfa9d88b81eec1",
+   "new": "66cfa9d88b81eec1",
+   "changed": false,
+   "error": null
+  },
+  {
+   "event_id": "920685-2026-restructuring",
+   "evidence_id": "k7",
+   "ref": "1225570629",
+   "first_snapshot": "2026-11-11T18:35:40+00:00",
+   "old": "ac701dbb2892aa7d",
+   "new": "ac701dbb2892aa7d",
+   "changed": false,
+   "error": null
+  },
+  {
+   "event_id": "920685-2026-restructuring",
+   "evidence_id": "k8",
+   "ref": "1225576712",
+   "first_snapshot": "2026-11-11T18:35:40+00:00",
+   "old": "b7b1dcd233aeeffa",
+   "new": "b7b1dcd233aeeffa",
+   "changed": false,
+   "error": null
+  },
+  {
+   "event_id": "920685-2026-restructuring",
+   "evidence_id": "k9",
+   "ref": "1225588269",
+   "first_snapshot": "2026-11-11T18:35:40+00:00",
+   "old": "d9297887c9ca560d",
+   "new": "d9297887c9ca560d",
+   "changed": false,
+   "error": null
+  },
+  {
+   "event_id": "01122-2026-11-11-clarification",
+   "evidence_id": "k1",
+   "ref": "1225600343",
+   "first_snapshot": "2026-11-11T18:35:40+00:00",
+   "old": "758173626c4e1fc6",
+   "new": "758173626c4e1fc6",
+   "changed": false,
+   "error": null
+  },
+  {
+   "event_id": "01122-2026-11-11-clarification",
+   "evidence_id": "k2",
+   "ref": "1225668004",
+   "first_snapshot": "2026-11-11T18:35:40+00:00",
+   "old": "4f277fc0394651d0",
+   "new": "4f277fc0394651d0",
+   "changed": false,
+   "error": null
+  },
+  {
+   "event_id": "02672-2026-11-11-clarification",
+   "evidence_id": "k1",
+   "ref": "1225667977",
+   "first_snapshot": "2026-11-11T18:35:40+00:00",
+   "old": "d04d09c3f6b55acd",
+   "new": "d04d09c3f6b55acd",
    "changed": false,
    "error": null
   }

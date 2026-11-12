@@ -288,7 +288,7 @@ h3.sub { font-size: 15px; font-weight: 600; margin: 20px 0 8px; }
 .evb .big { margin-top: 8px; font-size: 14px; color: var(--i2); }
 .evb .big b { font: 600 30px/1 "Songti SC", "STSong", serif; color: var(--cur); margin-right: 4px; font-variant-numeric: tabular-nums; }
 
-.evb .mr { display: grid; grid-template-columns: 9.6em 1fr 5.6em 3.6em; align-items: center; gap: 10px; padding: 3px 0; font-size: 13.5px; }
+.evb .mr { display: grid; grid-template-columns: 12.4em 1fr 5.6em 3.6em; align-items: center; gap: 10px; padding: 3px 0; font-size: 13.5px; }
 .evb .mk { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .evb .bar { height: 7px; background: var(--rl); position: relative; overflow: hidden; }
 .evb .bar u { position: absolute; inset: 0; background: var(--cur); transform-origin: left; transform: scaleX(0); transition: transform 1s cubic-bezier(.3, .7, .2, 1); transition-delay: calc(var(--i) * .1s); }
